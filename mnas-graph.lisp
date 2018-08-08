@@ -10,10 +10,11 @@
 (export 'vertex)
 
 (defclass vertex ()
-  ((vertex-node    :accessor vertex-node    :initarg :vertex-node   :initform nil :allocation :instance :documentation "Имя вершины")
-   (vertex-number  :accessor vertex-number  :initarg :vertex-number               :allocation :instance :documentation "Номер вершины")
-   (vertex-state   :accessor vertex-state   :initarg :vertex-state  :initform nil :allocation :instance :documentation "Ссылка на состояние вершины")
-   (vertex-counter :accessor vertex-counter                         :initform 0   :allocation :class    :documentation "Количество, созданных вершин")))
+  ((node    :accessor vertex-node    :initarg :vertex-node   :initform nil  :documentation "Имя вершины")
+   (number  :accessor vertex-number  :initarg :vertex-number                :documentation "Номер вершины")
+   (state   :accessor vertex-state   :initarg :vertex-state  :initform nil  :documentation "Ссылка на состояние вершины")
+   (counter :accessor vertex-counter                         :initform 0    :documentation "Количество, созданных вершин"
+		   :allocation :class)))
 
 (export 'vertex-node)
 (export 'vertex-number)
@@ -25,8 +26,8 @@
 (export 'rib)
 
 (defclass rib ()
-  ((rib-start-vertex :accessor rib-start-vertex :initarg :rib-start-vertex :initform nil :allocation :instance :documentation "Начальная вершина ребра")
-   (rib-end-vertex   :accessor rib-end-vertex   :initarg :rib-end-vertex   :initform nil :allocation :instance :documentation "Конечная  вершина ребра"))
+  ((start :accessor rib-start-vertex :initarg :rib-start-vertex :initform nil :documentation "Начальная вершина ребра")
+   (end   :accessor rib-end-vertex   :initarg :rib-end-vertex   :initform nil :documentation "Конечная  вершина ребра"))
   (:documentation "Ребро графа"))
 
 
@@ -38,8 +39,8 @@
 (export 'graph)
 
 (defclass graph ()
-  ((graph-vertexes :accessor graph-vertexes :initform (make-hash-table) :documentation "Хешированная таблица вершин графа")
-   (graph-ribs     :accessor graph-ribs     :initform (make-hash-table) :documentation "Хешированная таблица ребер графа"))
+  ((vertexes :accessor graph-vertexes :initform (make-hash-table) :documentation "Хешированная таблица вершин графа")
+   (ribs     :accessor graph-ribs     :initform (make-hash-table) :documentation "Хешированная таблица ребер графа"))
   (:documentation "Представляет граф, выражающий алгоритм изменения состояния агрегатов во времени"))
 
 (export 'graph-vertexes)
@@ -47,9 +48,8 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defmethod initialize-instance :around ((x vertex) &key vertex-name vertex-node vertex-state)
+(defmethod initialize-instance :around ((x vertex) &key vertex-node vertex-state)
   (call-next-method x
-		    :vertex-name   vertex-name
 		    :vertex-node   vertex-node 
 		    :vertex-number (vertex-counter x)
 		    :vertex-state  vertex-state)
@@ -165,6 +165,8 @@
      (graph-ribs g))
     rez-tbl
     ))
+
+(export 'graph-find-vertex-by-name)
 
 (defmethod graph-find-vertex-by-name((g graph) str)
   (let ((ver nil))
