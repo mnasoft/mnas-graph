@@ -7,46 +7,69 @@
 
 (in-package #:mnas-graph)
 
-(export 'vertex)
+;;;; generics ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defclass vertex ()
-  ((node    :accessor vertex-node    :initarg :vertex-node   :initform nil  :documentation "Имя вершины")
-   (number  :accessor vertex-number  :initarg :vertex-number                :documentation "Номер вершины")
-   (state   :accessor vertex-state   :initarg :vertex-state  :initform nil  :documentation "Ссылка на состояние вершины")
-   (counter :accessor vertex-counter                         :initform 0    :documentation "Количество, созданных вершин"
-		   :allocation :class)))
+(defgeneric to-string   (obj)           (:documentation "Выполняет перобразование объекта в строку"))
+(defgeneric insert-to   (obj container) (:documentation "Добавляет obj в container"))
+(defgeneric remove-from (obj container) (:documentation "Добавляет obj в container"))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(export 'ver)
+
+(defclass ver ()
+  ((node    :accessor vertex-node    :initarg :node   :initform nil  :documentation "Имя вершины")
+   (counter :accessor vertex-counter                  :initform 0    :documentation "Количество, созданных вершин" :allocation :class))
+   (:documentation "Вершина графа"))
 
 (export 'vertex-node)
+(export 'vertex-counter)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(export 'vertex)
+
+(defclass vertex (ver)
+  ((number  :accessor vertex-number  :initarg :number                :documentation "Номер вершины")
+   (state   :accessor vertex-state   :initarg :state  :initform nil  :documentation "Ссылка на состояние вершины"))
+   (:documentation "Вершина графа поддерживающая номер и состояние"))
+
 (export 'vertex-number)
 (export 'vertex-state)
-(export 'vertex-counter)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (export 'rib)
 
 (defclass rib ()
-  ((start :accessor rib-start-vertex :initarg :rib-start-vertex :initform nil :documentation "Начальная вершина ребра")
-   (end   :accessor rib-end-vertex   :initarg :rib-end-vertex   :initform nil :documentation "Конечная  вершина ребра"))
+  ((start :accessor rib-from :initarg :from :initform nil :documentation "Начальная вершина ребра")
+   (end   :accessor rib-to   :initarg :to   :initform nil :documentation "Конечная  вершина ребра"))
   (:documentation "Ребро графа"))
 
 
-(export 'rib-start-vertex)
-(export 'rib-end-vertex)
+(export 'rib-from)
+(export 'rib-to)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (export 'graph)
 
 (defclass graph ()
-  ((vertexes :accessor graph-vertexes :initform (make-hash-table) :documentation "Хешированная таблица вершин графа")
-   (ribs     :accessor graph-ribs     :initform (make-hash-table) :documentation "Хешированная таблица ребер графа"))
+  ((vertexes :accessor graph-vers :initform (make-hash-table) :documentation "Хешированная таблица вершин графа")
+   (ribs     :accessor graph-ribs :initform (make-hash-table) :documentation "Хешированная таблица ребер графа"))
   (:documentation "Представляет граф, выражающий алгоритм изменения состояния агрегатов во времени"))
 
-(export 'graph-vertexes)
+(export 'graph-vers)
 (export 'graph-ribs)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defmethod initialize-instance :around ((x ver) &key node )
+  (call-next-method x
+		    :node   node 
+		    :number (vertex-counter x))
+  (incf (vertex-counter x)))
+
 
 (defmethod initialize-instance :around ((x vertex) &key vertex-node vertex-state)
   (call-next-method x
@@ -57,33 +80,29 @@
 
 ;;;;;;;;;; print-object ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(defmethod print-object :after ((x ver) s)
+	   (format s "~S(~S)~%" (vertex-counter x) (vertex-node x)))
+
 (defmethod print-object :after ((x vertex) s)
-	   (format s "(~S ~S ~S)~%"
-		   (vertex-node   x)
+	   (format s "(~S ~S)~%"
 		   (vertex-number x)
 		   (vertex-state  x)))
 
 (defmethod print-object :after ((x rib) s)
-  (format s "((~S ~S ~S)->(~S ~S ~S))"
-	  (vertex-node (rib-start-vertex x))
-	  (vertex-number(rib-start-vertex x))
-  	  (vertex-state (rib-start-vertex x))
-	  (vertex-node(rib-end-vertex x))
-	  (vertex-number(rib-end-vertex x))
-  	  (vertex-state (rib-end-vertex x))))
+  (format s "(~S->~S)" (rib-from x) (rib-to x)))
 
 (defmethod print-object :after ((x graph) s)
-  (format s "(VC=~S RC=~S" (hash-table-count (graph-vertexes x)) (hash-table-count (graph-ribs x)))
-  (if (< 0 (hash-table-count (graph-vertexes x)))
-      (progn
-        (format s ")~%(" )
-	(maphash #'(lambda (k v) (format s "~S " v) )(graph-vertexes x))
-        (format s ")" )))
-  (if (< 0 (hash-table-count (graph-ribs x)))
-      (progn 
-	(format s "~%(" )
+  (format s "(VC=~S RC=~S"
+	  (hash-table-count (graph-vers x))
+	  (hash-table-count (graph-ribs x)))
+  (when (< 0 (hash-table-count (graph-vers x)))
+    (format s ")~%(" )
+    (maphash #'(lambda (k v) (format s "~S " v) )(graph-vers x))
+    (format s ")" ))
+  (when (< 0 (hash-table-count (graph-ribs x)))
+    	(format s "~%(" )
 	(maphash #'(lambda (k v) (format s "~S~%" v) )(graph-ribs x))
-	(format s ")")))
+	(format s ")"))
   (format s ")"))
 
 ;;;;;;;;;; to-string ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -92,94 +111,113 @@
 
 (defmethod to-string (val) (format nil "~A" val))
 
+(defmethod to-string ((x ver)) (format nil "~A" (vertex-node x)))
+
 (defmethod to-string ((x vertex)) (format nil "~A:~A" (vertex-node x) (vertex-number x)))
 
 (defmethod to-string ((x rib))
-  (format nil "~A->~A" (to-string(rib-start-vertex x)) (to-string(rib-end-vertex x))))
+  (format nil "~A->~A" (to-string (rib-from x)) (to-string (rib-to x))))
 
-;;;;;;;;;; graph-add-* ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;; insert-to ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(export 'graph-add-vertex)
+(export 'insert-to)
 
-(defmethod graph-add-vertex ((g graph ) (v vertex)) (setf (gethash v (graph-vertexes g)) v) v)
+(defmethod insert-to ((v ver) (g graph)) (setf (gethash v (graph-vers g)) v) v)
 
-(export 'graph-add-rib)
-
-(defmethod graph-add-rib ((g graph ) (r rib))
+(defmethod insert-to ((r rib) (g graph))
   (setf (gethash r (graph-ribs g)) r)
-  (setf (gethash (rib-start-vertex r) (graph-vertexes g)) (rib-start-vertex r))
-  (setf (gethash (rib-end-vertex r) (graph-vertexes g)) (rib-end-vertex r))
+  (setf (gethash (rib-from r) (graph-vers g)) (rib-from r))
+  (setf (gethash (rib-to   r) (graph-vers g)) (rib-to   r))
   r)
 
-;;;;;;;;;; graph-remove-* ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;; remove-from ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(export 'graph-remove-vertex)
+(export 'remove-from)
 
-(defmethod graph-remove-vertex ((g graph ) (v vertex))
+(defmethod remove-from ((v ver) (g graph ))
   (let* ((rh (graph-ribs g))
 	 (rl (hash-table-copy rh)))
     (maphash #'(lambda(key val)
 		 (if (or
-		      (eq (rib-start-vertex key) v)
-		      (eq (rib-end-vertex key)   v))
+		      (eq (rib-from key) v)
+		      (eq (rib-to key)   v))
 		     (remhash key rh)))
 	     rl)
-    (if (remhash v (graph-vertexes g))
+    (if (remhash v (graph-vers g))
 	v)))
 
-(export 'graph-remove-vertex)
-
-(defmethod graph-remove-vertex ((g graph ) (r rib))
+(defmethod remove-from ((r rib) (g graph ) )
   (if (remhash r (graph-ribs g))
 	r))
-
-
 
 ;;;;;;;;;; graph-clear ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod graph-clear ((g graph))
-  (clrhash (graph-vertexes g))
+  (clrhash (graph-vers g))
   (clrhash (graph-ribs g))
   g)
 
+
+;;;;;;;;;;  graph-inlet graph-outlet ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(export 'graph-inlet)
+
+(defmethod graph-inlet ((g graph))
+  (let ((rez-tbl(hash-table-copy (graph-vers g))))
+    (maphash
+     #'(lambda (k v)
+	 (remhash (rib-to k) rez-tbl))
+     (graph-ribs g))
+    rez-tbl))
+
+(export 'graph-outlet)
+
+(defmethod graph-outlet ((g graph))
+  (let ((rez-tbl(hash-table-copy (graph-vers g))))
+    (maphash
+     #'(lambda (k v)
+	 (remhash (rib-to k) rez-tbl))
+     (graph-ribs g))
+    rez-tbl))
+
+(export 'graph-outlet-ribs)
+
+(defmethod graph-outlet-ribs ((g graph) (v ver))
+  (let ((rez-tbl(hash-table-copy(graph-ribs g))))
+    (maphash
+     #'(lambda (key val)
+	 (if (not(eq (rib-from key) v))
+	     (remhash  key rez-tbl)))
+     (graph-ribs g))
+    rez-tbl))
+
+(export 'graph-inlet-ribs)
+
+(defmethod graph-inlet-ribs ((g graph) (v ver))
+  (let ((rez-tbl (hash-table-copy (graph-ribs g))))
+    (maphash
+     #'(lambda (key val)
+	 (if (not(eq (rib-to key) v))
+	     (remhash  key rez-tbl)))
+     (graph-ribs g))
+    rez-tbl))
+
 ;;;;;;;;;; graph-find-* ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(export 'graph-find-inlet-vertexes)
-
-(defmethod graph-find-inlet-vertexes ((g graph))
-  (let ((rez-tbl(hash-table-copy(graph-vertexes g))))
-    (maphash
-     #'(lambda (k v)
-	 (remhash (rib-end-vertex k) rez-tbl))
-     (graph-ribs g))
-    rez-tbl
-    ))
-
-(export 'graph-find-outlet-vertexes)
-
-(defmethod graph-find-outlet-vertexes ((g graph))
-  (let ((rez-tbl(hash-table-copy(graph-vertexes g))))
-    (maphash
-     #'(lambda (k v)
-	 (remhash (rib-start-vertex k) rez-tbl))
-     (graph-ribs g))
-    rez-tbl
-    ))
 
 (export 'graph-find-vertex-by-name)
 
-(defmethod graph-find-vertex-by-name((g graph) str)
+(defmethod graph-find-vertex-by-name ((g graph) (str string))
   (let ((ver nil))
     (maphash #'(lambda (k v)
 	       (if (string= (to-string k) str)
 		   (setf ver k))
 	       )
-	     (graph-vertexes g))
+	     (graph-vers g))
     ver))
 
 (export 'graph-find-rib-by-name)
 
-(defmethod graph-find-rib-by-name ((g graph) str)
+(defmethod graph-find-rib-by-name ((g graph) (str string))
   (let ((rb nil))
     (maphash #'(lambda (k v)
 	       (if (string= (to-string k) str)
@@ -188,13 +226,39 @@
 	     (graph-ribs g))
     rb))
 
-(export 'graph-find-outlet-ribs)
+;;;; to-graphviz ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defmethod graph-find-outlet-ribs ((g graph) (v vertex))
-  (let ((rez-tbl(hash-table-copy(graph-ribs g))))
-    (maphash
-     #'(lambda (key val)
-	 (if (not(eq (rib-start-vertex key) v))
-	     (remhash  key rez-tbl)))
-     (graph-ribs g))
-    rez-tbl))
+(defmethod to-graphviz ((v ver) s)
+  (format s "~S~%" (to-string v)))
+
+(defmethod to-graphviz ((r rib) s)
+  (format s "~S ~A ~S~%"
+	  (to-string (rib-from r))
+	  "->"
+	  (to-string (rib-to r))))
+
+(defun x-preamble(&key (out t) (name "G") (rankdir "LR") (shape "box"))
+  (format out "digraph ~A {~%  rankdir=~A~%  node[shape=~A]~%" name rankdir shape))
+
+(defun x-postamble(&key (out t)) (format out "~&}~%"))
+
+(defmethod to-graphviz ((g graph) s)
+  (x-preamble :out s)
+  (maphash #'(lambda (k v) (to-graphviz v s)) (graph-vers g))  
+  (maphash #'(lambda (k v) (to-graphviz v s)) (graph-ribs g))  
+  (x-postamble :out s))
+
+;;;; generate-graph data ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun generate-graph (data)
+  (let ((g (make-instance 'graph))
+	(vs (remove-duplicates (apply #'append data) :test #'equal)))
+    (mapc #'(lambda (v) (insert-to (make-instance 'ver :node v) g)) vs)
+    (mapc #'(lambda (el)
+	      (insert-to
+	       (make-instance 'rib
+			      :from (graph-find-vertex-by-name g (first el))
+			      :to   (graph-find-vertex-by-name g (second el)))
+	       g))
+	  data)
+    g))
