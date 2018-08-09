@@ -9,9 +9,29 @@
 
 ;;;; generics ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(export 'to-string)
 (defgeneric to-string   (obj)           (:documentation "Выполняет перобразование объекта в строку"))
+
+(export 'insert-to)
 (defgeneric insert-to   (obj container) (:documentation "Добавляет obj в container"))
+
+(export 'remove-from)
 (defgeneric remove-from (obj container) (:documentation "Добавляет obj в container"))
+
+(export 'inlet-vers)
+(defgeneric inlet-vers (container) (:documentation "Возвращает хеш-таблицу конечных вершин (вершин-стока)"))
+
+(export 'outlet-vers)
+(defgeneric outlet-vers (container) (:documentation "Возвращает хеш-таблицу начальных вершин (веншин-иточников)"))
+
+(export 'inlet-ribs)
+(defgeneric inlet-ribs (container ver) (:documentation "Возвращает хеш-таблицу начальных ребер (итоков)"))
+
+(export 'outlet-ribs)
+(defgeneric outlet-ribs (container ver) (:documentation "Возвращает хеш-таблицу конечных ребер (устий)"))
+
+(export 'to-graphviz)
+(defgeneric to-graphviz (obj stream) (:documentation "Выполняет вывод в формат программы graphviz"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -107,8 +127,6 @@
 
 ;;;;;;;;;; to-string ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(export 'to-string)
-
 (defmethod to-string (val) (format nil "~A" val))
 
 (defmethod to-string ((x ver)) (format nil "~A" (vertex-node x)))
@@ -120,8 +138,6 @@
 
 ;;;;;;;;;; insert-to ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(export 'insert-to)
-
 (defmethod insert-to ((v ver) (g graph)) (setf (gethash v (graph-vers g)) v) v)
 
 (defmethod insert-to ((r rib) (g graph))
@@ -131,8 +147,6 @@
   r)
 
 ;;;;;;;;;; remove-from ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(export 'remove-from)
 
 (defmethod remove-from ((v ver) (g graph ))
   (let* ((rh (graph-ribs g))
@@ -160,9 +174,7 @@
 
 ;;;;;;;;;;  graph-inlet graph-outlet ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(export 'graph-inlet)
-
-(defmethod graph-inlet ((g graph))
+(defmethod inlet-vers ((g graph))
   (let ((rez-tbl(hash-table-copy (graph-vers g))))
     (maphash
      #'(lambda (k v)
@@ -170,9 +182,7 @@
      (graph-ribs g))
     rez-tbl))
 
-(export 'graph-outlet)
-
-(defmethod graph-outlet ((g graph))
+(defmethod outlet-vers ((g graph))
   (let ((rez-tbl(hash-table-copy (graph-vers g))))
     (maphash
      #'(lambda (k v)
@@ -180,9 +190,7 @@
      (graph-ribs g))
     rez-tbl))
 
-(export 'graph-outlet-ribs)
-
-(defmethod graph-outlet-ribs ((g graph) (v ver))
+(defmethod outlet-ribs ((g graph) (v ver))
   (let ((rez-tbl(hash-table-copy(graph-ribs g))))
     (maphash
      #'(lambda (key val)
@@ -191,9 +199,7 @@
      (graph-ribs g))
     rez-tbl))
 
-(export 'graph-inlet-ribs)
-
-(defmethod graph-inlet-ribs ((g graph) (v ver))
+(defmethod inlet-ribs ((g graph) (v ver))
   (let ((rez-tbl (hash-table-copy (graph-ribs g))))
     (maphash
      #'(lambda (key val)
