@@ -41,6 +41,17 @@
 (export 'to-graphviz)
 (defgeneric to-graphviz (obj stream) (:documentation "Выполняет объекта obj в формат программы graphviz"))
 
+(export 'view-graph)
+(defgeneric view-graph (graph &key fpath fname graphviz-prg out-type dpi viewer)
+  (:documentation "Выполняет визуализацию графа graph
+fpath         - каталог для вывода результатов работы программы;
+fname         - имя gv-файла;
+out-type      - тип выходного файла;
+dpi           - количество точек на дюйм;
+viewer        - программа для просмотра графа;
+graphviz-prg  - программа для генерации графа;
+"))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (export 'node)
@@ -219,22 +230,22 @@
 ;;;;;;;;;; graph-find-* ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod graph-find-node-by-name ((g graph) (str string))
-  (let ((v nil))
+  (let ((v-rez nil))
     (maphash #'(lambda (k v)
 	       (if (string= (to-string k) str)
-		   (setf v k))
+		   (setf v-rez k))
 	       )
 	     (graph-nodes g))
-    v))
+    v-rez))
 
 (defmethod graph-find-edge-by-name ((g graph) (str string))
-  (let ((rb nil))
+  (let ((e-rez nil))
     (maphash #'(lambda (k v)
 	       (if (string= (to-string k) str)
-		   (setf rb k))
+		   (setf e-rez k))
 	       )
 	     (graph-edges g))
-    rb))
+    e-rez))
 
 ;;;; to-graphviz ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -278,40 +289,50 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (export '*dot-path*)
-
 (defparameter *dot-path*
   (cond ((uiop/os:os-windows-p) "D:/PRG/msys32/mingw32/bin/dot.exe")
 	((uiop/os:os-unix-p) "/usr/bin/dot")))
 
-(export '*viewer-path*)
+(export '*neato-path*)
+(defparameter *neato-path*
+  (cond ((uiop/os:os-windows-p) "d:/PRG/msys32/mingw32/bin/neato.exe")
+	((uiop/os:os-unix-p) "/usr/bin/neato")))
 
+(export '*fdp-path*)
+(defparameter *fdp-path*
+  (cond ((uiop/os:os-windows-p) "d:/PRG/msys32/mingw32/bin/fdp.exe")
+	((uiop/os:os-unix-p) "/usr/bin/fdp")))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(export '*viewer-path*)
 (defparameter *output-path*
-  (cond ((uiop/os:os-windows-p) "D:/PRG/msys32/home/namatv/quicklisp/local-projects/clisp/algorithm") 
-	((uiop/os:os-unix-p) "/home/namatv/quicklisp/local-projects/clisp/algorithm/rezult")))
+  (cond ((uiop/os:os-windows-p) "D:/PRG/msys32/home/namatv") 
+	((uiop/os:os-unix-p) "/home/namatv")))
 
 (export '*viewer-path*)
-
 (defparameter *viewer-path*
   (cond
     ((uiop/os:os-windows-p) "C:/Program Files/Adobe/Reader 11.0/Reader/AcroRd32.exe")
     ((uiop/os:os-unix-p) "/usr/bin/atril"))) ;;;;"/usr/bin/okular"
 
-(export 'view-graph)
-
-(defmethod view-graph ((g graph) fname
+(defmethod view-graph ((g graph) 
 		       &key
-			 (out-type "pdf") (dpi "150") (viewer *viewer-path*)
-			 (dot-prg *dot-path*) (fpath *output-path*) (invoke-viewer t))
+			 (fpath *output-path*)
+			 (fname "graph")
+			 (graphviz-prg *dot-path*)
+			 (out-type "pdf")
+			 (dpi "300")
+			 (viewer *viewer-path*))
   (with-open-file (out (concatenate 'string fpath "/" fname ".gv")
 		       :direction :output :if-exists :supersede :external-format :UTF8)
     (to-graphviz g out))
-  (sb-ext:run-program dot-prg
+  (sb-ext:run-program graphviz-prg
 		      (list (concatenate 'string "-T" out-type)
 			    (concatenate 'string "-Gdpi=" dpi)
 			    "-o"
 			    (concatenate 'string fpath "/" fname ".gv" "." out-type)
 			    (concatenate 'string fpath "/" fname ".gv")))
-  (when invoke-viewer
-      (sb-ext:run-program viewer
-			  (list (concatenate 'string fpath "/" fname ".gv" "." out-type)))))
-
+  (when viewer
+    (sb-ext:run-program viewer
+			(list (concatenate 'string fpath "/" fname ".gv" "." out-type))))
+  g)
