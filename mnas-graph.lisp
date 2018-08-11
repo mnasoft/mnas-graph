@@ -289,19 +289,50 @@ graphviz-prg  - программа для генерации графа;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (export '*dot-path*)
-(defparameter *dot-path*
+(defparameter *dot-path* 
   (cond ((uiop/os:os-windows-p) "D:/PRG/msys32/mingw32/bin/dot.exe")
-	((uiop/os:os-unix-p) "/usr/bin/dot")))
+	((uiop/os:os-unix-p) "/usr/bin/dot"))
+  "dot       - filter for drawing directed graphs")
 
 (export '*neato-path*)
 (defparameter *neato-path*
   (cond ((uiop/os:os-windows-p) "d:/PRG/msys32/mingw32/bin/neato.exe")
-	((uiop/os:os-unix-p) "/usr/bin/neato")))
+	((uiop/os:os-unix-p) "/usr/bin/neato"))
+  "neato     - filter for drawing undirected graphs")
+
+(export '*twopi-path*)
+(defparameter *twopi-path*
+  (cond ((uiop/os:os-windows-p) "d:/PRG/msys32/mingw32/bin/twopi.exe")
+	((uiop/os:os-unix-p) "/usr/bin/twopi"))
+  "twopi     - filter for radial layouts of graphs")
+
+(export '*circo-path*)
+(defparameter *circo-path*
+  (cond ((uiop/os:os-windows-p) "d:/PRG/msys32/mingw32/bin/circo.exe")
+	((uiop/os:os-unix-p) "/usr/bin/circo"))
+  "circo     - filter for circular layout of graphs")
 
 (export '*fdp-path*)
 (defparameter *fdp-path*
   (cond ((uiop/os:os-windows-p) "d:/PRG/msys32/mingw32/bin/fdp.exe")
-	((uiop/os:os-unix-p) "/usr/bin/fdp")))
+	((uiop/os:os-unix-p) "/usr/bin/fdp"))
+  "fdp       - filter for drawing undirected graphs")
+
+(export '*sfdp-path*)
+(defparameter *sfdp-path*
+  (cond ((uiop/os:os-windows-p) "d:/PRG/msys32/mingw32/bin/sfdp.exe")
+	((uiop/os:os-unix-p) "/usr/bin/sfdp"))
+  "sfdp      - filter for drawing large undirected graphs")
+
+(export '*patchwork*)
+(defparameter *patchwork*
+  (cond ((uiop/os:os-windows-p) "d:/PRG/msys32/mingw32/bin/patchwork.exe")
+	((uiop/os:os-unix-p) "/usr/bin/patchwork"))
+  "patchwork - filter for tree maps")
+
+(defparameter *filter-for-drawing-lst* 
+  '(:dot :neato :twopi :circo :fdp :sfdp :patchwork))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (export '*viewer-path*)
