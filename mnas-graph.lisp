@@ -335,7 +335,7 @@ graphviz-prg  - программа для генерации графа;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(export '*viewer-path*)
+(export '*output-path*)
 (defparameter *output-path*
   (cond ((uiop/os:os-windows-p) "D:/PRG/msys32/home/namatv") 
 	((uiop/os:os-unix-p) "/home/namatv")))
@@ -343,8 +343,17 @@ graphviz-prg  - программа для генерации графа;
 (export '*viewer-path*)
 (defparameter *viewer-path*
   (cond
-    ((uiop/os:os-windows-p) "C:/Program Files/Adobe/Reader 11.0/Reader/AcroRd32.exe")
-    ((uiop/os:os-unix-p) "/usr/bin/atril"))) ;;;;"/usr/bin/okular"
+    ((uiop/os:os-windows-p)
+     (cond
+       ((probe-file "C:/Program Files (x86)/Adobe/Acrobat Reader DC/Reader/AcroRd32.exe") "C:/Program Files (x86)/Adobe/Acrobat Reader DC/Reader/AcroRd32.exe")
+       ((probe-file "C:/Program Files/Adobe/Reader 11.0/Reader/AcroRd32.exe") "C:/Program Files/Adobe/Reader 11.0/Reader/AcroRd32.exe")))
+    ((uiop/os:os-unix-p)
+     (cond
+       ((probe-file "/usr/bin/atril") "/usr/bin/atril")
+       ((probe-file "/usr/bin/atril") "/usr/bin/okular")))))
+
+
+(probe-file "C:/Program Files/Adobe/Reader 11.0/Reader/AcroRd32.exe") 
 
 (defmethod view-graph ((g graph) 
 		       &key
@@ -367,3 +376,16 @@ graphviz-prg  - программа для генерации графа;
     (sb-ext:run-program viewer
 			(list (concatenate 'string fpath "/" fname ".gv" "." out-type))))
   g)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(export 'make-random-graph)
+(defun make-random-graph (&key (node-max-number 100) (edges-number node-max-number))
+  (generate-graph
+   (let ((lst nil))
+     (dotimes (i edges-number lst)
+       (push (list
+	      (format nil "~A" (random node-max-number))
+	      (format nil "~A" (random node-max-number)))
+	     lst))))
+
