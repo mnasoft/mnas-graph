@@ -1,3 +1,4 @@
+
 ;;;; mnas-graph.lisp
 
 (in-package #:cl-user)
@@ -381,11 +382,12 @@ graphviz-prg  - программа для генерации графа;
 
 (export 'make-random-graph)
 (defun make-random-graph (&key (node-max-number 100) (edges-number node-max-number))
+  "Описание"
   (generate-graph
    (let ((lst nil))
      (dotimes (i edges-number lst)
        (push (list
 	      (format nil "~A" (random node-max-number))
 	      (format nil "~A" (random node-max-number)))
-	     lst))))
+	     lst)))))
 
