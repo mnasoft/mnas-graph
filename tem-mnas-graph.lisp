@@ -1,3 +1,4 @@
+(defparameter *code* '(
 
 ;;;; mnas-graph.lisp
 
@@ -388,3 +389,5 @@ graphviz-prg  - программа для генерации графа;
 	      (format nil "~A" (random node-max-number)))
 	     lst)))))
 
+
+))

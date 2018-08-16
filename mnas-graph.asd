@@ -8,4 +8,6 @@
   :serial t
   :depends-on (#:mnas-hash-table)
   :components ((:file "mnas-graph")
-	       (:file "demos")))
+	       (:file "demos")
+	       (:file "code-analizer")
+	       ))
