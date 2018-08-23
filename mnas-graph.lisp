@@ -4,7 +4,41 @@
 (in-package #:cl-user)
 
 (defpackage #:mnas-graph
-  (:use #:cl #:mnas-hash-table))
+  (:use #:cl #:mnas-hash-table)
+  (:export to-string
+	   insert-to
+	   remove-from
+	   inlet-nodes
+	   outlet-nodes
+	   inlet-ribs
+	   outlet-ribs
+	   graph-find-node-by-name
+	   graph-find-edge-by-name
+	   to-graphviz
+	   view-graph
+	   node
+	   node-name
+	   node-counter
+	   vertex
+	   vertex-number
+	   vertex-state
+	   edge
+	   edge-from
+	   edge-to
+	   graph
+	   graph-nodes
+	   graph-edges
+	   generate-graph
+	   *dot-path*
+	   *neato-path*
+	   *twopi-path*
+	   *circo-path*
+	   *fdp-path*
+	   *sfdp-path*
+	   *patchwork*
+	   *output-path*
+	   *viewer-path*
+	   make-random-graph))
 
 (declaim (optimize (space 0) (compilation-speed 0)  (speed 0) (safety 3) (debug 3)))
 
@@ -12,37 +46,26 @@
 
 ;;;; generics ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(export 'to-string)
 (defgeneric to-string   (obj)           (:documentation "Выполняет перобразование объекта в строку"))
 
-(export 'insert-to)
 (defgeneric insert-to   (obj container) (:documentation "Добавляет obj в container"))
 
-(export 'remove-from)
 (defgeneric remove-from (obj container) (:documentation "Добавляет obj в container"))
 
-(export 'inlet-nodes)
 (defgeneric inlet-nodes (container) (:documentation "Возвращает хеш-таблицу конечных вершин (вершин-стока)"))
 
-(export 'outlet-nodes)
 (defgeneric outlet-nodes (container) (:documentation "Возвращает хеш-таблицу начальных вершин (веншин-иточников)"))
 
-(export 'inlet-ribs)
 (defgeneric inlet-ribs (container node) (:documentation "Возвращает хеш-таблицу начальных ребер (итоков)"))
 
-(export 'outlet-ribs)
 (defgeneric outlet-ribs (container node) (:documentation "Возвращает хеш-таблицу конечных ребер (устий)"))
 
-(export 'graph-find-node-by-name)
 (defgeneric graph-find-node-by-name (container node-name) (:documentation "Поиск вершины по имени"))
 
-(export 'graph-find-edge-by-name)
 (defgeneric graph-find-edge-by-name (container edge-name) (:documentation "Поиск ребра по имени"))
 
-(export 'to-graphviz)
 (defgeneric to-graphviz (obj stream) (:documentation "Выполняет объекта obj в формат программы graphviz"))
 
-(export 'view-graph)
 (defgeneric view-graph (graph &key fpath fname graphviz-prg out-type dpi viewer)
   (:documentation "Выполняет визуализацию графа graph
 fpath         - каталог для вывода результатов работы программы;
@@ -55,73 +78,52 @@ graphviz-prg  - программа для генерации графа;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(export 'node)
-
 (defclass node ()
-  ((node    :accessor vertex-node    :initarg :node   :initform nil  :documentation "Имя вершины")
-   (counter :accessor vertex-counter                  :initform 0    :documentation "Количество, созданных вершин" :allocation :class))
+  ((name    :accessor node-name    :initarg :name   :initform nil  :documentation "Имя вершины")
+   (counter :accessor node-counter                  :initform 0    :documentation "Количество, созданных вершин" :allocation :class))
    (:documentation "Вершина графа"))
 
-(export 'vertex-node)
-(export 'vertex-counter)
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(export 'vertex)
 
 (defclass vertex (node)
   ((number  :accessor vertex-number  :initarg :number                :documentation "Номер вершины")
    (state   :accessor vertex-state   :initarg :state  :initform nil  :documentation "Ссылка на состояние вершины"))
    (:documentation "Вершина графа поддерживающая номер и состояние"))
 
-(export 'vertex-number)
-(export 'vertex-state)
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(export 'edge)
 
 (defclass edge ()
   ((start :accessor edge-from :initarg :from :initform nil :documentation "Начальная вершина ребра")
    (end   :accessor edge-to   :initarg :to   :initform nil :documentation "Конечная  вершина ребра"))
   (:documentation "Ребро графа"))
 
-
-(export 'edge-from)
-(export 'edge-to)
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(export 'graph)
 
 (defclass graph ()
   ((vertexes  :accessor graph-nodes :initform (make-hash-table) :documentation "Хешированная таблица вершин графа")
    (edges     :accessor graph-edges :initform (make-hash-table) :documentation "Хешированная таблица ребер графа"))
   (:documentation "Представляет граф, выражающий алгоритм изменения состояния агрегатов во времени"))
 
-(export 'graph-nodes)
-(export 'graph-edges)
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defmethod initialize-instance :around ((x node) &key node )
+(defmethod initialize-instance :around ((x node) &key name )
   (call-next-method x
-		    :node   node 
-		    :number (vertex-counter x))
-  (incf (vertex-counter x)))
+		    :name   name 
+		    :number (node-counter x))
+  (incf (node-counter x)))
 
 
-(defmethod initialize-instance :around ((x vertex) &key vertex-node vertex-state)
+(defmethod initialize-instance :around ((x vertex) &key node-name vertex-state)
   (call-next-method x
-		    :vertex-node   vertex-node 
-		    :vertex-number (vertex-counter x)
+		    :node-name   node-name 
+		    :vertex-number (node-counter x)
 		    :vertex-state  vertex-state)
-  (incf (vertex-counter x)))
+  (incf (node-counter x)))
 
 ;;;;;;;;;; print-object ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod print-object :after ((x node) s)
-	   (format s "~S(~S)~%" (vertex-counter x) (vertex-node x)))
+	   (format s "~S(~S)~%" (node-counter x) (node-name x)))
 
 (defmethod print-object :after ((x vertex) s)
 	   (format s "(~S ~S)~%"
@@ -149,9 +151,9 @@ graphviz-prg  - программа для генерации графа;
 
 (defmethod to-string (val) (format nil "~A" val))
 
-(defmethod to-string ((x node)) (format nil "~A" (vertex-node x)))
+(defmethod to-string ((x node)) (format nil "~A" (node-name x)))
 
-(defmethod to-string ((x vertex)) (format nil "~A:~A" (vertex-node x) (vertex-number x)))
+(defmethod to-string ((x vertex)) (format nil "~A:~A" (node-name x) (vertex-number x)))
 
 (defmethod to-string ((x edge))
   (format nil "~A->~A" (to-string (edge-from x)) (to-string (edge-to x))))
@@ -272,12 +274,10 @@ graphviz-prg  - программа для генерации графа;
 
 ;;;; generate-graph data ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(export 'generate-graph)
-
 (defun generate-graph (data)
   (let ((g (make-instance 'graph))
 	(vs (remove-duplicates (apply #'append data) :test #'equal)))
-    (mapc #'(lambda (v) (insert-to (make-instance 'node :node v) g)) vs)
+    (mapc #'(lambda (v) (insert-to (make-instance 'node :name v) g)) vs)
     (mapc #'(lambda (el)
 	      (insert-to
 	       (make-instance 'edge
@@ -289,43 +289,36 @@ graphviz-prg  - программа для генерации графа;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(export '*dot-path*)
 (defparameter *dot-path* 
   (cond ((uiop/os:os-windows-p) "D:/PRG/msys32/mingw32/bin/dot.exe")
 	((uiop/os:os-unix-p) "/usr/bin/dot"))
   "dot       - filter for drawing directed graphs")
 
-(export '*neato-path*)
 (defparameter *neato-path*
   (cond ((uiop/os:os-windows-p) "d:/PRG/msys32/mingw32/bin/neato.exe")
 	((uiop/os:os-unix-p) "/usr/bin/neato"))
   "neato     - filter for drawing undirected graphs")
 
-(export '*twopi-path*)
 (defparameter *twopi-path*
   (cond ((uiop/os:os-windows-p) "d:/PRG/msys32/mingw32/bin/twopi.exe")
 	((uiop/os:os-unix-p) "/usr/bin/twopi"))
   "twopi     - filter for radial layouts of graphs")
 
-(export '*circo-path*)
 (defparameter *circo-path*
   (cond ((uiop/os:os-windows-p) "d:/PRG/msys32/mingw32/bin/circo.exe")
 	((uiop/os:os-unix-p) "/usr/bin/circo"))
   "circo     - filter for circular layout of graphs")
 
-(export '*fdp-path*)
 (defparameter *fdp-path*
   (cond ((uiop/os:os-windows-p) "d:/PRG/msys32/mingw32/bin/fdp.exe")
 	((uiop/os:os-unix-p) "/usr/bin/fdp"))
   "fdp       - filter for drawing undirected graphs")
 
-(export '*sfdp-path*)
 (defparameter *sfdp-path*
   (cond ((uiop/os:os-windows-p) "d:/PRG/msys32/mingw32/bin/sfdp.exe")
 	((uiop/os:os-unix-p) "/usr/bin/sfdp"))
   "sfdp      - filter for drawing large undirected graphs")
 
-(export '*patchwork*)
 (defparameter *patchwork*
   (cond ((uiop/os:os-windows-p) "d:/PRG/msys32/mingw32/bin/patchwork.exe")
 	((uiop/os:os-unix-p) "/usr/bin/patchwork"))
@@ -336,12 +329,10 @@ graphviz-prg  - программа для генерации графа;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(export '*output-path*)
 (defparameter *output-path*
   (cond ((uiop/os:os-windows-p) "D:/PRG/msys32/home/namatv") 
 	((uiop/os:os-unix-p) "/home/namatv")))
 
-(export '*viewer-path*)
 (defparameter *viewer-path*
   (cond
     ((uiop/os:os-windows-p)
@@ -377,7 +368,6 @@ graphviz-prg  - программа для генерации графа;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(export 'make-random-graph)
 (defun make-random-graph (&key (node-max-number 100) (edges-number node-max-number))
   "Описание"
   (generate-graph
