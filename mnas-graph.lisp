@@ -1,44 +1,27 @@
-
 ;;;; mnas-graph.lisp
 
 (in-package #:cl-user)
 
 (defpackage #:mnas-graph
   (:use #:cl #:mnas-hash-table)
+  (:intern graphviz-prg)
   (:export to-string
-	   insert-to
-	   remove-from
-	   inlet-nodes
-	   outlet-nodes
-	   inlet-ribs
-	   outlet-ribs
-	   graph-find-node-by-name
-	   graph-find-edge-by-name
+	   insert-to    remove-from
+	   inlet-nodes  outlet-nodes
+	   inlet-ribs   outlet-ribs
+	   find-node    find-edge
 	   to-graphviz
 	   view-graph
-	   node
-	   node-name
-	   node-counter
-	   vertex
-	   vertex-number
-	   vertex-state
-	   edge
-	   edge-from
-	   edge-to
-	   graph
-	   graph-nodes
-	   graph-edges
-	   generate-graph
-	   *dot-path*
-	   *neato-path*
-	   *twopi-path*
-	   *circo-path*
-	   *fdp-path*
-	   *sfdp-path*
-	   *patchwork*
-	   *output-path*
-	   *viewer-path*
-	   make-random-graph))
+	   node         node-name node-counter
+	   edge         edge-from edge-to
+	   graph        graph-nodes  graph-edges
+	   )
+  (:export *filter-dot* *filter-neato* *filter-twopi* *filter-circo* *filter-fdp* *filter-sfdp* *filter-patchwork*)
+  (:export
+  *output-path*
+  *viewer-path*
+  make-graph make-random-graph)
+  (:export demo-1 demo-2 demo-3 demo-4 demo-5 ))
 
 (declaim (optimize (space 0) (compilation-speed 0)  (speed 0) (safety 3) (debug 3)))
 
@@ -46,25 +29,29 @@
 
 ;;;; generics ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defgeneric to-string   (obj)           (:documentation "Выполняет перобразование объекта в строку"))
+(defgeneric to-string    (obj)           (:documentation "Выполняет перобразование объекта в строку"))
 
-(defgeneric insert-to   (obj container) (:documentation "Добавляет obj в container"))
+(defgeneric insert-to    (obj container) (:documentation "Добавляет obj в container"))
 
-(defgeneric remove-from (obj container) (:documentation "Добавляет obj в container"))
+(defgeneric remove-from  (obj container) (:documentation "Добавляет obj в container"))
 
-(defgeneric inlet-nodes (container) (:documentation "Возвращает хеш-таблицу конечных вершин (вершин-стока)"))
+(defgeneric inlet-nodes  (container)     (:documentation "Возвращает хеш-таблицу конечных вершин (вершин-стока)"))
 
-(defgeneric outlet-nodes (container) (:documentation "Возвращает хеш-таблицу начальных вершин (веншин-иточников)"))
+(defgeneric outlet-nodes (container)     (:documentation "Возвращает хеш-таблицу начальных вершин (веншин-иточников)"))
 
-(defgeneric inlet-ribs (container node) (:documentation "Возвращает хеш-таблицу начальных ребер (итоков)"))
+(defgeneric inlet-ribs   (graph node)    (:documentation "Возвращает хеш-таблицу начальных ребер (итоков)"))
 
-(defgeneric outlet-ribs (container node) (:documentation "Возвращает хеш-таблицу конечных ребер (устий)"))
+(defgeneric outlet-ribs  (graph node)    (:documentation "Возвращает хеш-таблицу конечных ребер (устий)"))
 
-(defgeneric graph-find-node-by-name (container node-name) (:documentation "Поиск вершины по имени"))
+(defgeneric outlet-edges (graph node)    (:documentation "non"))
 
-(defgeneric graph-find-edge-by-name (container edge-name) (:documentation "Поиск ребра по имени"))
+(defgeneric inlet-edges  (graph node)    (:documentation "non"))
 
-(defgeneric to-graphviz (obj stream) (:documentation "Выполняет объекта obj в формат программы graphviz"))
+(defgeneric find-node    (graph node-name) (:documentation "Поиск вершины по имени"))
+
+(defgeneric find-edge    (graph edge-name) (:documentation "Поиск ребра по имени"))
+
+(defgeneric to-graphviz  (obj stream) (:documentation "Выполняет объекта obj в формат программы graphviz"))
 
 (defgeneric view-graph (graph &key fpath fname graphviz-prg out-type dpi viewer)
   (:documentation "Выполняет визуализацию графа graph
@@ -74,6 +61,13 @@ out-type      - тип выходного файла;
 dpi           - количество точек на дюйм;
 viewer        - программа для просмотра графа;
 graphviz-prg  - программа для генерации графа;
+ :filter-dot
+ :filter-neato
+ :filter-twopi
+ :filter-circo
+ :filter-fdp  
+ :filter-sfdp 
+ :filter-patchwork 
 "))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -108,12 +102,15 @@ graphviz-prg  - программа для генерации графа;
 
 ;;;;;;;;;; print-object ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(defmethod print-object        ((x node) s))
 (defmethod print-object :after ((x node) s)
-	   (format s "~S(~S)~%" (node-counter x) (node-name x)))
+	   (format s "~S"  (node-name x)))
 
+(defmethod print-object        ((x edge) s))
 (defmethod print-object :after ((x edge) s)
   (format s "(~S->~S)" (edge-from x) (edge-to x)))
 
+(defmethod print-object        ((x graph) s))
 (defmethod print-object :after ((x graph) s)
   (format s "(VC=~S RC=~S"
 	  (hash-table-count (graph-nodes x))
@@ -126,6 +123,28 @@ graphviz-prg  - программа для генерации графа;
     	(format s "~%(" )
 	(maphash #'(lambda (k v) (format s "~S~%" v) )(graph-edges x))
 	(format s ")"))
+  (format s ")"))
+
+(defmethod print-object :after ((x graph) s)
+  (format s "#GRAPH(VC=~S RC=~S"
+	  (hash-table-count (graph-nodes x))
+	  (hash-table-count (graph-edges x)))
+  (when (< 0 (hash-table-count (graph-nodes x)))
+    (format s ")~%(" )
+    (maphash
+     #'(lambda (key val)
+	 val
+	 (format s "~S " key))
+     (graph-nodes x))
+    (format s ")" ))
+  (when (< 0 (hash-table-count (graph-edges x)))
+    (format s "~%(" )
+    (maphash
+     #'(lambda (key val)
+	 val
+	 (format s "~S " key))
+     (graph-edges x))
+    (format s ")"))
   (format s ")"))
 
 ;;;;;;;;;; to-string ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -172,14 +191,14 @@ graphviz-prg  - программа для генерации графа;
   (clrhash (graph-edges g))
   g)
 
-
 ;;;;;;;;;;  inlet outlet ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod inlet-nodes ((g graph))
   (let ((rez-tbl(hash-table-copy (graph-nodes g))))
     (maphash
      #'(lambda (k v)
-	 (remhash (edge-to k) rez-tbl))
+	 v
+	 (remhash (edge-from k) rez-tbl))
      (graph-edges g))
     rez-tbl))
 
@@ -187,6 +206,7 @@ graphviz-prg  - программа для генерации графа;
   (let ((rez-tbl(hash-table-copy (graph-nodes g))))
     (maphash
      #'(lambda (k v)
+	 v
 	 (remhash (edge-to k) rez-tbl))
      (graph-edges g))
     rez-tbl))
@@ -195,6 +215,7 @@ graphviz-prg  - программа для генерации графа;
   (let ((rez-tbl(hash-table-copy(graph-edges g))))
     (maphash
      #'(lambda (key val)
+	 val
 	 (if (not(eq (edge-from key) v))
 	     (remhash  key rez-tbl)))
      (graph-edges g))
@@ -209,9 +230,9 @@ graphviz-prg  - программа для генерации графа;
      (graph-edges g))
     rez-tbl))
 
-;;;;;;;;;; graph-find-* ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;; find-* ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defmethod graph-find-node-by-name ((g graph) (str string))
+(defmethod find-node ((g graph) (str string))
   (let ((v-rez nil))
     (maphash #'(lambda (k v)
 	       (if (string= (to-string k) str)
@@ -220,7 +241,7 @@ graphviz-prg  - программа для генерации графа;
 	     (graph-nodes g))
     v-rez))
 
-(defmethod graph-find-edge-by-name ((g graph) (str string))
+(defmethod find-edge ((g graph) (str string))
   (let ((e-rez nil))
     (maphash #'(lambda (k v)
 	       (if (string= (to-string k) str)
@@ -251,60 +272,68 @@ graphviz-prg  - программа для генерации графа;
   (maphash #'(lambda (k v) (to-graphviz v s)) (graph-edges g))  
   (x-postamble :out s))
 
-;;;; generate-graph data ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; make-graph data ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defun generate-graph (data)
+(defun make-graph (edges &key nodes)
   (let ((g (make-instance 'graph))
-	(vs (remove-duplicates (apply #'append data) :test #'equal)))
+	(vs (remove-duplicates (append (apply #'append edges) nodes) :test #'equal)))
     (mapc #'(lambda (v) (insert-to (make-instance 'node :name v) g)) vs)
     (mapc #'(lambda (el)
 	      (insert-to
 	       (make-instance 'edge
-			      :from (graph-find-node-by-name g (first el))
-			      :to   (graph-find-node-by-name g (second el)))
+			      :from (find-node g (first el))
+			      :to   (find-node g (second el)))
 	       g))
-	  data)
+	  edges)
     g))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defparameter *dot-path* 
+(defparameter *filter-dot* 
   (cond ((uiop/os:os-windows-p) "D:/PRG/msys32/mingw32/bin/dot.exe")
 	((uiop/os:os-unix-p) "/usr/bin/dot"))
   "dot       - filter for drawing directed graphs")
 
-(defparameter *neato-path*
+(defparameter *filter-neato*
   (cond ((uiop/os:os-windows-p) "d:/PRG/msys32/mingw32/bin/neato.exe")
 	((uiop/os:os-unix-p) "/usr/bin/neato"))
   "neato     - filter for drawing undirected graphs")
 
-(defparameter *twopi-path*
+(defparameter *filter-twopi*
   (cond ((uiop/os:os-windows-p) "d:/PRG/msys32/mingw32/bin/twopi.exe")
 	((uiop/os:os-unix-p) "/usr/bin/twopi"))
   "twopi     - filter for radial layouts of graphs")
 
-(defparameter *circo-path*
+(defparameter *filter-circo*
   (cond ((uiop/os:os-windows-p) "d:/PRG/msys32/mingw32/bin/circo.exe")
 	((uiop/os:os-unix-p) "/usr/bin/circo"))
   "circo     - filter for circular layout of graphs")
 
-(defparameter *fdp-path*
+(defparameter *filter-fdp*
   (cond ((uiop/os:os-windows-p) "d:/PRG/msys32/mingw32/bin/fdp.exe")
 	((uiop/os:os-unix-p) "/usr/bin/fdp"))
   "fdp       - filter for drawing undirected graphs")
 
-(defparameter *sfdp-path*
+(defparameter *filter-sfdp*
   (cond ((uiop/os:os-windows-p) "d:/PRG/msys32/mingw32/bin/sfdp.exe")
 	((uiop/os:os-unix-p) "/usr/bin/sfdp"))
   "sfdp      - filter for drawing large undirected graphs")
 
-(defparameter *patchwork*
+(defparameter *filter-patchwork*
   (cond ((uiop/os:os-windows-p) "d:/PRG/msys32/mingw32/bin/patchwork.exe")
 	((uiop/os:os-unix-p) "/usr/bin/patchwork"))
   "patchwork - filter for tree maps")
 
-(defparameter *filter-for-drawing-lst* 
-  '(:dot :neato :twopi :circo :fdp :sfdp :patchwork))
+(defun graphviz-prg (key)
+  (when (symbolp key)
+    (ecase key
+      (:filter-dot       *filter-dot*      )
+      (:filter-neato     *filter-neato*    )
+      (:filter-twopi     *filter-twopi*    )
+      (:filter-circo     *filter-circo*    )
+      (:filter-fdp       *filter-fdp*      )
+      (:filter-sfdp      *filter-sfdp*     )
+      (:filter-patchwork *filter-patchwork*))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -327,14 +356,14 @@ graphviz-prg  - программа для генерации графа;
 		       &key
 			 (fpath *output-path*)
 			 (fname "graph")
-			 (graphviz-prg *dot-path*)
+			 (graphviz-prg :filter-dot)
 			 (out-type "pdf")
 			 (dpi "300")
 			 (viewer *viewer-path*))
   (with-open-file (out (concatenate 'string fpath "/" fname ".gv")
 		       :direction :output :if-exists :supersede :external-format :UTF8)
     (to-graphviz g out))
-  (sb-ext:run-program graphviz-prg
+  (sb-ext:run-program (graphviz-prg graphviz-prg)
 		      (list (concatenate 'string "-T" out-type)
 			    (concatenate 'string "-Gdpi=" dpi)
 			    "-o"
@@ -349,7 +378,7 @@ graphviz-prg  - программа для генерации графа;
 
 (defun make-random-graph (&key (node-max-number 100) (edges-number node-max-number))
   "Описание"
-  (generate-graph
+  (make-graph
    (let ((lst nil))
      (dotimes (i edges-number lst)
        (push (list

@@ -5,7 +5,7 @@
 (export 'demo-1)
 (defun demo-1 () 
   (view-graph
-   (generate-graph
+   (make-graph
     '(("a" "b") ("a" "c") ("a" "d") ("b" "c") ("c" "d")))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -13,46 +13,46 @@
 (export 'demo-2)
 (defun demo-2 () 
   (view-graph
-   (generate-graph
-    '(("a" "b") ("b" "c") ("c" "a"))) :graphviz-prg *circo-path*)
+   (make-graph
+    '(("a" "b") ("b" "c") ("c" "a"))) :graphviz-prg :filter-circo)
   (view-graph
-   (generate-graph
-    '(("a" "b") ("b" "c") ("c" "d") ("d" "a"))) :graphviz-prg *circo-path*)
+   (make-graph
+    '(("a" "b") ("b" "c") ("c" "d") ("d" "a"))) :graphviz-prg :filter-circo)
   (view-graph
-   (generate-graph
-    '(("a" "b") ("b" "c") ("c" "d") ("d" "e") ("e" "a"))) :graphviz-prg *circo-path*)
+   (make-graph
+    '(("a" "b") ("b" "c") ("c" "d") ("d" "e") ("e" "a"))) :graphviz-prg :filter-circo)
   (view-graph
-   (generate-graph
-    '(("a" "b") ("b" "c") ("c" "d") ("d" "e") ("e" "f") ("f" "a"))) :graphviz-prg *circo-path*)
+   (make-graph
+    '(("a" "b") ("b" "c") ("c" "d") ("d" "e") ("e" "f") ("f" "a"))) :graphviz-prg :filter-circo)
   (view-graph
-   (generate-graph
-    '(("a" "b") ("b" "c") ("c" "d") ("d" "e") ("e" "f") ("f" "g") ("g" "a"))) :graphviz-prg *circo-path*)
+   (make-graph
+    '(("a" "b") ("b" "c") ("c" "d") ("d" "e") ("e" "f") ("f" "g") ("g" "a"))) :graphviz-prg :filter-circo)
   (view-graph
-   (generate-graph
-    '(("a" "b") ("b" "c") ("c" "d") ("d" "e") ("e" "f") ("f" "g") ("g" "h") ("h" "a"))) :graphviz-prg *circo-path*))
+   (make-graph
+    '(("a" "b") ("b" "c") ("c" "d") ("d" "e") ("e" "f") ("f" "g") ("g" "h") ("h" "a"))) :graphviz-prg :filter-circo))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (export 'demo-3)
 (defun demo-3 () 
   (view-graph
-   (generate-graph
+   (make-graph
     '(("a" "b") ("b" "c") ("c" "a")
-      ("d" "a") ("b" "d") ("c" "d") )) :graphviz-prg *fdp-path*)
+      ("d" "a") ("b" "d") ("c" "d") )) :graphviz-prg :filter-fdp)
   (view-graph
-   (generate-graph
+   (make-graph
     '(("a" "b") ("b" "c") ("c" "d") ("d" "a")
       ("a" "A") ("b" "B") ("c" "C") ("d" "D")
       ("A" "B") ("B" "C") ("C" "D") ("D" "A")
-      )) :graphviz-prg *neato-path*)
+      )) :graphviz-prg :filter-neato)
   (view-graph
-   (generate-graph
+   (make-graph
     '(("a" "b") ("b" "c") ("c" "d") ("d" "a")
       ("p" "a") ("p" "b") ("p" "c") ("p" "d")
       ("a" "r") ("b" "r") ("c" "r") ("d" "r")
-      )) :graphviz-prg *fdp-path*)
+      )) :graphviz-prg :filter-fdp)
   (view-graph
-   (generate-graph
+   (make-graph
     '(("a" "b") ("b" "c") ("c" "d") ("d" "e") ("e" "a")
       ("a" "a1") ("b" "b1") ("c" "c1") ("d" "d1") ("e" "e1")
 
@@ -61,12 +61,12 @@
     
       ("A" "A1") ("B" "B1") ("C" "C1") ("D" "D1") ("E" "E1")
       ("A" "B") ("B" "C") ("C" "D") ("D" "E") ("E" "A")
-      )) :graphviz-prg *fdp-path*))
+      )) :graphviz-prg :filter-fdp))
 
 (export 'demo-4)
 (defun demo-4 () 
   (view-graph
-   (generate-graph
+   (make-graph
     '((#1="Ванцовский" #2="Коротич")
       (#2#             #4="Головерда")
       (#1#             #3="Петельчиц")
@@ -81,27 +81,29 @@
       (#2#             "Матвеев")
       (#4#             "Иванов")
       (#2#             "Давлеткужин")
-      (#4#             "Гришина")))))
+      (#4#             "Гришина")))
+   :graphviz-prg :filter-dot))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (export 'demo-5)
 (defun demo-5 ()
-  (view-graph (make-random-graph :node-max-number 10    :edges-number 6)   :graphviz-prg *neato-path*)
-  (view-graph (make-random-graph :node-max-number 16    :edges-number 10)  :graphviz-prg *neato-path*)
-  (view-graph (make-random-graph :node-max-number 25    :edges-number 16)  :graphviz-prg *neato-path*)
-  (view-graph (make-random-graph :node-max-number 40    :edges-number 25)  :graphviz-prg *neato-path*)
-  (view-graph (make-random-graph :node-max-number 63    :edges-number 40)  :graphviz-prg *neato-path*)
-  (view-graph (make-random-graph :node-max-number 100   :edges-number 63)  :graphviz-prg *neato-path*)
-  (view-graph (make-random-graph :node-max-number 160   :edges-number 100) :graphviz-prg *neato-path*)
-  (view-graph (make-random-graph :node-max-number 250   :edges-number 160) :graphviz-prg *neato-path*)
-  (view-graph (make-random-graph :node-max-number 400   :edges-number 250) :graphviz-prg *neato-path*)
-  (view-graph (make-random-graph :node-max-number 630   :edges-number 400) :graphviz-prg *neato-path*)
-  (view-graph (make-random-graph :node-max-number 1000  :edges-number 630) :graphviz-prg *neato-path*))
+  (view-graph (make-random-graph :node-max-number   10 :edges-number   6) :graphviz-prg :filter-neato)
+  (view-graph (make-random-graph :node-max-number   16 :edges-number  10) :graphviz-prg :filter-neato)
+  (view-graph (make-random-graph :node-max-number   25 :edges-number  16) :graphviz-prg :filter-neato)
+  (view-graph (make-random-graph :node-max-number   40 :edges-number  25) :graphviz-prg :filter-neato)
+  (view-graph (make-random-graph :node-max-number   63 :edges-number  40) :graphviz-prg :filter-neato)
+  (view-graph (make-random-graph :node-max-number  100 :edges-number  63) :graphviz-prg :filter-neato)
+  (view-graph (make-random-graph :node-max-number  160 :edges-number 100) :graphviz-prg :filter-neato)
+  (view-graph (make-random-graph :node-max-number  250 :edges-number 160) :graphviz-prg :filter-neato)
+  (view-graph (make-random-graph :node-max-number  400 :edges-number 250) :graphviz-prg :filter-neato)
+  (view-graph (make-random-graph :node-max-number  630 :edges-number 400) :graphviz-prg :filter-neato)
+  (view-graph (make-random-graph :node-max-number 1000 :edges-number 630) :graphviz-prg :filter-neato))
 
-(format t "Примеры сипользования:
+(format t "Примеры иcпользования:
 (mnas-graph:demo-1)
 (mnas-graph:demo-2)
 (mnas-graph:demo-3)
 (mnas-graph:demo-4)
-(mnas-graph:demo-5)")
+(mnas-graph:demo-5)
+")

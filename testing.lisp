@@ -4,6 +4,13 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;;;
+
+(:export 
+	   vertex
+	   vertex-number
+	   vertex-state)
+
 (defclass vertex (node)
   ((number  :accessor vertex-number  :initarg :number                :documentation "Номер вершины")
    (state   :accessor vertex-state   :initarg :state  :initform nil  :documentation "Ссылка на состояние вершины"))
