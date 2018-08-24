@@ -85,13 +85,6 @@ graphviz-prg  - программа для генерации графа;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defclass vertex (node)
-  ((number  :accessor vertex-number  :initarg :number                :documentation "Номер вершины")
-   (state   :accessor vertex-state   :initarg :state  :initform nil  :documentation "Ссылка на состояние вершины"))
-   (:documentation "Вершина графа поддерживающая номер и состояние"))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (defclass edge ()
   ((start :accessor edge-from :initarg :from :initform nil :documentation "Начальная вершина ребра")
    (end   :accessor edge-to   :initarg :to   :initform nil :documentation "Конечная  вершина ребра"))
@@ -113,22 +106,10 @@ graphviz-prg  - программа для генерации графа;
   (incf (node-counter x)))
 
 
-(defmethod initialize-instance :around ((x vertex) &key node-name vertex-state)
-  (call-next-method x
-		    :node-name   node-name 
-		    :vertex-number (node-counter x)
-		    :vertex-state  vertex-state)
-  (incf (node-counter x)))
-
 ;;;;;;;;;; print-object ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod print-object :after ((x node) s)
 	   (format s "~S(~S)~%" (node-counter x) (node-name x)))
-
-(defmethod print-object :after ((x vertex) s)
-	   (format s "(~S ~S)~%"
-		   (vertex-number x)
-		   (vertex-state  x)))
 
 (defmethod print-object :after ((x edge) s)
   (format s "(~S->~S)" (edge-from x) (edge-to x)))
@@ -152,8 +133,6 @@ graphviz-prg  - программа для генерации графа;
 (defmethod to-string (val) (format nil "~A" val))
 
 (defmethod to-string ((x node)) (format nil "~A" (node-name x)))
-
-(defmethod to-string ((x vertex)) (format nil "~A:~A" (node-name x) (vertex-number x)))
 
 (defmethod to-string ((x edge))
   (format nil "~A->~A" (to-string (edge-from x)) (to-string (edge-to x))))
