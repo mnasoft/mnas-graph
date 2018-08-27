@@ -1,9 +1,10 @@
 # mnas-graph
-### _Your Name <your.name@example.com>_
+### _Nick Matvyeyev <mnasoft@gmail.com>_
 
-This is a project to do ... something.
+Этот проект определяет базовые функции для создания и
+отображения через graphviz структуры данных типа graph (граф).
 
-## License
 
-Specify license here
+## License GNU GNL v3.0
+
 
