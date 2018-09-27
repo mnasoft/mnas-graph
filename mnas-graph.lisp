@@ -56,8 +56,8 @@ graphviz-prg  - программа для генерации графа;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defclass graph ()
-  ((vertexes  :accessor graph-nodes :initform (make-hash-table) :documentation "Хешированная таблица вершин графа")
-   (edges     :accessor graph-edges :initform (make-hash-table) :documentation "Хешированная таблица ребер графа"))
+  ((nodes :accessor graph-nodes :initform (make-hash-table) :documentation "Хешированная таблица вершин графа")
+   (edges :accessor graph-edges :initform (make-hash-table) :documentation "Хешированная таблица ребер графа"))
   (:documentation "Представляет граф, выражающий алгоритм изменения состояния агрегатов во времени"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
