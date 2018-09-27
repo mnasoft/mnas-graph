@@ -296,10 +296,12 @@ graphviz-prg  - программа для генерации графа;
        ((probe-file "/usr/bin/atril") "/usr/bin/atril")
        ((probe-file "/usr/bin/atril") "/usr/bin/okular")))))
 
+(defparameter *graph-count* -1)
+
 (defmethod view-graph ((g graph) 
 		       &key
 			 (fpath *output-path*)
-			 (fname "graph")
+			 (fname  (format nil "graph-~6,'0D" (incf *graph-count*)))
 			 (graphviz-prg :filter-dot)
 			 (out-type "pdf")
 			 (dpi "300")
@@ -315,7 +317,8 @@ graphviz-prg  - программа для генерации графа;
 			    (concatenate 'string fpath "/" fname ".gv")))
   (when viewer
     (sb-ext:run-program viewer
-			(list (concatenate 'string fpath "/" fname ".gv" "." out-type))))
+			(list (concatenate 'string fpath "/" fname ".gv" "." out-type))
+			:wait nil))
   g)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
