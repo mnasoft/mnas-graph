@@ -37,5 +37,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(defparameter *pv-svg* (make-instance 'svg-printer-viewer))
 
+(defparameter *pv-pdf* (make-instance 'pdf-printer-viewer))
 
