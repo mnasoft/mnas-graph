@@ -1,0 +1,82 @@
+#+OPTIONS: ':nil *:t -:t ::t <:t H:3 \n:nil ^:t arch:headline
+#+OPTIONS: author:t broken-links:nil c:nil creator:nil
+#+OPTIONS: d:(not "LOGBOOK") date:t e:t email:nil f:t inline:t num:t
+#+OPTIONS: p:nil pri:nil prop:nil stat:t tags:t tasks:t tex:t
+#+OPTIONS: timestamp:t title:t toc:t todo:t |:t
+#+TITLE: Mnas-Graph
+#+DATE: <2019-03-30 Сб>
+#+AUTHOR: Nick Matvyeyev 
+#+EMAIL: mnasoft@gmail.com
+#+LANGUAGE: ru
+#+SELECT_TAGS: export
+#+EXCLUDE_TAGS: noexport
+#+CREATOR: Emacs 26.1 (Org mode 9.1.9)
+
+#+INCLUDE: "~/org/header/header.org"
+
+Этот проект определяет базовые функции для создания и отображения через =graphviz= структуры данных типа =Graph= (граф).
+
+* Классы проекта
+#+name: classes
+#+BEGIN_SRC lisp :exports none :var fname="classes" :var fpath=pwd :var out-type="jpg" 
+   (mnas-graph:view-graph
+    (mnas-package:package-class-graph :mnas-graph)
+    :out-type out-type
+    :viewer nil
+    :fpath (concatenate 'string fpath "/img")
+    :fname fname
+    :dpi  "100"
+    )
+  (concatenate 'string "./img" "/" fname ".gv." out-type)
+#+END_SRC
+
+#+name: classes-img
+#+BEGIN_SRC shell :results file :exports results :var fl=classes
+echo -n ${fl}
+#+END_SRC
+#+CAPTION: Классы проекта
+#+LABEL: classes-img
+#+ATTR_LATEX: :width 1.0\textwidth
+#+RESULTS: classes-img
+[[file:./img/classes.gv.jpg]]
+
+
+* Shell Vars :noexport:
+
+#+name: pwd
+#+BEGIN_SRC shell :exports none
+mkdir -p `pwd`/img;
+pwd
+#+END_SRC
+
+#+RESULTS: pwd
+: /home/namatv/quicklisp/local-projects/mnas/mnas-graph
+
+* Экспортируемые глобальные переменные 
+
+* Функции
+
+* Граф вызовов
+
+#+name: call-graph 
+#+BEGIN_SRC lisp :exports none :var fname="cg" :var fpath=pwd :var out-type="jpg" 
+    (mnas-graph:view-graph
+     (mnas-package:make-call-praph :mnas-graph)
+     :out-type out-type
+     :viewer nil
+     :fpath (concatenate 'string fpath "/img")
+     :fname fname
+     :dpi  "100"
+     )
+   (concatenate 'string "./img" "/" fname ".gv." out-type)
+#+END_SRC
+
+#+name: call-graph-img
+#+BEGIN_SRC shell :results file :exports results :var fl=call-graph 
+echo -n ${fl}
+#+END_SRC
+#+CAPTION: Граф вызовов
+#+LABEL: call-graph-img
+#+ATTR_LATEX: :width 1.0\textwidth
+#+RESULTS: call-graph-img
+[[file:./img/cg.gv.jpg]]

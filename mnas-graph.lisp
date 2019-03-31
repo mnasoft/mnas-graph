@@ -386,7 +386,8 @@ graphviz-prg  - программа для генерации графа;
 
 (defparameter *output-path*
   (cond ((uiop/os:os-windows-p) "D:/PRG/msys32/home/namatv") 
-	((uiop/os:os-unix-p) "/home/namatv")))
+	((uiop/os:os-unix-p) (namestring (probe-file "~/."))))
+  "Каталог для вывода файлов Графа по-умолчанию.")
 
 (defparameter *viewer-path*
   (cond
@@ -396,8 +397,11 @@ graphviz-prg  - программа для генерации графа;
        ((probe-file "C:/Program Files/Adobe/Reader 11.0/Reader/AcroRd32.exe") "C:/Program Files/Adobe/Reader 11.0/Reader/AcroRd32.exe")))
     ((uiop/os:os-unix-p)
      (cond
+       ((probe-file "/usr/bin/xdg-open") "/usr/bin/xdg-open")
        ((probe-file "/usr/bin/atril") "/usr/bin/atril")
-       ((probe-file "/usr/bin/atril") "/usr/bin/okular")))))
+       ((probe-file "/usr/bin/atril") "/usr/bin/okular")
+       )))
+  "Программа просмотрщик Графа")
 
 (defparameter *graph-count* -1)
 
