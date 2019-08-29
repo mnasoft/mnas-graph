@@ -52,3 +52,5 @@
 	   mnas-graph::demo-3
 	   mnas-graph::demo-4
 	   mnas-graph::demo-5 ))
+
+;;;; (declaim (optimize (compilation-speed 0) (debug 3) (safety 0) (space 0) (speed 0)))
