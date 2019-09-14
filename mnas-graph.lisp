@@ -337,37 +337,62 @@ graphviz-prg  - программа для генерации графа;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defparameter *filter-dot* 
-  (cond ((uiop/os:os-windows-p) "D:/PRG/msys32/mingw32/bin/dot.exe")
+  (cond ((and (uiop/os:os-windows-p)
+	      (string= (machine-instance)
+		       "MNASOFT-01")) "D:/PRG/msys32/mingw64/bin/dot.exe")
+	((and (uiop/os:os-windows-p)) "D:/PRG/msys32/mingw32/bin/dot.exe")
 	((uiop/os:os-unix-p) "/usr/bin/dot"))
   "dot       - filter for drawing directed graphs")
 
 (defparameter *filter-neato*
-  (cond ((uiop/os:os-windows-p) "d:/PRG/msys32/mingw32/bin/neato.exe")
+  (cond ((and (uiop/os:os-windows-p)
+	      (string= (machine-instance)
+		       "MNASOFT-01")) "D:/PRG/msys32/mingw64/bin/neato.exe")
+	((uiop/os:os-windows-p) "d:/PRG/msys32/mingw32/bin/neato.exe")
 	((uiop/os:os-unix-p) "/usr/bin/neato"))
   "neato     - filter for drawing undirected graphs")
 
 (defparameter *filter-twopi*
-  (cond ((uiop/os:os-windows-p) "d:/PRG/msys32/mingw32/bin/twopi.exe")
+  (cond ((and (uiop/os:os-windows-p)
+	      (string= (machine-instance)
+		       "MNASOFT-01")) "D:/PRG/msys32/mingw64/bin/twopi.exe")
+	((uiop/os:os-windows-p) "d:/PRG/msys32/mingw32/bin/twopi.exe")
 	((uiop/os:os-unix-p) "/usr/bin/twopi"))
   "twopi     - filter for radial layouts of graphs")
 
 (defparameter *filter-circo*
-  (cond ((uiop/os:os-windows-p) "d:/PRG/msys32/mingw32/bin/circo.exe")
-	((uiop/os:os-unix-p) "/usr/bin/circo"))
+  (cond
+    ((and (uiop/os:os-windows-p)
+	  (string= (machine-instance)
+		   "MNASOFT-01")) "D:/PRG/msys32/mingw64/bin/circo.exe")
+    ((uiop/os:os-windows-p) "d:/PRG/msys32/mingw32/bin/circo.exe")
+    ((uiop/os:os-unix-p) "/usr/bin/circo"))
   "circo     - filter for circular layout of graphs")
 
 (defparameter *filter-fdp*
-  (cond ((uiop/os:os-windows-p) "d:/PRG/msys32/mingw32/bin/fdp.exe")
-	((uiop/os:os-unix-p) "/usr/bin/fdp"))
+  (cond
+    ((and (uiop/os:os-windows-p)
+	  (string= (machine-instance)
+		   "MNASOFT-01")) "D:/PRG/msys32/mingw64/bin/fdp.exe")
+    ((uiop/os:os-windows-p) "d:/PRG/msys32/mingw32/bin/fdp.exe")
+    ((uiop/os:os-unix-p) "/usr/bin/fdp"))
   "fdp       - filter for drawing undirected graphs")
 
 (defparameter *filter-sfdp*
-  (cond ((uiop/os:os-windows-p) "d:/PRG/msys32/mingw32/bin/sfdp.exe")
-	((uiop/os:os-unix-p) "/usr/bin/sfdp"))
+  (cond
+    ((and (uiop/os:os-windows-p)
+	  (string= (machine-instance)
+		   "MNASOFT-01")) "D:/PRG/msys32/mingw64/bin/sfdp.exe")
+    ((uiop/os:os-windows-p) "d:/PRG/msys32/mingw32/bin/sfdp.exe")
+    ((uiop/os:os-unix-p) "/usr/bin/sfdp"))
   "sfdp      - filter for drawing large undirected graphs")
 
 (defparameter *filter-patchwork*
-  (cond ((uiop/os:os-windows-p) "d:/PRG/msys32/mingw32/bin/patchwork.exe")
+  (cond
+        ((and (uiop/os:os-windows-p)
+	  (string= (machine-instance)
+		   "MNASOFT-01")) "D:/PRG/msys32/mingw64/bin/patchwork.exe")
+	((uiop/os:os-windows-p) "D:/PRG/msys32/mingw32/bin/patchwork.exe")
 	((uiop/os:os-unix-p) "/usr/bin/patchwork"))
   "patchwork - filter for tree maps")
 
