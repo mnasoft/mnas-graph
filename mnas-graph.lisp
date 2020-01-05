@@ -348,7 +348,7 @@ graphviz-prg  - программа для генерации графа;
     (mapc #'(lambda (v) (insert-to (make-instance '<node> :name v) g)) vs)
     (mapc #'(lambda (el)
 	      (insert-to
-	       (make-instance 'edge
+	       (make-instance '<edge>
 			      :from (find-node g (first el))
 			      :to   (find-node g (second el)))
 	       g))
