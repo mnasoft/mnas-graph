@@ -11,7 +11,7 @@
 	   vertex-number
 	   vertex-state)
 
-(defclass vertex (node)
+(defclass vertex (<node>)
   ((number  :accessor vertex-number  :initarg :number                :documentation "Номер вершины")
    (state   :accessor vertex-state   :initarg :state  :initform nil  :documentation "Ссылка на состояние вершины"))
   (:documentation "Вершина графа поддерживающая номер и состояние"))
@@ -37,7 +37,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defparameter *pv-svg* (make-instance 'svg-printer-viewer))
+(defparameter *pv-svg* (make-instance '<svg-printer-viewer>))
 
-(defparameter *pv-pdf* (make-instance 'pdf-printer-viewer))
+(defparameter *pv-pdf* (make-instance '<pdf-printer-viewer>))
 

@@ -21,7 +21,7 @@
   :nodes
   '("я1" "α1")))
 
-(make-instance 'node :name "A")
+(make-instance '<node> :name "A")
 
 (progn
   (defparameter *g* (make-random-graph :node-max-number 100))

@@ -4,6 +4,27 @@
 
 (in-package #:mnas-graph)
 
+(defparameter *graph-count* -1)
+
+(defparameter *output-path*
+  (cond ((uiop/os:os-windows-p) "D:/PRG/msys32/home/namatv") 
+	((uiop/os:os-unix-p) (namestring (probe-file "~/."))))
+  "Каталог для вывода файлов Графа по-умолчанию.")
+
+(defparameter *viewer-path*
+  (cond
+    ((uiop/os:os-windows-p)
+     (cond
+       ((probe-file "C:/Program Files (x86)/Adobe/Acrobat Reader DC/Reader/AcroRd32.exe") "C:/Program Files (x86)/Adobe/Acrobat Reader DC/Reader/AcroRd32.exe")
+       ((probe-file "C:/Program Files/Adobe/Reader 11.0/Reader/AcroRd32.exe") "C:/Program Files/Adobe/Reader 11.0/Reader/AcroRd32.exe")))
+    ((uiop/os:os-unix-p)
+     (cond
+       ((probe-file "/usr/bin/xdg-open") "/usr/bin/xdg-open")
+       ((probe-file "/usr/bin/atril") "/usr/bin/atril")
+       ((probe-file "/usr/bin/atril") "/usr/bin/okular")
+       )))
+  "Программа просмотрщик Графа")
+
 ;;;; generics ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defgeneric to-string    (obj)             (:documentation "Выполняет перобразование объекта в строку"))
@@ -40,7 +61,7 @@ graphviz-prg  - программа для генерации графа;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defclass node ()
+(defclass <node> ()
   ((name    :accessor node-name    :initarg :name  :initform nil :documentation "Имя вершины")
    (owner   :accessor node-owner   :initarg :owner :initform nil :documentation "Владелец вершины объект типа graph")
    (counter :accessor node-counter                 :initform 0   :documentation "Количество, созданных вершин" :allocation :class))
@@ -48,21 +69,21 @@ graphviz-prg  - программа для генерации графа;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defclass edge ()
+(defclass <edge> ()
   ((start :accessor edge-from :initarg :from :initform nil :documentation "Начальная вершина ребра")
    (end   :accessor edge-to   :initarg :to   :initform nil :documentation "Конечная  вершина ребра"))
   (:documentation "Ребро графа"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defclass graph ()
+(defclass <graph> ()
   ((nodes :accessor graph-nodes :initform (make-hash-table) :documentation "Хешированная таблица вершин графа")
    (edges :accessor graph-edges :initform (make-hash-table) :documentation "Хешированная таблица ребер графа"))
   (:documentation "Представляет граф, выражающий алгоритм изменения состояния агрегатов во времени"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defmethod initialize-instance :around ((x node) &key name (owner nil))
+(defmethod initialize-instance :around ((x <node>) &key name (owner nil))
   (call-next-method x
 		    :name   name
     		    :owner  owner 
@@ -71,16 +92,16 @@ graphviz-prg  - программа для генерации графа;
 
 ;;;;;;;;;; print-object ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defmethod print-object        ((x node) s))
-(defmethod print-object :after ((x node) s)
+(defmethod print-object        ((x <node>) s))
+(defmethod print-object :after ((x <node>) s)
 	   (format s "~S:~S"   (not(null (node-owner x))) (node-name x)))
 
-(defmethod print-object        ((x edge) s))
-(defmethod print-object :after ((x edge) s)
+(defmethod print-object        ((x <edge>) s))
+(defmethod print-object :after ((x <edge>) s)
   (format s "(~S->~S)" (edge-from x) (edge-to x)))
 
-(defmethod print-object        ((x graph) s))
-(defmethod print-object :after ((x graph) s)
+(defmethod print-object        ((x <graph>) s))
+(defmethod print-object :after ((x <graph>) s)
   (format s "#GRAPH(VC=~S RC=~S"
 	  (hash-table-count (graph-nodes x))
 	  (hash-table-count (graph-edges x)))
@@ -104,7 +125,7 @@ graphviz-prg  - программа для генерации графа;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defclass printer-viewer ()
+(defclass <printer-viewer> ()
   ((graphviz-prg :accessor printer-viewer-graphviz-prg :initarg :graphviz-prg :initform :filter-dot
 		 :documentation "Программа для вывода")
    (dpi          :accessor printer-viewer-dpi          :initarg :dpi          :initform "300"
@@ -115,7 +136,7 @@ graphviz-prg  - программа для генерации графа;
 		 :documentation "Формат файла для вывода"))
   (:documentation "Принтер-просмотрщик"))
 
-(defmethod print-object :after ((pv printer-viewer) s)
+(defmethod print-object :after ((pv <printer-viewer>) s)
   (format s "
  graphviz-prg = ~S
  dpi          = ~S
@@ -127,10 +148,10 @@ graphviz-prg  - программа для генерации графа;
 	  (printer-viewer-out-type  pv)
 	  ))
 
-(defclass pdf-printer-viewer (printer-viewer) ())
+(defclass <pdf-printer-viewer> (<printer-viewer>) ())
 
 (defmethod initialize-instance
-    ((pv pdf-printer-viewer)
+    ((pv <pdf-printer-viewer>)
      &key
        (graphviz-prg :filter-dot)
        (dpi "300")
@@ -152,10 +173,10 @@ graphviz-prg  - программа для генерации графа;
   (setf (printer-viewer-executable   pv) executable)
   (setf (printer-viewer-out-type     pv) out-type))
 
-(defclass svg-printer-viewer (printer-viewer) ())
+(defclass <svg-printer-viewer> (<printer-viewer>) ())
 
 (defmethod initialize-instance
-    ((pv svg-printer-viewer)
+    ((pv <svg-printer-viewer>)
      &key
        (graphviz-prg :filter-dot)
        (dpi "300")
@@ -182,7 +203,7 @@ graphviz-prg  - программа для генерации графа;
 ; (printer-viewer-executable   pv)
 ; (printer-viewer-out-type     pv)
 
-(defmethod view-graph-new ((g graph) (pv printer-viewer)
+(defmethod view-graph-new ((g <graph>) (pv <printer-viewer>)
 			   &key
 			     (fpath *output-path*)
 			     (fname  (format nil "graph-~6,'0D" (incf *graph-count*)))
@@ -209,19 +230,19 @@ graphviz-prg  - программа для генерации графа;
 
 (defmethod to-string (val) (format nil "~A" val))
 
-(defmethod to-string ((x node)) (format nil "~A" (node-name x)))
+(defmethod to-string ((x <node>)) (format nil "~A" (node-name x)))
 
-(defmethod to-string ((x edge))
+(defmethod to-string ((x <edge>))
   (format nil "~A->~A" (to-string (edge-from x)) (to-string (edge-to x))))
 
 ;;;;;;;;;; insert-to ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defmethod insert-to ((n node) (g graph))
+(defmethod insert-to ((n <node>) (g <graph>))
   (setf (gethash n (graph-nodes g)) n
 	(node-owner n) g)
   n)
 
-(defmethod insert-to ((e edge) (g graph))
+(defmethod insert-to ((e <edge>) (g <graph>))
   (setf (gethash e (graph-edges g)) e)
   (setf (node-owner (edge-from e)) g)
   (setf (node-owner (edge-to   e)) g)
@@ -231,7 +252,7 @@ graphviz-prg  - программа для генерации графа;
 
 ;;;;;;;;;; remove-from ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defmethod remove-from ((n node) (g graph ))
+(defmethod remove-from ((n <node>) (g <graph> ))
   (let* ((rh (graph-edges g))
 	 (rl (hash-table-copy rh)))
     (maphash #'(lambda(key val)
@@ -244,20 +265,20 @@ graphviz-prg  - программа для генерации графа;
     (if (remhash n (graph-nodes g))
 	n)))
 
-(defmethod remove-from ((e edge) (g graph ) )
+(defmethod remove-from ((e <edge>) (g <graph> ) )
   (if (remhash e (graph-edges g))
 	e))
 
 ;;;;;;;;;; graph-clear ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defmethod graph-clear ((g graph))
+(defmethod graph-clear ((g <graph>))
   (clrhash (graph-nodes g))
   (clrhash (graph-edges g))
   g)
 
 ;;;;;;;;;;  inlet outlet ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defmethod outlet-edges ((n node) &aux (g (node-owner n)))
+(defmethod outlet-edges ((n <node>) &aux (g (node-owner n)))
   (let ((rez-tbl(hash-table-copy (graph-edges g))))
     (maphash
      #'(lambda (key val)
@@ -267,7 +288,7 @@ graphviz-prg  - программа для генерации графа;
      (graph-edges g))
     rez-tbl))
 
-(defmethod inlet-edges ((n node) &aux (g (node-owner n)))
+(defmethod inlet-edges ((n <node>) &aux (g (node-owner n)))
   (let ((rez-tbl (hash-table-copy (graph-edges g))))
     (maphash
      #'(lambda (key val)
@@ -279,7 +300,7 @@ graphviz-prg  - программа для генерации графа;
 
 ;;;;;;;;;; find-* ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defmethod find-node ((g graph) (str string))
+(defmethod find-node ((g <graph>) (str string))
   (let ((v-rez nil))
     (maphash #'(lambda (key val)
 		 val
@@ -288,7 +309,7 @@ graphviz-prg  - программа для генерации графа;
 	     (graph-nodes g))
     v-rez))
 
-(defmethod find-edge ((g graph) (str string))
+(defmethod find-edge ((g <graph>) (str string))
   (let ((e-rez nil))
     (maphash #'(lambda (key val)
 		 val
@@ -299,21 +320,21 @@ graphviz-prg  - программа для генерации графа;
 
 ;;;; to-graphviz ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defmethod to-graphviz ((n node) s)
+(defmethod to-graphviz ((n <node>) s)
   (format s "~S~%" (to-string n)))
 
-(defmethod to-graphviz ((r edge) s)
+(defmethod to-graphviz ((r <edge>) s)
   (format s "~S ~A ~S~%"
 	  (to-string (edge-from r))
 	  "->"
 	  (to-string (edge-to r))))
 
 (defun x-preamble(&key (out t) (name "G") (rankdir "LR") (shape "box"))
-  (format out "digraph ~A {~%  rankdir=~A~%  node[shape=~A]~%" name rankdir shape))
+  (format out "digraph ~A {~%  rankdir=~A~%  <node>[shape=~A]~%" name rankdir shape))
 
 (defun x-postamble(&key (out t)) (format out "~&}~%"))
 
-(defmethod to-graphviz ((g graph) s)
+(defmethod to-graphviz ((g <graph>) s)
   (x-preamble :out s)
   (maphash #'(lambda (key val) val (to-graphviz key s)) (graph-nodes g))  
   (maphash #'(lambda (key val) val (to-graphviz key s)) (graph-edges g))  
@@ -322,9 +343,9 @@ graphviz-prg  - программа для генерации графа;
 ;;;; make-graph data ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun make-graph (edges &key nodes)
-  (let ((g (make-instance 'graph))
+  (let ((g (make-instance '<graph>))
 	(vs (remove-duplicates (append (apply #'append edges) nodes) :test #'equal)))
-    (mapc #'(lambda (v) (insert-to (make-instance 'node :name v) g)) vs)
+    (mapc #'(lambda (v) (insert-to (make-instance '<node> :name v) g)) vs)
     (mapc #'(lambda (el)
 	      (insert-to
 	       (make-instance 'edge
@@ -409,28 +430,11 @@ graphviz-prg  - программа для генерации графа;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defparameter *output-path*
-  (cond ((uiop/os:os-windows-p) "D:/PRG/msys32/home/namatv") 
-	((uiop/os:os-unix-p) (namestring (probe-file "~/."))))
-  "Каталог для вывода файлов Графа по-умолчанию.")
 
-(defparameter *viewer-path*
-  (cond
-    ((uiop/os:os-windows-p)
-     (cond
-       ((probe-file "C:/Program Files (x86)/Adobe/Acrobat Reader DC/Reader/AcroRd32.exe") "C:/Program Files (x86)/Adobe/Acrobat Reader DC/Reader/AcroRd32.exe")
-       ((probe-file "C:/Program Files/Adobe/Reader 11.0/Reader/AcroRd32.exe") "C:/Program Files/Adobe/Reader 11.0/Reader/AcroRd32.exe")))
-    ((uiop/os:os-unix-p)
-     (cond
-       ((probe-file "/usr/bin/xdg-open") "/usr/bin/xdg-open")
-       ((probe-file "/usr/bin/atril") "/usr/bin/atril")
-       ((probe-file "/usr/bin/atril") "/usr/bin/okular")
-       )))
-  "Программа просмотрщик Графа")
 
-(defparameter *graph-count* -1)
 
-(defmethod view-graph ((g graph) 
+
+(defmethod view-graph ((g <graph>) 
 		       &key
 			 (fpath *output-path*)
 			 (fname  (format nil "graph-~6,'0D" (incf *graph-count*)))
@@ -467,8 +471,8 @@ graphviz-prg  - программа для генерации графа;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defmethod nea-to-nodes  ((n node) &aux (ht (make-hash-table)))
-  "Возвращает хеш-таблицу вершин, с которыми соединена вершина node, в направлении от нее к ним"
+(defmethod nea-to-nodes  ((n <node>) &aux (ht (make-hash-table)))
+  "Возвращает хеш-таблицу вершин, с которыми соединена вершина <node>, в направлении от нее к ним"
   (maphash
    #'(lambda (key val)
        val
@@ -477,8 +481,8 @@ graphviz-prg  - программа для генерации графа;
   (print-items ht)
   ht)
 
-(defmethod nea-from-nodes  ((n node) &aux (ht (make-hash-table)))
-  "Возвращает хеш-таблицу вершин, с которыми соединена вершина node, в направлении от них к ней"  
+(defmethod nea-from-nodes  ((n <node>) &aux (ht (make-hash-table)))
+  "Возвращает хеш-таблицу вершин, с которыми соединена вершина <node>, в направлении от них к ней"  
   (maphash
    #'(lambda (key val)
        val
@@ -489,7 +493,7 @@ graphviz-prg  - программа для генерации графа;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defmethod connected-nodes ((n node) &key (direction :direction-to) &aux (ht (make-hash-table )))
+(defmethod connected-nodes ((n <node>) &key (direction :direction-to) &aux (ht (make-hash-table )))
   (setf (gethash n ht) n)
   (do ((count-before -1) (count-after  0))
       ((= count-before count-after) ht)
