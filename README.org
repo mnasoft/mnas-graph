@@ -16,74 +16,9 @@
 
 Этот проект определяет базовые функции для создания и отображения через =graphviz= структуры данных типа =Graph= (граф).
 
-* Классы проекта
-#+name: classes
-#+BEGIN_SRC lisp :exports none :var fname="classes" :var fpath=pwd :var out-type="jpg" 
-   (mnas-graph:view-graph
-    (mnas-package:package-class-graph :mnas-graph)
-    :out-type out-type
-    :viewer nil
-    :fpath (concatenate 'string fpath "/img")
-    :fname fname
-    :dpi  "100"
-    )
-  (concatenate 'string "./img" "/" fname ".gv." out-type)
-#+END_SRC
+* [2/2] Задачи
 
-#+name: classes-img
-#+BEGIN_SRC shell :results file :exports results :var fl=classes
-echo -n ${fl}
-#+END_SRC
-#+CAPTION: Классы проекта
-#+LABEL: classes-img
-#+ATTR_LATEX: :width 1.0\textwidth
-#+RESULTS: classes-img
-[[file:./img/classes.gv.jpg]]
+- [X] Выполнить переопределение класса node, так чтобы вершины знали своего владельца.
 
-
-* Shell Vars :noexport:
-
-#+name: pwd
-#+BEGIN_SRC shell :exports none
-mkdir -p `pwd`/img;
-pwd
-#+END_SRC
-
-#+RESULTS: pwd
-: /home/namatv/quicklisp/local-projects/mnas/mnas-graph
-
-* Экспортируемые глобальные переменные 
-
-* Функции
-
-* Граф вызовов
-
-#+name: call-graph 
-#+BEGIN_SRC lisp :exports none :var fname="cg" :var fpath=pwd :var out-type="jpg" 
-    (mnas-graph:view-graph
-     (mnas-package:make-call-praph :mnas-graph)
-     :out-type out-type
-     :viewer nil
-     :fpath (concatenate 'string fpath "/img")
-     :fname fname
-     :dpi  "100"
-     )
-   (concatenate 'string "./img" "/" fname ".gv." out-type)
-#+END_SRC
-
-#+name: call-graph-img
-#+BEGIN_SRC shell :results file :exports results :var fl=call-graph 
-echo -n ${fl}
-#+END_SRC
-#+CAPTION: Граф вызовов
-#+LABEL: call-graph-img
-#+ATTR_LATEX: :width 1.0\textwidth
-#+RESULTS: call-graph-img
-[[file:./img/cg.gv.jpg]]
-
-* ToDo
-
-+ 1. Выполнить переопределение класса node, так чтобы вершины знали своего владельца.
-
-+ 2. Переопределить функцию вывода графа в PDF - файл так, чтобы имя файла было случайным (взамен константного).
-     Вызов программы-просмотрщика выполнять без задержки.
+- [X] Переопределить функцию вывода графа в PDF - файл так, чтобы имя файла было случайным (взамен константного).
+    Вызов программы-просмотрщика выполнять без задержки.

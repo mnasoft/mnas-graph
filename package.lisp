@@ -23,14 +23,15 @@
 	   mnas-graph::to-graphviz
 	   mnas-graph::view-graph
 	   
-	   mnas-graph::node
+	   mnas-graph::<node>
 	   mnas-graph::node-name
 	   mnas-graph::node-counter
 	   
-	   mnas-graph::edge
+	   mnas-graph::<edge>
 	   mnas-graph::edge-from
 	   mnas-graph::edge-to
-	   mnas-graph::graph
+	   
+	   mnas-graph::<graph>
 	   mnas-graph::graph-nodes
 	   mnas-graph::graph-edges
 	   )

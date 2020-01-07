@@ -1,16 +1,21 @@
 ;;;; mnas-graph.lisp
 
-(declaim (optimize (space 0) (compilation-speed 0)  (speed 0) (safety 3) (debug 3)))
-
 (in-package #:mnas-graph)
 
-(defparameter *graph-count* -1)
+(declaim (optimize (space 0) (compilation-speed 0)  (speed 0) (safety 3) (debug 3)))
 
+(annot:enable-annot-syntax)
+
+(defparameter *graph-count* -1
+  "Счетчик созданных вершин, ребер, графов")
+
+@export
 (defparameter *output-path*
   (cond ((uiop/os:os-windows-p) "D:/PRG/msys32/home/namatv") 
 	((uiop/os:os-unix-p) (namestring (probe-file "~/."))))
   "Каталог для вывода файлов Графа по-умолчанию.")
 
+@export
 (defparameter *viewer-path*
   (cond
     ((uiop/os:os-windows-p)
@@ -25,23 +30,114 @@
        )))
   "Программа просмотрщик Графа")
 
+@export
+(defparameter *filter-dot* 
+  (cond ((and (uiop/os:os-windows-p)
+	      (string= (machine-instance)
+		       "MNASOFT-01")) "D:/PRG/msys32/mingw64/bin/dot.exe")
+	((and (uiop/os:os-windows-p)) "D:/PRG/msys32/mingw32/bin/dot.exe")
+	((uiop/os:os-unix-p) "/usr/bin/dot"))
+  "dot       - filter for drawing directed graphs")
+
+@export
+(defparameter *filter-neato*
+  (cond ((and (uiop/os:os-windows-p)
+	      (string= (machine-instance)
+		       "MNASOFT-01")) "D:/PRG/msys32/mingw64/bin/neato.exe")
+	((uiop/os:os-windows-p) "d:/PRG/msys32/mingw32/bin/neato.exe")
+	((uiop/os:os-unix-p) "/usr/bin/neato"))
+  "neato     - filter for drawing undirected graphs")
+
+@export
+(defparameter *filter-twopi*
+  (cond ((and (uiop/os:os-windows-p)
+	      (string= (machine-instance)
+		       "MNASOFT-01")) "D:/PRG/msys32/mingw64/bin/twopi.exe")
+	((uiop/os:os-windows-p) "d:/PRG/msys32/mingw32/bin/twopi.exe")
+	((uiop/os:os-unix-p) "/usr/bin/twopi"))
+  "twopi     - filter for radial layouts of graphs")
+
+@export
+(defparameter *filter-circo*
+  (cond
+    ((and (uiop/os:os-windows-p)
+	  (string= (machine-instance)
+		   "MNASOFT-01")) "D:/PRG/msys32/mingw64/bin/circo.exe")
+    ((uiop/os:os-windows-p) "d:/PRG/msys32/mingw32/bin/circo.exe")
+    ((uiop/os:os-unix-p) "/usr/bin/circo"))
+  "circo     - filter for circular layout of graphs")
+
+@export
+(defparameter *filter-fdp*
+  (cond
+    ((and (uiop/os:os-windows-p)
+	  (string= (machine-instance)
+		   "MNASOFT-01")) "D:/PRG/msys32/mingw64/bin/fdp.exe")
+    ((uiop/os:os-windows-p) "d:/PRG/msys32/mingw32/bin/fdp.exe")
+    ((uiop/os:os-unix-p) "/usr/bin/fdp"))
+  "fdp       - filter for drawing undirected graphs")
+
+@export
+(defparameter *filter-sfdp*
+  (cond
+    ((and (uiop/os:os-windows-p)
+	  (string= (machine-instance)
+		   "MNASOFT-01")) "D:/PRG/msys32/mingw64/bin/sfdp.exe")
+    ((uiop/os:os-windows-p) "d:/PRG/msys32/mingw32/bin/sfdp.exe")
+    ((uiop/os:os-unix-p) "/usr/bin/sfdp"))
+  "sfdp      - filter for drawing large undirected graphs")
+
+@export
+(defparameter *filter-patchwork*
+  (cond
+        ((and (uiop/os:os-windows-p)
+	  (string= (machine-instance)
+		   "MNASOFT-01")) "D:/PRG/msys32/mingw64/bin/patchwork.exe")
+	((uiop/os:os-windows-p) "D:/PRG/msys32/mingw32/bin/patchwork.exe")
+	((uiop/os:os-unix-p) "/usr/bin/patchwork"))
+  "patchwork - filter for tree maps")
+
 ;;;; generics ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+@export
 (defgeneric to-string    (obj)             (:documentation "Выполняет перобразование объекта в строку"))
+
+@export
 (defgeneric insert-to    (obj container)   (:documentation "Добавляет obj в container"))
+
+@export
 (defgeneric remove-from  (obj container)   (:documentation "Добавляет obj в container"))
+
+@export
 (defgeneric inlet-nodes  (graph)           (:documentation "Возвращает хеш-таблицу конечных вершин (вершин-стока)"))
+
+@export
 (defgeneric outlet-nodes (graph)           (:documentation "Возвращает хеш-таблицу начальных вершин (веншин-иточников)"))
+
+@export
 (defgeneric inlet-edges  (node)            (:documentation "Возвращает хеш-таблицу начальных ребер (итоков)"))
+
+@export
 (defgeneric outlet-edges (node)            (:documentation "Возвращает хеш-таблицу конечных ребер (устий)"))
+
+@export
 (defgeneric find-node    (graph node-name) (:documentation "Поиск вершины по имени"))
+
+@export
 (defgeneric find-edge    (graph edge-name) (:documentation "Поиск ребра по имени"))
 
 ;;(defgeneric connected-nodes (node)         (:documentation "Поиск достижимых вершин"))
+
+@export
 (defgeneric nea-from-nodes  (node)         (:documentation "Возвращает хеш-таблицу вершин, с которыми соединена вершина node, в направлении от нее к ним"))
+
+@export
 (defgeneric nea-to-nodes    (node)         (:documentation "Возвращает хеш-таблицу вершин, с которыми соединена вершина node, в направлении от них к ней"))
 
+@export
 (defgeneric to-graphviz  (obj stream)      (:documentation "Выполняет объекта obj в формат программы graphviz"))
+
+@export
 (defgeneric view-graph   (graph &key fpath fname graphviz-prg out-type dpi viewer)
   (:documentation "Выполняет визуализацию графа graph
 fpath         - каталог для вывода результатов работы программы;
@@ -61,21 +157,23 @@ graphviz-prg  - программа для генерации графа;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+@export
+@annot.class:export-accessors
 (defclass <node> ()
   ((name    :accessor node-name    :initarg :name  :initform nil :documentation "Имя вершины")
    (owner   :accessor node-owner   :initarg :owner :initform nil :documentation "Владелец вершины объект типа graph")
    (counter :accessor node-counter                 :initform 0   :documentation "Количество, созданных вершин" :allocation :class))
    (:documentation "Вершина графа"))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
+@export
+@annot.class:export-accessors
 (defclass <edge> ()
   ((start :accessor edge-from :initarg :from :initform nil :documentation "Начальная вершина ребра")
    (end   :accessor edge-to   :initarg :to   :initform nil :documentation "Конечная  вершина ребра"))
   (:documentation "Ребро графа"))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
+@export
+@annot.class:export-accessors
 (defclass <graph> ()
   ((nodes :accessor graph-nodes :initform (make-hash-table) :documentation "Хешированная таблица вершин графа")
    (edges :accessor graph-edges :initform (make-hash-table) :documentation "Хешированная таблица ребер графа"))
@@ -148,7 +246,8 @@ graphviz-prg  - программа для генерации графа;
 	  (printer-viewer-out-type  pv)
 	  ))
 
-(defclass <pdf-printer-viewer> (<printer-viewer>) ())
+(defclass <pdf-printer-viewer> (<printer-viewer>) ()
+    (:documentation "PDF - принтер-просмотрщик"))
 
 (defmethod initialize-instance
     ((pv <pdf-printer-viewer>)
@@ -173,7 +272,8 @@ graphviz-prg  - программа для генерации графа;
   (setf (printer-viewer-executable   pv) executable)
   (setf (printer-viewer-out-type     pv) out-type))
 
-(defclass <svg-printer-viewer> (<printer-viewer>) ())
+(defclass <svg-printer-viewer> (<printer-viewer>) ()
+      (:documentation "SVG - принтер-просмотрщик"))
 
 (defmethod initialize-instance
     ((pv <svg-printer-viewer>)
@@ -228,20 +328,35 @@ graphviz-prg  - программа для генерации графа;
 
 ;;;;;;;;;; to-string ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+
 (defmethod to-string (val) (format nil "~A" val))
 
+@export
+@annot.doc:doc
+"@b(Описание:) to-string !!!!!!
+"
 (defmethod to-string ((x <node>)) (format nil "~A" (node-name x)))
 
+@export
+@annot.doc:doc
+"@b(Описание:) to-string !!!!!!
+"
 (defmethod to-string ((x <edge>))
   (format nil "~A->~A" (to-string (edge-from x)) (to-string (edge-to x))))
 
 ;;;;;;;;;; insert-to ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
+@export
+@annot.doc:doc
+"@b(Описание:) insert-to !!!!!!
+"
 (defmethod insert-to ((n <node>) (g <graph>))
   (setf (gethash n (graph-nodes g)) n
 	(node-owner n) g)
   n)
-
+@export
+@annot.doc:doc
+"@b(Описание:) insert-to ((e <edge>) (g <graph>))!!!!!!
+"
 (defmethod insert-to ((e <edge>) (g <graph>))
   (setf (gethash e (graph-edges g)) e)
   (setf (node-owner (edge-from e)) g)
@@ -251,7 +366,10 @@ graphviz-prg  - программа для генерации графа;
   e)
 
 ;;;;;;;;;; remove-from ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
+@export
+@annot.doc:doc
+"@b(Описание:) remove-from ((n <node>) (g <graph> ))!!!!!!
+"
 (defmethod remove-from ((n <node>) (g <graph> ))
   (let* ((rh (graph-edges g))
 	 (rl (hash-table-copy rh)))
@@ -264,20 +382,29 @@ graphviz-prg  - программа для генерации графа;
 	     rl)
     (if (remhash n (graph-nodes g))
 	n)))
-
+@export
+@annot.doc:doc
+"@b(Описание:) remove-from ((e <edge>) (g <graph> ) )!!!!!!
+"
 (defmethod remove-from ((e <edge>) (g <graph> ) )
   (if (remhash e (graph-edges g))
 	e))
 
 ;;;;;;;;;; graph-clear ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
+@export
+@annot.doc:doc
+"@b(Описание:) graph-clear ((g <graph>))!!!!!!
+"
 (defmethod graph-clear ((g <graph>))
   (clrhash (graph-nodes g))
   (clrhash (graph-edges g))
   g)
 
 ;;;;;;;;;;  inlet outlet ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
+@export
+@annot.doc:doc
+"@b(Описание:) outlet-edges ((n <node>) &aux (g (node-owner n)))!!!!!!
+"
 (defmethod outlet-edges ((n <node>) &aux (g (node-owner n)))
   (let ((rez-tbl(hash-table-copy (graph-edges g))))
     (maphash
@@ -287,7 +414,10 @@ graphviz-prg  - программа для генерации графа;
 	     (remhash  key rez-tbl)))
      (graph-edges g))
     rez-tbl))
-
+@export
+@annot.doc:doc
+"@b(Описание:) inlet-edges ((n <node>) &aux (g (node-owner n)))!!!!!!
+"
 (defmethod inlet-edges ((n <node>) &aux (g (node-owner n)))
   (let ((rez-tbl (hash-table-copy (graph-edges g))))
     (maphash
@@ -299,7 +429,10 @@ graphviz-prg  - программа для генерации графа;
     rez-tbl))
 
 ;;;;;;;;;; find-* ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
+@export
+@annot.doc:doc
+"@b(Описание:) find-node ((g <graph>) (str string))!!!!!!
+"
 (defmethod find-node ((g <graph>) (str string))
   (let ((v-rez nil))
     (maphash #'(lambda (key val)
@@ -308,7 +441,10 @@ graphviz-prg  - программа для генерации графа;
 		   (setf v-rez key)))
 	     (graph-nodes g))
     v-rez))
-
+@export
+@annot.doc:doc
+"@b(Описание:) find-edge ((g <graph>) (str string))!!!!!!
+"
 (defmethod find-edge ((g <graph>) (str string))
   (let ((e-rez nil))
     (maphash #'(lambda (key val)
@@ -319,21 +455,36 @@ graphviz-prg  - программа для генерации графа;
     e-rez))
 
 ;;;; to-graphviz ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
+@export
+@annot.doc:doc
+"@b(Описание:) to-graphviz ((n <node>) s)!!!!!!
+"
 (defmethod to-graphviz ((n <node>) s)
   (format s "~S~%" (to-string n)))
 
+@export
+@annot.doc:doc
+"@b(Описание:) to-graphviz ((r <edge>) s)!!!!!!
+"
 (defmethod to-graphviz ((r <edge>) s)
   (format s "~S ~A ~S~%"
 	  (to-string (edge-from r))
 	  "->"
 	  (to-string (edge-to r))))
 
-(defun x-preamble(&key (out t) (name "G") (rankdir "LR") (shape "box"))
-  (format out "digraph ~A {~%  rankdir=~A~%  <node>[shape=~A]~%" name rankdir shape))
+@annot.doc:doc
+"x-preamble записывает преамбулу при выводе графа в gv-файл."
+(defun x-preamble (&key (out t) (name "G") (rankdir "LR") (shape "box"))
+  (format out "digraph ~A {~%  rankdir=~A~%  node[shape=~A]~%" name rankdir shape))
 
-(defun x-postamble(&key (out t)) (format out "~&}~%"))
+@annot.doc:doc
+"x-preamble записывает постамбулу при выводе графа в gv-файл."
+(defun x-postamble (&key (out t)) (format out "~&}~%"))
 
+@export
+@annot.doc:doc
+"@b(Описание:) to-graphviz ((g <graph>) s)!!!!!!
+"
 (defmethod to-graphviz ((g <graph>) s)
   (x-preamble :out s)
   (maphash #'(lambda (key val) val (to-graphviz key s)) (graph-nodes g))  
@@ -342,6 +493,9 @@ graphviz-prg  - программа для генерации графа;
 
 ;;;; make-graph data ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+@export
+@annot.doc:doc
+"@b(Описание:) make-graph возвращает граф с ребрами edges и вершинами вершинами nodes."
 (defun make-graph (edges &key nodes)
   (let ((g (make-instance '<graph>))
 	(vs (remove-duplicates (append (apply #'append edges) nodes) :test #'equal)))
@@ -356,67 +510,8 @@ graphviz-prg  - программа для генерации графа;
     g))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defparameter *filter-dot* 
-  (cond ((and (uiop/os:os-windows-p)
-	      (string= (machine-instance)
-		       "MNASOFT-01")) "D:/PRG/msys32/mingw64/bin/dot.exe")
-	((and (uiop/os:os-windows-p)) "D:/PRG/msys32/mingw32/bin/dot.exe")
-	((uiop/os:os-unix-p) "/usr/bin/dot"))
-  "dot       - filter for drawing directed graphs")
-
-(defparameter *filter-neato*
-  (cond ((and (uiop/os:os-windows-p)
-	      (string= (machine-instance)
-		       "MNASOFT-01")) "D:/PRG/msys32/mingw64/bin/neato.exe")
-	((uiop/os:os-windows-p) "d:/PRG/msys32/mingw32/bin/neato.exe")
-	((uiop/os:os-unix-p) "/usr/bin/neato"))
-  "neato     - filter for drawing undirected graphs")
-
-(defparameter *filter-twopi*
-  (cond ((and (uiop/os:os-windows-p)
-	      (string= (machine-instance)
-		       "MNASOFT-01")) "D:/PRG/msys32/mingw64/bin/twopi.exe")
-	((uiop/os:os-windows-p) "d:/PRG/msys32/mingw32/bin/twopi.exe")
-	((uiop/os:os-unix-p) "/usr/bin/twopi"))
-  "twopi     - filter for radial layouts of graphs")
-
-(defparameter *filter-circo*
-  (cond
-    ((and (uiop/os:os-windows-p)
-	  (string= (machine-instance)
-		   "MNASOFT-01")) "D:/PRG/msys32/mingw64/bin/circo.exe")
-    ((uiop/os:os-windows-p) "d:/PRG/msys32/mingw32/bin/circo.exe")
-    ((uiop/os:os-unix-p) "/usr/bin/circo"))
-  "circo     - filter for circular layout of graphs")
-
-(defparameter *filter-fdp*
-  (cond
-    ((and (uiop/os:os-windows-p)
-	  (string= (machine-instance)
-		   "MNASOFT-01")) "D:/PRG/msys32/mingw64/bin/fdp.exe")
-    ((uiop/os:os-windows-p) "d:/PRG/msys32/mingw32/bin/fdp.exe")
-    ((uiop/os:os-unix-p) "/usr/bin/fdp"))
-  "fdp       - filter for drawing undirected graphs")
-
-(defparameter *filter-sfdp*
-  (cond
-    ((and (uiop/os:os-windows-p)
-	  (string= (machine-instance)
-		   "MNASOFT-01")) "D:/PRG/msys32/mingw64/bin/sfdp.exe")
-    ((uiop/os:os-windows-p) "d:/PRG/msys32/mingw32/bin/sfdp.exe")
-    ((uiop/os:os-unix-p) "/usr/bin/sfdp"))
-  "sfdp      - filter for drawing large undirected graphs")
-
-(defparameter *filter-patchwork*
-  (cond
-        ((and (uiop/os:os-windows-p)
-	  (string= (machine-instance)
-		   "MNASOFT-01")) "D:/PRG/msys32/mingw64/bin/patchwork.exe")
-	((uiop/os:os-windows-p) "D:/PRG/msys32/mingw32/bin/patchwork.exe")
-	((uiop/os:os-unix-p) "/usr/bin/patchwork"))
-  "patchwork - filter for tree maps")
-
+@annot.doc:doc
+"graphviz-prg - возвращает путь к программе dot или ее вариациям."
 (defun graphviz-prg (key)
   (when (symbolp key)
     (ecase key
@@ -429,11 +524,10 @@ graphviz-prg  - программа для генерации графа;
       (:filter-patchwork *filter-patchwork*))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-
-
-
+@export
+@annot.doc:doc
+"@b(Описание:)  view-graph 
+"
 (defmethod view-graph ((g <graph>) 
 		       &key
 			 (fpath *output-path*)
@@ -459,8 +553,21 @@ graphviz-prg  - программа для генерации графа;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+@export
+@annot.doc:doc
+"@b(Описание:) make-random-graph создает случайный граф.
+
+ @b(Переменые:)
+@begin(list)
+ @item(node-max-number - количество вершин графа;)
+ @item(edges-number    - количество вершин графа.)
+@end(list)
+@b(Пример использования:)
+@begin[lang=lisp](code)
+ (make-random-graph)
+@end(code)
+"
 (defun make-random-graph (&key (node-max-number 100) (edges-number node-max-number))
-  "Описание"
   (make-graph
    (let ((lst nil))
      (dotimes (i edges-number lst)
@@ -471,8 +578,12 @@ graphviz-prg  - программа для генерации графа;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+@export
+@annot.doc:doc
+"@b(Описание:) nea-to-nodes возвращает хеш-таблицу вершин, с которыми соединена вершина <node>, в направлении от нее к ним.
+"
 (defmethod nea-to-nodes  ((n <node>) &aux (ht (make-hash-table)))
-  "Возвращает хеш-таблицу вершин, с которыми соединена вершина <node>, в направлении от нее к ним"
+  
   (maphash
    #'(lambda (key val)
        val
@@ -481,8 +592,12 @@ graphviz-prg  - программа для генерации графа;
   (print-items ht)
   ht)
 
+@export
+@annot.doc:doc
+"@b(Описание:) nea-from-nodes
+Возвращает хеш-таблицу вершин, с которыми соединена вершина <node>, в направлении от них к ней.
+"
 (defmethod nea-from-nodes  ((n <node>) &aux (ht (make-hash-table)))
-  "Возвращает хеш-таблицу вершин, с которыми соединена вершина <node>, в направлении от них к ней"  
   (maphash
    #'(lambda (key val)
        val
@@ -493,6 +608,10 @@ graphviz-prg  - программа для генерации графа;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+@export
+@annot.doc:doc
+"@b(Описание:) connected-nodes ((n <node>) &key (direction :direction-to) &aux (ht (make-hash-table )))!!!!!!
+"
 (defmethod connected-nodes ((n <node>) &key (direction :direction-to) &aux (ht (make-hash-table )))
   (setf (gethash n ht) n)
   (do ((count-before -1) (count-after  0))

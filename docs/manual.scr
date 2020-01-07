@@ -3,20 +3,115 @@
 
 This is where you explain what your project does.
 
+@end(section)
+
+@begin(section)
+@title(Графы)
+@begin(list)
+ @item(call-graph
+
+@image[src=./call-graph.gv.png]())
+ @item(system-graph
+ 
+ @image[src=./system-graph.gv.png]())
+ @item(class-graph
+
+@image[src=./class-graph.gv.png]())
+@end(list)
+@end(section)
+
+@begin(section)
+@title(Обобщенные методы)
+@cl:with-package[name="mnas-graph"](
+ @cl:doc(generic to-string)
+ @cl:doc(generic insert-to)
+ @cl:doc(generic remove-from)
+ @cl:doc(generic inlet-nodes)
+ @cl:doc(generic outlet-nodes)
+ @cl:doc(generic inlet-edges)
+ @cl:doc(generic outlet-edges)
+ @cl:doc(generic find-node)
+ @cl:doc(generic find-edge)
+ @cl:doc(generic nea-from-nodes)
+ @cl:doc(generic nea-to-nodes)
+ @cl:doc(generic to-graphviz)
+ @cl:doc(generic view-graph))
+@end(section)
+
 @begin(section)
 @title(Функции)
 @cl:with-package[name="mnas-graph"](
-	@cl:doc(method node-owner)
-)
-@end(section)
-
-
+  @cl:doc(function x-preamble)
+  @cl:doc(function x-postamble)
+  @cl:doc(function make-graph)
+  @cl:doc(function graphviz-prg)
+  @cl:doc(function make-random-graph))
 @end(section)
 
 @begin(section)
+@title(Переменные)
+@cl:with-package[name="mnas-graph"](
+ @cl:doc(variable *graph-count*)
+ @cl:doc(variable *output-path*)
+ @cl:doc(variable *viewer-path*)
+ @cl:doc(variable *filter-dot*)
+ @cl:doc(variable *filter-neato*)
+ @cl:doc(variable *filter-twopi*)
+ @cl:doc(variable *filter-circo*)
+ @cl:doc(variable *filter-fdp*)
+ @cl:doc(variable *filter-sfdp*)
+ @cl:doc(variable *filter-patchwork*))
+@end(section)
+
+@begin(section)
+@title(Классы)
+@cl:with-package[name="mnas-graph"](
+ @cl:doc(class <node>)
+ @cl:doc(class <edge>)
+ @cl:doc(class <graph>)
+ @cl:doc(class <printer-viewer>)
+ @cl:doc(class <pdf-printer-viewer>)
+ @cl:doc(class <svg-printer-viewer>))
+@end(section)
+
+@begin(section)
+@title(Методы)
+@cl:with-package[name="mnas-graph"](
+ @cl:doc(method to-string (x <node>))
+ @cl:doc(method to-string (x <edge>))
+ @cl:doc(method insert-to (e <edge>) (g <graph>))
+ @cl:doc(method remove-from (n <node>) (g <graph> ))
+ @cl:doc(method remove-from (e <edge>) (g <graph> ) )
+ @cl:doc(method graph-clear (g <graph>))
+ @cl:doc(method outlet-edges (n <node>) &aux (g (node-owner n)))
+ @cl:doc(method inlet-edges (n <node>) &aux (g (node-owner n)))
+ @cl:doc(method find-node (g <graph>) (str string))
+ @cl:doc(method find-edge (g <graph>) (str string))
+ @cl:doc(method to-graphviz (n <node>) s)
+ @cl:doc(method to-graphviz (r <edge>) s)
+ @cl:doc(method to-graphviz (g <graph>) s)
+ @cl:doc(method view-graph (g <graph>)
+                         &key
+			 (fpath *output-path*)
+			 (fname  (format nil "graph-~6,'0D" (incf *graph-count*)))
+			 (graphviz-prg :filter-dot)
+			 (out-type "pdf")
+			 (dpi "300")
+			 (viewer *viewer-path*))
+ @cl:doc(methodnea-to-nodes  (n <node>) &aux (ht (make-hash-table)))
+ @cl:doc(method nea-from-nodes  (n <node>) &aux (ht (make-hash-table)))
+ @cl:doc(method connected-nodes (n <node>) &key (direction :direction-to) &aux (ht (make-hash-table )))
+ 
+ )
+@end(section)
+
+@begin(section)
+
 @title(API Reference)
 
 And this is where you list your project's functionality. Read the tutorial to
 learn how to do this.
 
 @end(section)
+
+
