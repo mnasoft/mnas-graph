@@ -8,15 +8,10 @@ This is where you explain what your project does.
 @begin(section)
 @title(Графы)
 @begin(list)
- @item(call-graph
-
-@image[src=./call-graph.gv.png]())
- @item(system-graph
- 
- @image[src=./system-graph.gv.png]())
- @item(class-graph
-
-@image[src=./class-graph.gv.png]())
+ @item(system-graph @image[src=./system-graph.gv.png]())
+ @item(call-graph   @image[src=./call-graph.gv.png]())
+ @item(symbol-graph @image[src=./symbol-graph.gv.png]())
+ @item(class-graph  @image[src=./class-graph.gv.png]())
 @end(list)
 @end(section)
 

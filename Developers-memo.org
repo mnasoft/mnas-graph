@@ -18,34 +18,24 @@ basename `pwd`
 #+END_SRC
 
 #+BEGIN_SRC lisp :var pwd=pwd :var basename-pwd=basename-pwd
-      ;;;; (require :codex)
-      ;;;; (require :mnas-package)
-      ;;;;
-      ;;;; (require :mnas-graph)
-      (let ((pkg :mnas-graph)
-	    (fpath (concatenate 'string pwd "/docs/build/" basename-pwd "/html/")))
-	(codex:document pkg)
-	(mnas-package:package-call-graph
-	 pkg
-	 :ouyt-type "png"
-	 :viewer nil
-	 :fpath fpath
-	 :fname "call-graph")
-	(mnas-package:package-system-graph
-	 pkg
-	 :out-type "png"
-	 :viewer nil
-	 :fpath fpath
-	 :fname "system-graph")
-	(mnas-package:package-class-graph
-	 pkg
-	 :out-type "png"
-	 :viewer    nil
-	 :fpath     fpath
-	 :fname     "class-graph"))
+  ;;;; (require :codex)
+  ;;;; (require :mnas-package)
+  ;;;;
+  ;;;; (require :mnas-graph)
+  (let ((pkg    :mnas-graph)
+	(fpath (concatenate
+		'string
+		(cond ((uiop:getenv "MSYS_HOME")) (t ""))
+		pwd "/docs/build/"
+		basename-pwd "/html/")))
+    (codex:document pkg)
+    (mnas-package:package-call-graph   pkg :out-type "png" :viewer nil :fpath fpath :fname "call-graph")
+    (mnas-package:package-system-graph pkg :out-type "png" :viewer nil :fpath fpath :fname "system-graph")
+    (mnas-package:package-class-graph  pkg :out-type "png" :viewer nil :fpath fpath :fname "class-graph")
+    (mnas-package:package-symbol-graph pkg :out-type "png" :viewer nil :fpath fpath :fname "symbol-graph"))
 #+END_SRC
 
 #+RESULTS:
-: mnas-graph
-
-
+: #GRAPH(VC=17 RC=25)
+: (T:"graphviz-prg" T:"package-call-graph" T:"package-class-graph" T:"package-symbol-graph" T:"package-system-graph" T:"view-graph" T:"view-graph-new" T:"*filter-sfdp*" T:"*filter-neato*" T:"*filter-twopi*" T:"*filter-circo*" T:"*viewer-path*" T:"*filter-patchwork*" T:"*output-path*" T:"*filter-dot*" T:"*filter-fdp*" T:"*graph-count*" )
+: ((T:"graphviz-prg"->T:"*filter-sfdp*") (T:"graphviz-prg"->T:"*filter-neato*") (T:"graphviz-prg"->T:"*filter-twopi*") (T:"graphviz-prg"->T:"*filter-circo*") (T:"package-call-graph"->T:"*viewer-path*") (T:"package-class-graph"->T:"*viewer-path*") (T:"package-symbol-graph"->T:"*viewer-path*") (T:"package-system-graph"->T:"*viewer-path*") (T:"view-graph"->T:"*viewer-path*") (T:"view-graph-new"->T:"*viewer-path*") (T:"graphviz-prg"->T:"*filter-patchwork*") (T:"package-call-graph"->T:"*output-path*") (T:"package-class-graph"->T:"*output-path*") (T:"package-symbol-graph"->T:"*output-path*") (T:"package-system-graph"->T:"*output-path*") (T:"view-graph"->T:"*output-path*") (T:"view-graph-new"->T:"*output-path*") (T:"graphviz-prg"->T:"*filter-dot*") (T:"graphviz-prg"->T:"*filter-fdp*") (T:"package-call-graph"->T:"*graph-count*") (T:"package-class-graph"->T:"*graph-count*") (T:"package-symbol-graph"->T:"*graph-count*") (T:"package-system-graph"->T:"*graph-count*") (T:"view-graph"->T:"*graph-count*") (T:"view-graph-new"->T:"*graph-count*") ))
