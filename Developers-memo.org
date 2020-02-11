@@ -1,12 +1,11 @@
-* Операции git [[file:~/org/sbcl/Git-memo.org][Git-memo.org]]
+* Ссылки
+1) Операции git  [[file:~/org/sbcl/Git-memo.org][Git-memo.org]]
+2) [[file:~/org/sbcl/codex.org][Генерирование документации при помощи Codex]]
+3) http://commondoc.github.io/codex/docs/tutorial.html
+4) [[file:~/.slynkrc]]
+5) [[~/.sbclrc]]
+* Генерирование документации
 
-* Генерирование документации при помощи Codex
-
- http://commondoc.github.io/codex/docs/tutorial.html
-
- [[file:~/org/sbcl/codex.org][Codex]]
-
-* Пример генерирования документации
 #+name: pwd
 #+BEGIN_SRC shell
 pwd
@@ -17,12 +16,13 @@ pwd
 basename `pwd`
 #+END_SRC
 
+#+name:make-graph
 #+BEGIN_SRC lisp :var pwd=pwd :var basename-pwd=basename-pwd
   ;;;; (require :codex)
   ;;;; (require :mnas-package)
   ;;;;
   ;;;; (require :mnas-graph)
-  (let ((pkg    :mnas-graph)
+  (let ((pkg :mnas-graph)
 	(fpath (concatenate
 		'string
 		(cond ((uiop:getenv "MSYS_HOME")) (t ""))
@@ -34,8 +34,24 @@ basename `pwd`
     (mnas-package:view-class-graph  pkg :out-type "png" :viewer nil :fpath fpath :fname "class-graph")
     (mnas-package:view-symbol-graph pkg :out-type "png" :viewer nil :fpath fpath :fname "symbol-graph"))
 #+END_SRC
+* Публикация
+#+name: publish
+#+BEGIN_SRC shell :var make-graph=make-graph
+  if [[ `hostname` == "mnasoft-00" ]]
+  then
+      echo "mnasoft-00"
+      mkdir -p "$HOME/public_html/Common-Lisp-Programs/"
+      CDIR=`basename $PWD`
+      rm -rf "$HOME/public_html/Common-Lisp-Programs/$CDIR/"
+      cp -rf ./docs/build/* "$HOME/public_html/Common-Lisp-Programs/"
+  fi
+  if [[ `hostname` == "ko11-118383" ]]
+  then
+      CDIR=`basename $PWD`
+      rm -rf "\\\\n133619\\home\\_namatv\\public_html\\Site\\Development\\Common-Lisp-Programs\\$CDIR\\";
+      sleep 5;
+      cp -rf "./docs/build/$CDIR" "\\\\n133619\\home\\_namatv\\public_html\\Site\\Development\\Common-Lisp-Programs\\";
+   fi
+#+END_SRC
 
-#+RESULTS:
-: #GRAPH(VC=17 RC=25)
-: (T:"graphviz-prg" T:"package-call-graph" T:"package-class-graph" T:"package-symbol-graph" T:"package-system-graph" T:"view-graph" T:"view-graph-new" T:"*filter-sfdp*" T:"*filter-neato*" T:"*filter-twopi*" T:"*filter-circo*" T:"*viewer-path*" T:"*filter-patchwork*" T:"*output-path*" T:"*filter-dot*" T:"*filter-fdp*" T:"*graph-count*" )
-: ((T:"graphviz-prg"->T:"*filter-sfdp*") (T:"graphviz-prg"->T:"*filter-neato*") (T:"graphviz-prg"->T:"*filter-twopi*") (T:"graphviz-prg"->T:"*filter-circo*") (T:"package-call-graph"->T:"*viewer-path*") (T:"package-class-graph"->T:"*viewer-path*") (T:"package-symbol-graph"->T:"*viewer-path*") (T:"package-system-graph"->T:"*viewer-path*") (T:"view-graph"->T:"*viewer-path*") (T:"view-graph-new"->T:"*viewer-path*") (T:"graphviz-prg"->T:"*filter-patchwork*") (T:"package-call-graph"->T:"*output-path*") (T:"package-class-graph"->T:"*output-path*") (T:"package-symbol-graph"->T:"*output-path*") (T:"package-system-graph"->T:"*output-path*") (T:"view-graph"->T:"*output-path*") (T:"view-graph-new"->T:"*output-path*") (T:"graphviz-prg"->T:"*filter-dot*") (T:"graphviz-prg"->T:"*filter-fdp*") (T:"package-call-graph"->T:"*graph-count*") (T:"package-class-graph"->T:"*graph-count*") (T:"package-symbol-graph"->T:"*graph-count*") (T:"package-system-graph"->T:"*graph-count*") (T:"view-graph"->T:"*graph-count*") (T:"view-graph-new"->T:"*graph-count*") ))
+#+RESULTS: publish
