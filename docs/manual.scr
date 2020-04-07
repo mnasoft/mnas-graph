@@ -1,7 +1,35 @@
 @begin(section)
-@title(Overview)
+@title(Обзор)
 
-This is where you explain what your project does.
+Проект mnas-graph определяет базовые функции для создания структуры данных типа @link[uri="https://ru.wikipedia.org/wiki/Граф_(математика)"](Граф).
+
+Проект определяет следующие основные классы:
+@begin(list)
+ @item(@ref[id=class-<node>](<node>) - вершина графа;)
+ @item(@ref[id=class-<edge>](<edge>) - ребро графа;)
+ @item(@ref[id=class-<graph>](<graph>) - граф.)
+@end(list)
+
+Пример использования:
+@begin[lang=lisp](code)
+(let*
+  ((g (make-instance 'mnas-graph:<graph>))
+   (v1 (make-instance 'mnas-graph:<node> :owner g :name "v1"))
+   (v2 (make-instance 'mnas-graph:<node> :owner g :name "v2"))
+   (v3 (make-instance 'mnas-graph:<node> :owner g :name "v3"))
+   (r1 (make-instance 'mnas-graph:<edge> :from v1 :to v2))
+   (r2 (make-instance 'mnas-graph:<edge> :from v2 :to v3))
+   (r3 (make-instance 'mnas-graph:<edge> :from v3 :to v1)))
+ (mnas-graph:insert-to v1 g)
+ (mnas-graph:insert-to v2 g)
+ (mnas-graph:insert-to v3 g)
+ (mnas-graph:insert-to r1 g)
+ (mnas-graph:insert-to r2 g)
+ (mnas-graph:insert-to r3 g)
+ (mnas-graph:view-graph g))
+@end(code)
+
+и отображения через graphviz
 
 @end(section)
 
@@ -58,16 +86,19 @@ This is where you explain what your project does.
  @cl:doc(variable *filter-patchwork*))
 @end(section)
 
+@begin[ref=class-<node>](section)  @title(Класс - <node>) @cl:with-package[name="mnas-graph"](@cl:doc(class <node>)) @end(section)
+@begin[ref=class-<edge>](section)  @title(Класс - <edge>) @cl:with-package[name="mnas-graph"](@cl:doc(class <edge>)) @end(section)
+@begin[ref=class-<graph>](section) @title(Класс - <graph>) @cl:with-package[name="mnas-graph"](@cl:doc(class <graph>)) @end(section)
 @begin(section)
 @title(Классы)
 @cl:with-package[name="mnas-graph"](
- @cl:doc(class <node>)
- @cl:doc(class <edge>)
- @cl:doc(class <graph>)
  @cl:doc(class <printer-viewer>)
  @cl:doc(class <pdf-printer-viewer>)
  @cl:doc(class <svg-printer-viewer>))
 @end(section)
+
+
+
 
 @begin(section)
 @title(Методы)
@@ -99,14 +130,3 @@ This is where you explain what your project does.
  
  )
 @end(section)
-
-@begin(section)
-
-@title(API Reference)
-
-And this is where you list your project's functionality. Read the tutorial to
-learn how to do this.
-
-@end(section)
-
-

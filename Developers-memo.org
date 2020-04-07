@@ -34,6 +34,12 @@ basename `pwd`
     (mnas-package:view-class-graph  pkg :out-type "png" :viewer nil :fpath fpath :fname "class-graph")
     (mnas-package:view-symbol-graph pkg :out-type "png" :viewer nil :fpath fpath :fname "symbol-graph"))
 #+END_SRC
+
+#+RESULTS: make-graph
+: #GRAPH(VC=17 RC=25)
+: (T:"graphviz-prg" T:"view-graph" T:"view-graph-new" T:"view-class-graph" T:"view-call-graph" T:"view-symbol-graph" T:"view-system-graph" T:"*output-path*" T:"*filter-dot*" T:"*filter-patchwork*" T:"*filter-twopi*" T:"*filter-circo*" T:"*filter-sfdp*" T:"*viewer-path*" T:"*filter-fdp*" T:"*filter-neato*" T:"*graph-count*" )
+: ((T:"view-graph"->T:"*output-path*") (T:"view-graph-new"->T:"*output-path*") (T:"view-class-graph"->T:"*output-path*") (T:"view-call-graph"->T:"*output-path*") (T:"view-symbol-graph"->T:"*output-path*") (T:"view-system-graph"->T:"*output-path*") (T:"graphviz-prg"->T:"*filter-dot*") (T:"graphviz-prg"->T:"*filter-patchwork*") (T:"graphviz-prg"->T:"*filter-twopi*") (T:"graphviz-prg"->T:"*filter-circo*") (T:"graphviz-prg"->T:"*filter-sfdp*") (T:"view-graph"->T:"*viewer-path*") (T:"view-graph-new"->T:"*viewer-path*") (T:"view-class-graph"->T:"*viewer-path*") (T:"view-call-graph"->T:"*viewer-path*") (T:"view-symbol-graph"->T:"*viewer-path*") (T:"view-system-graph"->T:"*viewer-path*") (T:"graphviz-prg"->T:"*filter-fdp*") (T:"graphviz-prg"->T:"*filter-neato*") (T:"view-graph"->T:"*graph-count*") (T:"view-graph-new"->T:"*graph-count*") (T:"view-class-graph"->T:"*graph-count*") (T:"view-call-graph"->T:"*graph-count*") (T:"view-symbol-graph"->T:"*graph-count*") (T:"view-system-graph"->T:"*graph-count*") ))
+
 * Публикация
 #+name: publish
 #+BEGIN_SRC shell :var make-graph=make-graph

@@ -1,8 +1,9 @@
 ;;;; demos.lisp
 
 (in-package #:mnas-graph)
+(annot:enable-annot-syntax)
 
-(export 'demo-1)
+@export
 (defun demo-1 () 
   (view-graph
    (make-graph
@@ -10,7 +11,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(export 'demo-2)
+@export
 (defun demo-2 () 
   (view-graph
    (make-graph
@@ -33,7 +34,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(export 'demo-3)
+@export
 (defun demo-3 () 
   (view-graph
    (make-graph
@@ -63,7 +64,7 @@
       ("A" "B") ("B" "C") ("C" "D") ("D" "E") ("E" "A")
       )) :graphviz-prg :filter-fdp))
 
-(export 'demo-4)
+@export
 (defun demo-4 () 
   (view-graph
    (make-graph
@@ -86,7 +87,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(export 'demo-5)
+@export
 (defun demo-5 ()
   (view-graph (make-random-graph :node-max-number   10 :edges-number   6) :graphviz-prg :filter-neato)
   (view-graph (make-random-graph :node-max-number   16 :edges-number  10) :graphviz-prg :filter-neato)

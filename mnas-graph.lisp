@@ -1,5 +1,14 @@
 ;;;; mnas-graph.lisp
 
+(in-package :cl-user)
+
+(defpackage #:mnas-graph
+  (:use #:cl #:mnas-hash-table))
+
+;;;; (declaim (optimize (compilation-speed 0) (debug 3) (safety 0) (space 0) (speed 0)))
+
+(setf sb-impl::*default-external-format* :utf8)
+
 (in-package #:mnas-graph)
 
 (declaim (optimize (space 0) (compilation-speed 0)  (speed 0) (safety 3) (debug 3)))
@@ -158,7 +167,7 @@ graphviz-prg  - программа для генерации графа;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 @export
-@annot.class:export-accessors
+@annot.class:export-class
 (defclass <node> ()
   ((name    :accessor node-name    :initarg :name  :initform nil :documentation "Имя вершины")
    (owner   :accessor node-owner   :initarg :owner :initform nil :documentation "Владелец вершины объект типа graph")
@@ -166,14 +175,14 @@ graphviz-prg  - программа для генерации графа;
    (:documentation "Вершина графа"))
 
 @export
-@annot.class:export-accessors
+@annot.class:export-class
 (defclass <edge> ()
   ((start :accessor edge-from :initarg :from :initform nil :documentation "Начальная вершина ребра")
    (end   :accessor edge-to   :initarg :to   :initform nil :documentation "Конечная  вершина ребра"))
   (:documentation "Ребро графа"))
 
 @export
-@annot.class:export-accessors
+@annot.class:export-class
 (defclass <graph> ()
   ((nodes :accessor graph-nodes :initform (make-hash-table) :documentation "Хешированная таблица вершин графа")
    (edges :accessor graph-edges :initform (make-hash-table) :documentation "Хешированная таблица ребер графа"))
@@ -328,7 +337,10 @@ graphviz-prg  - программа для генерации графа;
 
 ;;;;;;;;;; to-string ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-
+@export
+@annot.doc:doc
+"@b(Описание:) to-string !!!!!!
+"
 (defmethod to-string (val) (format nil "~A" val))
 
 @export
@@ -345,6 +357,7 @@ graphviz-prg  - программа для генерации графа;
   (format nil "~A->~A" (to-string (edge-from x)) (to-string (edge-to x))))
 
 ;;;;;;;;;; insert-to ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 @export
 @annot.doc:doc
 "@b(Описание:) insert-to !!!!!!
@@ -353,6 +366,7 @@ graphviz-prg  - программа для генерации графа;
   (setf (gethash n (graph-nodes g)) n
 	(node-owner n) g)
   n)
+
 @export
 @annot.doc:doc
 "@b(Описание:) insert-to ((e <edge>) (g <graph>))!!!!!!
@@ -382,6 +396,7 @@ graphviz-prg  - программа для генерации графа;
 	     rl)
     (if (remhash n (graph-nodes g))
 	n)))
+
 @export
 @annot.doc:doc
 "@b(Описание:) remove-from ((e <edge>) (g <graph> ) )!!!!!!
@@ -391,6 +406,7 @@ graphviz-prg  - программа для генерации графа;
 	e))
 
 ;;;;;;;;;; graph-clear ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 @export
 @annot.doc:doc
 "@b(Описание:) graph-clear ((g <graph>))!!!!!!
@@ -401,6 +417,7 @@ graphviz-prg  - программа для генерации графа;
   g)
 
 ;;;;;;;;;;  inlet outlet ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 @export
 @annot.doc:doc
 "@b(Описание:) outlet-edges ((n <node>) &aux (g (node-owner n)))!!!!!!
@@ -414,6 +431,7 @@ graphviz-prg  - программа для генерации графа;
 	     (remhash  key rez-tbl)))
      (graph-edges g))
     rez-tbl))
+
 @export
 @annot.doc:doc
 "@b(Описание:) inlet-edges ((n <node>) &aux (g (node-owner n)))!!!!!!
@@ -429,6 +447,7 @@ graphviz-prg  - программа для генерации графа;
     rez-tbl))
 
 ;;;;;;;;;; find-* ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 @export
 @annot.doc:doc
 "@b(Описание:) find-node ((g <graph>) (str string))!!!!!!
@@ -441,6 +460,7 @@ graphviz-prg  - программа для генерации графа;
 		   (setf v-rez key)))
 	     (graph-nodes g))
     v-rez))
+
 @export
 @annot.doc:doc
 "@b(Описание:) find-edge ((g <graph>) (str string))!!!!!!
@@ -455,6 +475,7 @@ graphviz-prg  - программа для генерации графа;
     e-rez))
 
 ;;;; to-graphviz ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 @export
 @annot.doc:doc
 "@b(Описание:) to-graphviz ((n <node>) s)!!!!!!
@@ -524,6 +545,7 @@ graphviz-prg  - программа для генерации графа;
       (:filter-patchwork *filter-patchwork*))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 @export
 @annot.doc:doc
 "@b(Описание:)  view-graph 
