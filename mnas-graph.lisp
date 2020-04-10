@@ -195,6 +195,7 @@ graphviz-prg  - программа для генерации графа;
 		    :name   name
     		    :owner  owner 
 		    :number (node-counter x))
+  (when owner (insert-to x owner))
   (incf (node-counter x)))
 
 ;;;;;;;;;; print-object ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -258,24 +259,23 @@ graphviz-prg  - программа для генерации графа;
 (defclass <pdf-printer-viewer> (<printer-viewer>) ()
     (:documentation "PDF - принтер-просмотрщик"))
 
-(defmethod initialize-instance
-    ((pv <pdf-printer-viewer>)
-     &key
-       (graphviz-prg :filter-dot)
-       (dpi "300")
-       (executable
-	(cond
-	  ((uiop/os:os-windows-p)
-	   (cond
-	     ((probe-file "C:/Program Files (x86)/Adobe/Acrobat Reader DC/Reader/AcroRd32.exe") "C:/Program Files (x86)/Adobe/Acrobat Reader DC/Reader/AcroRd32.exe")
-	     ((probe-file "C:/Program Files/Adobe/Reader 11.0/Reader/AcroRd32.exe") "C:/Program Files/Adobe/Reader 11.0/Reader/AcroRd32.exe")))
-	  ((uiop/os:os-unix-p)
-	   (cond
-	     ((probe-file "/usr/bin/atril") "/usr/bin/atril")
-	     ((probe-file "/usr/bin/atril") "/usr/bin/okular"))))
-	)
-       (out-type "pdf")
-       )
+(defmethod initialize-instance ((pv <pdf-printer-viewer>)
+				&key
+				  (graphviz-prg :filter-dot)
+				  (dpi "300")
+				  (executable
+				   (cond
+				     ((uiop/os:os-windows-p)
+				      (cond
+					((probe-file "C:/Program Files (x86)/Adobe/Acrobat Reader DC/Reader/AcroRd32.exe") "C:/Program Files (x86)/Adobe/Acrobat Reader DC/Reader/AcroRd32.exe")
+					((probe-file "C:/Program Files/Adobe/Reader 11.0/Reader/AcroRd32.exe") "C:/Program Files/Adobe/Reader 11.0/Reader/AcroRd32.exe")))
+				     ((uiop/os:os-unix-p)
+				      (cond
+					((probe-file "/usr/bin/atril") "/usr/bin/atril")
+					((probe-file "/usr/bin/okular") "/usr/bin/okular"))))
+				   )
+				  (out-type "pdf")
+				  )
   (setf (printer-viewer-graphviz-prg pv) graphviz-prg)
   (setf (printer-viewer-dpi          pv) dpi)
   (setf (printer-viewer-executable   pv) executable)
