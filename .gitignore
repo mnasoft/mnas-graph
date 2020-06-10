@@ -3,4 +3,5 @@
 *.FASL
 *.fasl
 *.lisp-temp
+build
 \#*#
