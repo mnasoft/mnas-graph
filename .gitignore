@@ -1,9 +1,16 @@
 .directory
 *~
+*.bak
 *.FASL
 *.fasl
 *.lisp-temp
 build
 \#*\#
 
+README.pdf
+README.tex
+README.html
+
 Developers-memo.html
+Developers-memo.pdf
+Developers-memo.tex
