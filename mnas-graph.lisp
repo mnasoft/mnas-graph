@@ -39,72 +39,50 @@
        )))
   "Программа просмотрщик Графа")
 
-@export
-(defparameter *filter-dot* 
-  (cond ((and (uiop/os:os-windows-p)
-	      (string= (machine-instance)
-		       "MNASOFT-01")) "D:/PRG/msys32/mingw64/bin/dot.exe")
-	((and (uiop/os:os-windows-p)) "D:/PRG/msys32/mingw32/bin/dot.exe")
-	((uiop/os:os-unix-p) "/usr/bin/dot"))
-  "dot       - filter for drawing directed graphs")
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-@export
-(defparameter *filter-neato*
-  (cond ((and (uiop/os:os-windows-p)
-	      (string= (machine-instance)
-		       "MNASOFT-01")) "D:/PRG/msys32/mingw64/bin/neato.exe")
-	((uiop/os:os-windows-p) "d:/PRG/msys32/mingw32/bin/neato.exe")
-	((uiop/os:os-unix-p) "/usr/bin/neato"))
-  "neato     - filter for drawing undirected graphs")
-
-@export
-(defparameter *filter-twopi*
-  (cond ((and (uiop/os:os-windows-p)
-	      (string= (machine-instance)
-		       "MNASOFT-01")) "D:/PRG/msys32/mingw64/bin/twopi.exe")
-	((uiop/os:os-windows-p) "d:/PRG/msys32/mingw32/bin/twopi.exe")
-	((uiop/os:os-unix-p) "/usr/bin/twopi"))
-  "twopi     - filter for radial layouts of graphs")
-
-@export
-(defparameter *filter-circo*
+(defun make-filter-prg-path (program)
   (cond
     ((and (uiop/os:os-windows-p)
-	  (string= (machine-instance)
-		   "MNASOFT-01")) "D:/PRG/msys32/mingw64/bin/circo.exe")
-    ((uiop/os:os-windows-p) "d:/PRG/msys32/mingw32/bin/circo.exe")
-    ((uiop/os:os-unix-p) "/usr/bin/circo"))
-  "circo     - filter for circular layout of graphs")
+	  (uiop:getenv "MSYSTEM_PREFIX"))
+     (concatenate 'string (uiop:getenv "MSYSTEM_PREFIX") "/" "bin" "/" program "." "exe"))
+    ((uiop/os:os-unix-p)
+     (concatenate 'string "/usr/bin/" program))))
 
 @export
-(defparameter *filter-fdp*
-  (cond
-    ((and (uiop/os:os-windows-p)
-	  (string= (machine-instance)
-		   "MNASOFT-01")) "D:/PRG/msys32/mingw64/bin/fdp.exe")
-    ((uiop/os:os-windows-p) "d:/PRG/msys32/mingw32/bin/fdp.exe")
-    ((uiop/os:os-unix-p) "/usr/bin/fdp"))
-  "fdp       - filter for drawing undirected graphs")
+@annot.doc:doc
+"dot       - filter for drawing directed graphs"
+(defparameter *filter-dot* (make-filter-prg-path "dot"))
 
 @export
-(defparameter *filter-sfdp*
-  (cond
-    ((and (uiop/os:os-windows-p)
-	  (string= (machine-instance)
-		   "MNASOFT-01")) "D:/PRG/msys32/mingw64/bin/sfdp.exe")
-    ((uiop/os:os-windows-p) "d:/PRG/msys32/mingw32/bin/sfdp.exe")
-    ((uiop/os:os-unix-p) "/usr/bin/sfdp"))
-  "sfdp      - filter for drawing large undirected graphs")
+@annot.doc:doc
+"neato     - filter for drawing undirected graphs"
+(defparameter *filter-neato* (make-filter-prg-path "neato"))
 
 @export
-(defparameter *filter-patchwork*
-  (cond
-        ((and (uiop/os:os-windows-p)
-	  (string= (machine-instance)
-		   "MNASOFT-01")) "D:/PRG/msys32/mingw64/bin/patchwork.exe")
-	((uiop/os:os-windows-p) "D:/PRG/msys32/mingw32/bin/patchwork.exe")
-	((uiop/os:os-unix-p) "/usr/bin/patchwork"))
-  "patchwork - filter for tree maps")
+@annot.doc:doc
+"twopi     - filter for radial layouts of graphs"
+(defparameter *filter-twopi* (make-filter-prg-path "twopi"))
+
+@export
+@annot.doc:doc
+"circo     - filter for circular layout of graphs"
+(defparameter *filter-circo* (make-filter-prg-path "circo"))
+
+@export
+@annot.doc:doc
+"fdp       - filter for drawing undirected graphs"
+(defparameter *filter-fdp* (make-filter-prg-path "fdp"))
+
+@export
+@annot.doc:doc
+"sfdp      - filter for drawing large undirected graphs"
+(defparameter *filter-sfdp* (make-filter-prg-path "sfdp"))
+
+@export
+@annot.doc:doc
+"patchwork - filter for tree maps"
+(defparameter *filter-patchwork* (make-filter-prg-path "patchwork"))
 
 ;;;; generics ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
