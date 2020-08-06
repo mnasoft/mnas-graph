@@ -19,8 +19,9 @@
   "Счетчик созданных вершин, ребер, графов")
 
 @export
+@export
 (defparameter *output-path*
-  (cond ((uiop/os:os-windows-p) "D:/PRG/msys32/home/namatv") 
+  (cond ((uiop/os:os-windows-p) (namestring (probe-file "~/."))) 
 	((uiop/os:os-unix-p) (namestring (probe-file "~/."))))
   "Каталог для вывода файлов Графа по-умолчанию.")
 
