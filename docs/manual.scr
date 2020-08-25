@@ -5,9 +5,9 @@
 
 Проект определяет следующие основные классы:
 @begin(list)
- @item(@ref[id=class-<node>](<node>) - вершина графа;)
- @item(@ref[id=class-<edge>](<edge>) - ребро графа;)
- @item(@ref[id=class-<graph>](<graph>) - граф.)
+ @item(@ref[id=class-node](<node>) - вершина графа;)
+ @item(@ref[id=class-edge](<edge>) - ребро графа;)
+ @item(@ref[id=class-graph](<graph>) - граф.)
 @end(list)
 
 Пример использования:
@@ -86,9 +86,10 @@
  @cl:doc(variable *filter-patchwork*))
 @end(section)
 
-@begin[ref=class-<node>](section)  @title(Класс - <node>) @cl:with-package[name="mnas-graph"](@cl:doc(class <node>)) @end(section)
-@begin[ref=class-<edge>](section)  @title(Класс - <edge>) @cl:with-package[name="mnas-graph"](@cl:doc(class <edge>)) @end(section)
-@begin[ref=class-<graph>](section) @title(Класс - <graph>) @cl:with-package[name="mnas-graph"](@cl:doc(class <graph>)) @end(section)
+@begin[ref=class-node](section)  @title(Класс - <node>) @cl:with-package[name="mnas-graph"](@cl:doc(class <node>)) @end(section)
+@begin[ref=class-edge](section)  @title(Класс - <edge>) @cl:with-package[name="mnas-graph"](@cl:doc(class <edge>)) @end(section)
+@begin[ref=class-graph](section) @title(Класс - <graph>) @cl:with-package[name="mnas-graph"](@cl:doc(class <graph>)) @end(section)
+
 @begin(section)
 @title(Классы)
 @cl:with-package[name="mnas-graph"](
@@ -96,9 +97,6 @@
  @cl:doc(class <pdf-printer-viewer>)
  @cl:doc(class <svg-printer-viewer>))
 @end(section)
-
-
-
 
 @begin(section)
 @title(Методы)

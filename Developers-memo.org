@@ -5,59 +5,27 @@
 4) [[file:~/.slynkrc]]
 5) [[~/.sbclrc]]
 * Генерирование документации
-
-#+name: pwd
-#+BEGIN_SRC shell
-pwd
+#+name: make-html
+#+BEGIN_SRC lisp
+  (mnas-package:make-codex-documentation  :mnas-graph :mnas-graph)
 #+END_SRC
-
-#+name: basename-pwd
-#+BEGIN_SRC shell
-basename `pwd`
-#+END_SRC
-
-#+name:make-graph
-#+BEGIN_SRC lisp :var pwd=pwd :var basename-pwd=basename-pwd
-  ;;;; (require :codex)
-  ;;;; (require :mnas-package)
-  ;;;;
-  ;;;; (require :mnas-graph)
-  (let ((pkg :mnas-graph)
-	(fpath (concatenate
-		'string
-		(cond ((uiop:getenv "MSYS_HOME")) (t ""))
-		pwd "/docs/build/"
-		basename-pwd "/html/")))
-    (codex:document pkg)
-    (mnas-package:view-call-graph   pkg :out-type "png" :viewer nil :fpath fpath :fname "call-graph")
-    (mnas-package:view-system-graph pkg :out-type "png" :viewer nil :fpath fpath :fname "system-graph")
-    (mnas-package:view-class-graph  pkg :out-type "png" :viewer nil :fpath fpath :fname "class-graph")
-    (mnas-package:view-symbol-graph pkg :out-type "png" :viewer nil :fpath fpath :fname "symbol-graph"))
-#+END_SRC
-
-#+RESULTS: make-graph
-: #GRAPH(VC=17 RC=25)
-: (T:"graphviz-prg" T:"view-graph" T:"view-graph-new" T:"view-class-graph" T:"view-call-graph" T:"view-symbol-graph" T:"view-system-graph" T:"*output-path*" T:"*filter-dot*" T:"*filter-patchwork*" T:"*filter-twopi*" T:"*filter-circo*" T:"*filter-sfdp*" T:"*viewer-path*" T:"*filter-fdp*" T:"*filter-neato*" T:"*graph-count*" )
-: ((T:"view-graph"->T:"*output-path*") (T:"view-graph-new"->T:"*output-path*") (T:"view-class-graph"->T:"*output-path*") (T:"view-call-graph"->T:"*output-path*") (T:"view-symbol-graph"->T:"*output-path*") (T:"view-system-graph"->T:"*output-path*") (T:"graphviz-prg"->T:"*filter-dot*") (T:"graphviz-prg"->T:"*filter-patchwork*") (T:"graphviz-prg"->T:"*filter-twopi*") (T:"graphviz-prg"->T:"*filter-circo*") (T:"graphviz-prg"->T:"*filter-sfdp*") (T:"view-graph"->T:"*viewer-path*") (T:"view-graph-new"->T:"*viewer-path*") (T:"view-class-graph"->T:"*viewer-path*") (T:"view-call-graph"->T:"*viewer-path*") (T:"view-symbol-graph"->T:"*viewer-path*") (T:"view-system-graph"->T:"*viewer-path*") (T:"graphviz-prg"->T:"*filter-fdp*") (T:"graphviz-prg"->T:"*filter-neato*") (T:"view-graph"->T:"*graph-count*") (T:"view-graph-new"->T:"*graph-count*") (T:"view-class-graph"->T:"*graph-count*") (T:"view-call-graph"->T:"*graph-count*") (T:"view-symbol-graph"->T:"*graph-count*") (T:"view-system-graph"->T:"*graph-count*") ))
 
 * Публикация
 #+name: publish
-#+BEGIN_SRC shell :var make-graph=make-graph
+#+BEGIN_SRC shell :var make-html=make-html
+  mkdir -p "$HOME/public_html/Common-Lisp-Programs/"
+  CDIR=`basename $PWD`
+  rsync -Pavzh ./docs/build/$CDIR/html/* $HOME/public_html/Common-Lisp-Programs/$CDIR 
   if [[ `hostname` == "mnasoft-00" ]]
   then
       echo "mnasoft-00"
-      mkdir -p "$HOME/public_html/Common-Lisp-Programs/"
-      CDIR=`basename $PWD`
-      rm -rf "$HOME/public_html/Common-Lisp-Programs/$CDIR/"
-      cp -rf ./docs/build/* "$HOME/public_html/Common-Lisp-Programs/"
   fi
-  if [[ `hostname` == "ko11-118383" ]]
+  if [[ `hostname` == "N118383" ]]
   then
-      CDIR=`basename $PWD`
-      rm -rf "\\\\n133619\\home\\_namatv\\public_html\\Site\\Development\\Common-Lisp-Programs\\$CDIR\\";
-      sleep 5;
-      cp -rf "./docs/build/$CDIR" "\\\\n133619\\home\\_namatv\\public_html\\Site\\Development\\Common-Lisp-Programs\\";
+      echo "N118383"
+      mkdir -p //n133619/home/_namatv/public_html/Site/Development/Common-Lisp-Programs/$CDIR
+      rsync -Pavzh ./docs/build/$CDIR/html/* //n133619/home/_namatv/public_html/Site/Development/Common-Lisp-Programs/$CDIR
    fi
 #+END_SRC
 
-#+RESULTS: publish
+
