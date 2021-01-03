@@ -3,7 +3,50 @@
 (in-package :cl-user)
 
 (defpackage #:mnas-graph
-  (:use #:cl #:mnas-hash-table))
+  (:use #:cl #:mnas-hash-table)
+  (:export outlet-nodes
+           node-name
+           demo-3
+           connected-nodes
+           *output-path*
+           nea-from-nodes
+           demo-5
+           <edge>
+           <graph>
+           edge-to
+           graph-nodes
+           nea-to-nodes
+           *filter-patchwork*
+           view-graph
+           *filter-twopi*
+           remove-from
+           <node>
+           *filter-circo*
+           demo-1
+           graph-clear
+           *filter-fdp*
+           edge-from
+           *filter-sfdp*
+           make-random-graph
+           demo-4
+           find-edge
+           *filter-neato*
+           to-graphviz
+           *viewer-path*
+           node-counter
+           inlet-nodes
+           node-owner
+           demo-2
+           find-node
+           make-graph
+           insert-to
+           graph-edges
+           outlet-edges
+           *filter-dot*
+           to-string
+           inlet-edges))
+
+
 
 ;;;; (declaim (optimize (compilation-speed 0) (debug 3) (safety 0) (space 0) (speed 0)))
 
