@@ -1,0 +1,86 @@
+* Ссылки [[~/org/sbcl/sbcl-referencies.org][Ссылки]]
+* Генерирование документации
+#+name: codex
+#+BEGIN_SRC lisp
+  (codex:document :mnas-graph)
+#+END_SRC
+
+#+RESULTS: codex
+
+#+name: graphs
+#+BEGIN_SRC lisp :var codex=codex
+  (loop
+    :for i :in
+    '(:mnas-graph
+      )
+    :do (mnas-package:make-codex-graphs i i))
+#+END_SRC
+
+#+RESULTS: graphs
+: NIL
+
+* Публикация
+#+name: publish
+#+BEGIN_SRC shell :var graphs=graphs
+    mkdir -p "$HOME/public_html/Common-Lisp-Programs/"
+    CDIR=`dirname $PWD | xargs basename`
+    rsync -Pazh --delete ../docs/build/$CDIR/html/ $HOME/public_html/Common-Lisp-Programs/$CDIR 
+    if [[ `hostname` == "mnasoft-00" ]]
+    then
+	echo "mnasoft-00"
+  #     sh ~/bin/pi-html
+    fi
+    if [[ `hostname` == "N118383" ]]
+    then
+	echo "N118383"
+        CPL="//n133619/home/_namatv/public_html/Site/Development/Common-Lisp-Programs"
+	mkdir -p $CPL/$CDIR
+	rsync -Pazh --delete ../docs/build/$CDIR/html/ $CPL/$CDIR
+     fi
+#+END_SRC
+
+#+RESULTS: publish
+| sending                        | incremental | file | list       |         |   |         |      |            |         |          |               |
+| ./                             |             |      |            |         |   |         |      |            |         |          |               |
+| call-graph-mnas-graph.gv       |             |      |            |         |   |         |      |            |         |          |               |
+|                                | 661         | 100% | 0.00kB/s   | 0:00:00 |   | 661     | 100% | 0.00kB/s   | 0:00:00 | (xfr#1,  | to-chk=20/22) |
+| call-graph-mnas-graph.gv.png   |             |      |            |         |   |         |      |            |         |          |               |
+|                                | 32.77K      |  12% | 31.25MB/s  | 0:00:00 |   | 260.43K | 100% | 82.79MB/s  | 0:00:00 | (xfr#2,  | to-chk=19/22) |
+| class-graph-mnas-graph.gv      |             |      |            |         |   |         |      |            |         |          |               |
+|                                | 312         | 100% | 101.56kB/s | 0:00:00 |   | 312     | 100% | 101.56kB/s | 0:00:00 | (xfr#3,  | to-chk=18/22) |
+| class-graph-mnas-graph.gv.png  |             |      |            |         |   |         |      |            |         |          |               |
+|                                | 32.77K      |  48% | 10.42MB/s  | 0:00:00 |   | 67.55K  | 100% | 16.10MB/s  | 0:00:00 | (xfr#4,  | to-chk=17/22) |
+| setf-функции.html              |             |      |            |         |   |         |      |            |         |          |               |
+|                                | 2.28K       | 100% | 556.40kB/s | 0:00:00 |   | 2.28K   | 100% | 556.40kB/s | 0:00:00 | (xfr#5,  | to-chk=16/22) |
+| symbol-graph-mnas-graph.gv     |             |      |            |         |   |         |      |            |         |          |               |
+|                                | 1.16K       | 100% | 283.20kB/s | 0:00:00 |   | 1.16K   | 100% | 283.20kB/s | 0:00:00 | (xfr#6,  | to-chk=15/22) |
+| symbol-graph-mnas-graph.gv.png |             |      |            |         |   |         |      |            |         |          |               |
+|                                | 32.77K      |  11% | 7.81MB/s   | 0:00:00 |   | 285.09K | 100% | 38.84MB/s  | 0:00:00 | (xfr#7,  | to-chk=14/22) |
+| system-graph-mnas-graph.gv     |             |      |            |         |   |         |      |            |         |          |               |
+|                                | 110         | 100% | 15.35kB/s  | 0:00:00 |   | 110     | 100% | 15.35kB/s  | 0:00:00 | (xfr#8,  | to-chk=13/22) |
+| system-graph-mnas-graph.gv.png |             |      |            |         |   |         |      |            |         |          |               |
+|                                | 13.39K      | 100% | 1.82MB/s   | 0:00:00 |   | 13.39K  | 100% | 1.82MB/s   | 0:00:00 | (xfr#9,  | to-chk=12/22) |
+| графы-mnas-graph.html          |             |      |            |         |   |         |      |            |         |          |               |
+|                                | 2.57K       | 100% | 358.12kB/s | 0:00:00 |   | 2.57K   | 100% | 358.12kB/s | 0:00:00 | (xfr#10, | to-chk=11/22) |
+| классы.html                    |             |      |            |         |   |         |      |            |         |          |               |
+|                                | 19.06K      | 100% | 2.60MB/s   | 0:00:00 |   | 19.06K  | 100% | 2.60MB/s   | 0:00:00 | (xfr#11, | to-chk=10/22) |
+| макросы.html                   |             |      |            |         |   |         |      |            |         |          |               |
+|                                | 2.25K       | 100% | 313.76kB/s | 0:00:00 |   | 2.25K   | 100% | 313.76kB/s | 0:00:00 | (xfr#12, | to-chk=9/22)  |
+| методы.html                    |             |      |            |         |   |         |      |            |         |          |               |
+|                                | 6.73K       | 100% | 938.62kB/s | 0:00:00 |   | 6.73K   | 100% | 938.62kB/s | 0:00:00 | (xfr#13, | to-chk=8/22)  |
+| обзор.html                     |             |      |            |         |   |         |      |            |         |          |               |
+|                                | 3.74K       | 100% | 521.34kB/s | 0:00:00 |   | 3.74K   | 100% | 521.34kB/s | 0:00:00 | (xfr#14, | to-chk=7/22)  |
+| обобщенные-функции.html        |             |      |            |         |   |         |      |            |         |          |               |
+|                                | 5.67K       | 100% | 790.32kB/s | 0:00:00 |   | 5.67K   | 100% | 790.32kB/s | 0:00:00 | (xfr#15, | to-chk=6/22)  |
+| переменные.html                |             |      |            |         |   |         |      |            |         |          |               |
+|                                | 3.58K       | 100% | 500.00kB/s | 0:00:00 |   | 3.58K   | 100% | 500.00kB/s | 0:00:00 | (xfr#16, | to-chk=5/22)  |
+| функции.html                   |             |      |            |         |   |         |      |            |         |          |               |
+|                                | 3.25K       | 100% | 452.85kB/s | 0:00:00 |   | 3.25K   | 100% | 452.85kB/s | 0:00:00 | (xfr#17, | to-chk=4/22)  |
+| static/                        |             |      |            |         |   |         |      |            |         |          |               |
+| static/highlight.css           |             |      |            |         |   |         |      |            |         |          |               |
+|                                | 1.57K       | 100% | 219.17kB/s | 0:00:00 |   | 1.57K   | 100% | 219.17kB/s | 0:00:00 | (xfr#18, | to-chk=2/22)  |
+| static/highlight.js            |             |      |            |         |   |         |      |            |         |          |               |
+|                                | 22.99K      | 100% | 3.13MB/s   | 0:00:00 |   | 22.99K  | 100% | 3.13MB/s   | 0:00:00 | (xfr#19, | to-chk=1/22)  |
+| static/style.css               |             |      |            |         |   |         |      |            |         |          |               |
+|                                | 4.32K       | 100% | 602.40kB/s | 0:00:00 |   | 4.32K   | 100% | 602.40kB/s | 0:00:00 | (xfr#20, | to-chk=0/22)  |
+| mnasoft-00                     |             |      |            |         |   |         |      |            |         |          |               |

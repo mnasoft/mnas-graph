@@ -1,60 +1,92 @@
 ;;;; mnas-graph.lisp
 
-(in-package :cl-user)
-
 (defpackage #:mnas-graph
   (:use #:cl #:mnas-hash-table)
-  (:export outlet-nodes
-           <node>-name
-           demo-3
-           connected-nodes
-           *output-path*
-           nea-from-nodes
-           demo-5
+  (:export <node> 
            <edge>
-           <graph>
-           <edge>-to
-           <graph>-nodes
+           <graph>)
+  (:export <node>-name
+           <node>-owner
+           <node>-counter)
+  (:export <edge>-from
+           <edge>-to)
+  (:export <graph>-nodes
+           <graph>-edges)
+  ;; <node> 
+  (:export connected-nodes
+           nea-from-nodes
            nea-to-nodes
-           *filter-patchwork*
-           view-graph
-           *filter-twopi*
-           remove-from
-           <node>
-           *filter-circo*
-           demo-1
-           graph-clear
-           *filter-fdp*
-           <edge>-from
-           *filter-sfdp*
-           make-random-graph
-           demo-4
-           find-edge
-           *filter-neato*
-           to-graphviz
-           *viewer-path*
-           node-counter
-           inlet-nodes
-           node-owner
-           demo-2
-           find-node
-           make-graph
-           insert-to
-           <graph>-edges
+           inlet-edges
            outlet-edges
+           )
+  ;; <node> & <edge>
+  (:export to-string)
+  ;; <graph>
+  (:export graph-clear
+           inlet-nodes
+           outlet-nodes
+           find-node
+           remove-from
+           find-edge
+           insert-to
+           )
+  (:export view-graph
+           make-random-graph
+           to-graphviz
+           make-graph
+           )
+  (:export *output-path*
+           *viewer-path*
            *filter-dot*
-           to-string
-           inlet-edges))
+           *filter-neato*
+           *filter-circo*
+           *filter-fdp*
+           *filter-sfdp*
+           *filter-twopi*
+           *filter-patchwork*)
+  (:export demo-1
+           demo-2
+           demo-3
+           demo-4
+           demo-5
+           )
+  (:documentation
+   " Проект mnas-graph определяет базовые функции для создания
+ структуры данных типа
+ @link[uri='https://ru.wikipedia.org/wiki/Граф_(математика)'](Граф).
+
+Проект определяет следующие основные классы: @begin(list)
+@item(@ref[id=class-node](<node>) - вершина графа;)
+@item(@ref[id=class-edge](<edge>) - ребро графа;)
+@item(@ref[id=class-graph](<graph>) - граф.)  @end(list)
 
 
+ @b(Пример использования:)
+@begin[lang=lisp](code)
+(let*
+  ((g (make-instance 'mnas-graph:<graph>))
+   (v1 (make-instance 'mnas-graph:<node> :owner g :name \"v1\"))
+   (v2 (make-instance 'mnas-graph:<node> :owner g :name \"v2\"))
+   (v3 (make-instance 'mnas-graph:<node> :owner g :name \"v3\"))
+   (r1 (make-instance 'mnas-graph:<edge> :from v1 :to v2))
+   (r2 (make-instance 'mnas-graph:<edge> :from v2 :to v3))
+   (r3 (make-instance 'mnas-graph:<edge> :from v3 :to v1)))
+ (mnas-graph:insert-to v1 g)
+ (mnas-graph:insert-to v2 g)
+ (mnas-graph:insert-to v3 g)
+ (mnas-graph:insert-to r1 g)
+ (mnas-graph:insert-to r2 g)
+ (mnas-graph:insert-to r3 g)
+ (mnas-graph:view-graph g))
+@end(code)
+
+и отображения через graphviz."))
 
 ;;;; (declaim (optimize (compilation-speed 0) (debug 3) (safety 0) (space 0) (speed 0)))
-
-(setf sb-impl::*default-external-format* :utf8)
+;;;; (declaim (optimize (space 0) (compilation-speed 0)  (speed 0) (safety 3) (debug 3)))
+;;;; (setf sb-impl::*default-external-format* :utf8)
 
 (in-package #:mnas-graph)
-
-(declaim (optimize (space 0) (compilation-speed 0)  (speed 0) (safety 3) (debug 3)))
 
 (defparameter *graph-count* -1
   "Счетчик созданных вершин, ребер, графов")
@@ -122,45 +154,37 @@
 )
 ;;;; generics ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(export 'to-string    )
-(defgeneric to-string    (obj)             (:documentation "Выполняет перобразование объекта в строку"))
+(defgeneric to-string    (obj)
+  (:documentation "Выполняет перобразование объекта в строку"))
 
-(export 'insert-to    )
-(defgeneric insert-to    (obj container)   (:documentation "Добавляет obj в container"))
+(defgeneric insert-to    (obj container)
+  (:documentation "Добавляет obj в container"))
 
-(export 'remove-from  )
-(defgeneric remove-from  (obj container)   (:documentation "Добавляет obj в container"))
+(defgeneric remove-from  (obj container)
+  (:documentation "Добавляет obj в container"))
 
-(export 'inlet-nodes  )
 (defgeneric inlet-nodes  (graph)           (:documentation "Возвращает хеш-таблицу конечных вершин (вершин-стока)"))
 
-(export 'outlet-nodes )
 (defgeneric outlet-nodes (graph)           (:documentation "Возвращает хеш-таблицу начальных вершин (веншин-иточников)"))
 
-(export 'inlet-edges  )
-(defgeneric inlet-edges  (node)            (:documentation "Возвращает хеш-таблицу начальных ребер (итоков)"))
+(defgeneric inlet-edges  (node)            (:documentation "Возвращает хеш-таблицу начальных ребер (истоков)"))
 
-(export 'outlet-edges )
-(defgeneric outlet-edges (node)            (:documentation "Возвращает хеш-таблицу конечных ребер (устий)"))
+(defgeneric outlet-edges (node)
+  (:documentation
+   " Возвращает хеш-таблицу конечных ребер (устий)"))
 
-(export 'find-node    )
 (defgeneric find-node    (graph <node>-name) (:documentation "Поиск вершины по имени"))
 
-(export 'find-edge    )
 (defgeneric find-edge    (graph edge-name) (:documentation "Поиск ребра по имени"))
 
 ;;(defgeneric connected-nodes (node)         (:documentation "Поиск достижимых вершин"))
 
-(export 'nea-from-nodes  )
 (defgeneric nea-from-nodes  (node)         (:documentation "Возвращает хеш-таблицу вершин, с которыми соединена вершина node, в направлении от нее к ним"))
 
-(export 'nea-to-nodes    )
 (defgeneric nea-to-nodes    (node)         (:documentation "Возвращает хеш-таблицу вершин, с которыми соединена вершина node, в направлении от них к ней"))
 
-(export 'to-graphviz  )
 (defgeneric to-graphviz  (obj stream)      (:documentation "Выполняет объекта obj в формат программы graphviz"))
 
-(export 'view-graph )
 (defgeneric view-graph   (graph &key fpath fname graphviz-prg out-type dpi viewer)
   (:documentation "Выполняет визуализацию графа graph
 fpath         - каталог для вывода результатов работы программы;
@@ -180,31 +204,24 @@ graphviz-prg  - программа для генерации графа;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(export '<node>)
-(export '<node>-name)
-(export 'node-owner)
-(export 'node-counter)
 (defclass <node> ()
-  ((name    :accessor <node>-name    :initarg :name  :initform nil :documentation "Имя вершины")
-   (owner   :accessor node-owner   :initarg :owner :initform nil :documentation "Владелец вершины объект типа graph")
-   (counter :accessor node-counter                 :initform 0   :documentation "Количество, созданных вершин" :allocation :class))
-   (:documentation "Вершина графа"))
+  ((name    :accessor <node>-name  :initarg :name  :initform nil :documentation "Имя вершины")
+   (owner   :accessor <node>-owner :initarg :owner :initform nil :documentation "Владелец вершины объект типа graph")
+   (counter :accessor <node>-counter                 :initform 0   :documentation "Количество, созданных вершин" :allocation :class))
+   (:documentation "@b(Описание:) класс @b(<node>) представляет вершину графа.
+                                                                                "))
 
-(export '<edge>)
-(export '<edge>-from)
-(export '<edge>-to)
 (defclass <edge> ()
   ((start :accessor <edge>-from :initarg :from :initform nil :documentation "Начальная вершина ребра")
    (end   :accessor <edge>-to   :initarg :to   :initform nil :documentation "Конечная  вершина ребра"))
-  (:documentation "Ребро графа"))
+  (:documentation "@b(Описание:) класс @b(<edge>) представляет ребро графа.
+                                                                                "))
 
-(export '<graph>)
-(export '<graph>-nodes)
-(export '<graph>-edges)
 (defclass <graph> ()
   ((nodes :accessor <graph>-nodes :initform (make-hash-table) :documentation "Хешированная таблица вершин графа")
    (edges :accessor <graph>-edges :initform (make-hash-table) :documentation "Хешированная таблица ребер графа"))
-  (:documentation "Представляет граф, выражающий алгоритм изменения состояния агрегатов во времени"))
+  (:documentation "@b(Описание:) класс @b(<graph>) представляет граф.
+                                                                                "))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -212,15 +229,15 @@ graphviz-prg  - программа для генерации графа;
   (call-next-method x
 		    :name   name
     		    :owner  owner 
-		    :number (node-counter x))
+		    :number (<node>-counter x))
   (when owner (insert-to x owner))
-  (incf (node-counter x)))
+  (incf (<node>-counter x)))
 
 ;;;;;;;;;; print-object ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod print-object        ((x <node>) s))
 (defmethod print-object :after ((x <node>) s)
-	   (format s "~S:~S"   (not(null (node-owner x))) (<node>-name x)))
+	   (format s "~S:~S"   (not(null (<node>-owner x))) (<node>-name x)))
 
 (defmethod print-object        ((x <edge>) s))
 (defmethod print-object :after ((x <edge>) s)
@@ -379,7 +396,7 @@ graphviz-prg  - программа для генерации графа;
 "@b(Описание:) insert-to !!!!!!
 "
   (setf (gethash n (<graph>-nodes g)) n
-	(node-owner n) g)
+	(<node>-owner n) g)
   n)
 
 (export 'insert-to )
@@ -387,8 +404,8 @@ graphviz-prg  - программа для генерации графа;
 "@b(Описание:) insert-to ((e <edge>) (g <graph>))!!!!!!
 "
   (setf (gethash e (<graph>-edges g)) e)
-  (setf (node-owner (<edge>-from e)) g)
-  (setf (node-owner (<edge>-to   e)) g)
+  (setf (<node>-owner (<edge>-from e)) g)
+  (setf (<node>-owner (<edge>-to   e)) g)
   (setf (gethash (<edge>-from e) (<graph>-nodes g)) (<edge>-from e))
   (setf (gethash (<edge>-to   e) (<graph>-nodes g)) (<edge>-to   e))
   e)
@@ -419,7 +436,7 @@ graphviz-prg  - программа для генерации графа;
 
 ;;;;;;;;;; graph-clear ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(export 'graph-clear )
+
 (defmethod graph-clear ((g <graph>))
 "@b(Описание:) graph-clear ((g <graph>))!!!!!!
 "
@@ -429,9 +446,8 @@ graphviz-prg  - программа для генерации графа;
 
 ;;;;;;;;;;  inlet outlet ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(export 'outlet-edges )
-(defmethod outlet-edges ((n <node>) &aux (g (node-owner n)))
-"@b(Описание:) outlet-edges ((n <node>) &aux (g (node-owner n)))!!!!!!
+(defmethod outlet-edges ((n <node>) &aux (g (<node>-owner n)))
+"@b(Описание:) outlet-edges ((n <node>) &aux (g (<node>-owner n)))!!!!!!
 "
   (let ((rez-tbl(hash-table-copy (<graph>-edges g))))
     (maphash
@@ -443,8 +459,9 @@ graphviz-prg  - программа для генерации графа;
     rez-tbl))
 
 (export 'inlet-edges )
-(defmethod inlet-edges ((n <node>) &aux (g (node-owner n)))
-"@b(Описание:) inlet-edges ((n <node>) &aux (g (node-owner n)))!!!!!!
+
+(defmethod inlet-edges ((n <node>) &aux (g (<node>-owner n)))
+"@b(Описание:) inlet-edges ((n <node>) &aux (g (<node>-owner n)))!!!!!!
 "
   (let ((rez-tbl (hash-table-copy (<graph>-edges g))))
     (maphash
@@ -596,7 +613,6 @@ graphviz-prg  - программа для генерации графа;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(export 'nea-to-nodes  )
 (defmethod nea-to-nodes  ((n <node>) &aux (ht (make-hash-table)))
 "@b(Описание:) nea-to-nodes возвращает хеш-таблицу вершин, с которыми соединена вершина <node>, в направлении от нее к ним.
 "
@@ -608,7 +624,6 @@ graphviz-prg  - программа для генерации графа;
   (print-items ht)
   ht)
 
-(export 'nea-from-nodes  )
 (defmethod nea-from-nodes  ((n <node>) &aux (ht (make-hash-table)))
 "@b(Описание:) nea-from-nodes
 Возвращает хеш-таблицу вершин, с которыми соединена вершина <node>, в направлении от них к ней.
@@ -623,7 +638,6 @@ graphviz-prg  - программа для генерации графа;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(export 'connected-nodes )
 (defmethod connected-nodes ((n <node>) &key (direction :direction-to) &aux (ht (make-hash-table )))
 "@b(Описание:) connected-nodes ((n <node>) &key (direction :direction-to) &aux (ht (make-hash-table )))!!!!!!
 "

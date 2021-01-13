@@ -20,9 +20,9 @@
 (defmethod initialize-instance :around ((x vertex) &key node-name vertex-state)
   (call-next-method x
 		    :name           node-name 
-		    :vertex-number (node-counter x)
+		    :vertex-number (<node>-counter x)
 		    :vertex-state  vertex-state)
-  (incf (node-counter x)))
+  (incf (<node>-counter x)))
 
 (defmethod print-object :after ((x vertex) s)
     (call-next-method x)

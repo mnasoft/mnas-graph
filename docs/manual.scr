@@ -10,7 +10,8 @@
  @item(@ref[id=class-graph](<graph>) - граф.)
 @end(list)
 
-Пример использования:
+
+ @b(Пример использования:)
 @begin[lang=lisp](code)
 (let*
   ((g (make-instance 'mnas-graph:<graph>))
@@ -29,7 +30,7 @@
  (mnas-graph:view-graph g))
 @end(code)
 
-и отображения через graphviz
+и отображения через graphviz.
 
 @end(section)
 
