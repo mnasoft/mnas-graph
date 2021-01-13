@@ -30,7 +30,7 @@
 		   (vertex-number x)
 		   (vertex-state  x)))
 
-(defmethod to-string ((x vertex)) (format nil "~A:~A" (node-name x) (vertex-number x)))
+(defmethod to-string ((x vertex)) (format nil "~A:~A" (<node>-name x) (vertex-number x)))
 
 
 (make-instance 'vertex :name "NNN")

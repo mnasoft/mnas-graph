@@ -5,7 +5,7 @@
 (defpackage #:mnas-graph
   (:use #:cl #:mnas-hash-table)
   (:export outlet-nodes
-           node-name
+           <node>-name
            demo-3
            connected-nodes
            *output-path*
@@ -13,8 +13,8 @@
            demo-5
            <edge>
            <graph>
-           edge-to
-           graph-nodes
+           <edge>-to
+           <graph>-nodes
            nea-to-nodes
            *filter-patchwork*
            view-graph
@@ -25,7 +25,7 @@
            demo-1
            graph-clear
            *filter-fdp*
-           edge-from
+           <edge>-from
            *filter-sfdp*
            make-random-graph
            demo-4
@@ -40,7 +40,7 @@
            find-node
            make-graph
            insert-to
-           graph-edges
+           <graph>-edges
            outlet-edges
            *filter-dot*
            to-string
@@ -144,7 +144,7 @@
 (defgeneric outlet-edges (node)            (:documentation "Возвращает хеш-таблицу конечных ребер (устий)"))
 
 (export 'find-node    )
-(defgeneric find-node    (graph node-name) (:documentation "Поиск вершины по имени"))
+(defgeneric find-node    (graph <node>-name) (:documentation "Поиск вершины по имени"))
 
 (export 'find-edge    )
 (defgeneric find-edge    (graph edge-name) (:documentation "Поиск ребра по имени"))
@@ -181,29 +181,29 @@ graphviz-prg  - программа для генерации графа;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (export '<node>)
-(export 'node-name)
+(export '<node>-name)
 (export 'node-owner)
 (export 'node-counter)
 (defclass <node> ()
-  ((name    :accessor node-name    :initarg :name  :initform nil :documentation "Имя вершины")
+  ((name    :accessor <node>-name    :initarg :name  :initform nil :documentation "Имя вершины")
    (owner   :accessor node-owner   :initarg :owner :initform nil :documentation "Владелец вершины объект типа graph")
    (counter :accessor node-counter                 :initform 0   :documentation "Количество, созданных вершин" :allocation :class))
    (:documentation "Вершина графа"))
 
 (export '<edge>)
-(export 'edge-from)
-(export 'edge-to)
+(export '<edge>-from)
+(export '<edge>-to)
 (defclass <edge> ()
-  ((start :accessor edge-from :initarg :from :initform nil :documentation "Начальная вершина ребра")
-   (end   :accessor edge-to   :initarg :to   :initform nil :documentation "Конечная  вершина ребра"))
+  ((start :accessor <edge>-from :initarg :from :initform nil :documentation "Начальная вершина ребра")
+   (end   :accessor <edge>-to   :initarg :to   :initform nil :documentation "Конечная  вершина ребра"))
   (:documentation "Ребро графа"))
 
 (export '<graph>)
-(export 'graph-nodes)
-(export 'graph-edges)
+(export '<graph>-nodes)
+(export '<graph>-edges)
 (defclass <graph> ()
-  ((nodes :accessor graph-nodes :initform (make-hash-table) :documentation "Хешированная таблица вершин графа")
-   (edges :accessor graph-edges :initform (make-hash-table) :documentation "Хешированная таблица ребер графа"))
+  ((nodes :accessor <graph>-nodes :initform (make-hash-table) :documentation "Хешированная таблица вершин графа")
+   (edges :accessor <graph>-edges :initform (make-hash-table) :documentation "Хешированная таблица ребер графа"))
   (:documentation "Представляет граф, выражающий алгоритм изменения состояния агрегатов во времени"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -220,32 +220,32 @@ graphviz-prg  - программа для генерации графа;
 
 (defmethod print-object        ((x <node>) s))
 (defmethod print-object :after ((x <node>) s)
-	   (format s "~S:~S"   (not(null (node-owner x))) (node-name x)))
+	   (format s "~S:~S"   (not(null (node-owner x))) (<node>-name x)))
 
 (defmethod print-object        ((x <edge>) s))
 (defmethod print-object :after ((x <edge>) s)
-  (format s "(~S->~S)" (edge-from x) (edge-to x)))
+  (format s "(~S->~S)" (<edge>-from x) (<edge>-to x)))
 
 (defmethod print-object        ((x <graph>) s))
 (defmethod print-object :after ((x <graph>) s)
   (format s "#GRAPH(VC=~S RC=~S"
-	  (hash-table-count (graph-nodes x))
-	  (hash-table-count (graph-edges x)))
-  (when (< 0 (hash-table-count (graph-nodes x)))
+	  (hash-table-count (<graph>-nodes x))
+	  (hash-table-count (<graph>-edges x)))
+  (when (< 0 (hash-table-count (<graph>-nodes x)))
     (format s ")~%(" )
     (maphash
      #'(lambda (key val)
 	 val
 	 (format s "~S " key))
-     (graph-nodes x))
+     (<graph>-nodes x))
     (format s ")" ))
-  (when (< 0 (hash-table-count (graph-edges x)))
+  (when (< 0 (hash-table-count (<graph>-edges x)))
     (format s "~%(" )
     (maphash
      #'(lambda (key val)
 	 val
 	 (format s "~S " key))
-     (graph-edges x))
+     (<graph>-edges x))
     (format s ")"))
   (format s ")"))
 
@@ -365,20 +365,20 @@ graphviz-prg  - программа для генерации графа;
 (defmethod to-string ((x <node>))
 "@b(Описание:) to-string !!!!!!
 "
- (format nil "~A" (node-name x)))
+ (format nil "~A" (<node>-name x)))
 (export 'to-string )
 
 (defmethod to-string ((x <edge>))
 "@b(Описание:) to-string !!!!!!
 "
-  (format nil "~A->~A" (to-string (edge-from x)) (to-string (edge-to x))))
+  (format nil "~A->~A" (to-string (<edge>-from x)) (to-string (<edge>-to x))))
 ;;;;;;;;;; insert-to ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (export 'insert-to )
 (defmethod insert-to ((n <node>) (g <graph>))
 "@b(Описание:) insert-to !!!!!!
 "
-  (setf (gethash n (graph-nodes g)) n
+  (setf (gethash n (<graph>-nodes g)) n
 	(node-owner n) g)
   n)
 
@@ -386,11 +386,11 @@ graphviz-prg  - программа для генерации графа;
 (defmethod insert-to ((e <edge>) (g <graph>))
 "@b(Описание:) insert-to ((e <edge>) (g <graph>))!!!!!!
 "
-  (setf (gethash e (graph-edges g)) e)
-  (setf (node-owner (edge-from e)) g)
-  (setf (node-owner (edge-to   e)) g)
-  (setf (gethash (edge-from e) (graph-nodes g)) (edge-from e))
-  (setf (gethash (edge-to   e) (graph-nodes g)) (edge-to   e))
+  (setf (gethash e (<graph>-edges g)) e)
+  (setf (node-owner (<edge>-from e)) g)
+  (setf (node-owner (<edge>-to   e)) g)
+  (setf (gethash (<edge>-from e) (<graph>-nodes g)) (<edge>-from e))
+  (setf (gethash (<edge>-to   e) (<graph>-nodes g)) (<edge>-to   e))
   e)
 
 ;;;;;;;;;; remove-from ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -398,23 +398,23 @@ graphviz-prg  - программа для генерации графа;
 (defmethod remove-from ((n <node>) (g <graph> ))
 "@b(Описание:) remove-from ((n <node>) (g <graph> ))!!!!!!
 "
-  (let* ((rh (graph-edges g))
+  (let* ((rh (<graph>-edges g))
 	 (rl (hash-table-copy rh)))
     (maphash #'(lambda(key val)
 		 val
 		 (if (or
-		      (eq (edge-from key) n)
-		      (eq (edge-to key)   n))
+		      (eq (<edge>-from key) n)
+		      (eq (<edge>-to key)   n))
 		     (remhash key rh)))
 	     rl)
-    (if (remhash n (graph-nodes g))
+    (if (remhash n (<graph>-nodes g))
 	n)))
 
 (export 'remove-from )
 (defmethod remove-from ((e <edge>) (g <graph> ) )
 "@b(Описание:) remove-from ((e <edge>) (g <graph> ) )!!!!!!
 "
-  (if (remhash e (graph-edges g))
+  (if (remhash e (<graph>-edges g))
 	e))
 
 ;;;;;;;;;; graph-clear ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -423,8 +423,8 @@ graphviz-prg  - программа для генерации графа;
 (defmethod graph-clear ((g <graph>))
 "@b(Описание:) graph-clear ((g <graph>))!!!!!!
 "
-  (clrhash (graph-nodes g))
-  (clrhash (graph-edges g))
+  (clrhash (<graph>-nodes g))
+  (clrhash (<graph>-edges g))
   g)
 
 ;;;;;;;;;;  inlet outlet ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -433,26 +433,26 @@ graphviz-prg  - программа для генерации графа;
 (defmethod outlet-edges ((n <node>) &aux (g (node-owner n)))
 "@b(Описание:) outlet-edges ((n <node>) &aux (g (node-owner n)))!!!!!!
 "
-  (let ((rez-tbl(hash-table-copy (graph-edges g))))
+  (let ((rez-tbl(hash-table-copy (<graph>-edges g))))
     (maphash
      #'(lambda (key val)
 	 val
-	 (if (not(eq (edge-from key) n))
+	 (if (not(eq (<edge>-from key) n))
 	     (remhash  key rez-tbl)))
-     (graph-edges g))
+     (<graph>-edges g))
     rez-tbl))
 
 (export 'inlet-edges )
 (defmethod inlet-edges ((n <node>) &aux (g (node-owner n)))
 "@b(Описание:) inlet-edges ((n <node>) &aux (g (node-owner n)))!!!!!!
 "
-  (let ((rez-tbl (hash-table-copy (graph-edges g))))
+  (let ((rez-tbl (hash-table-copy (<graph>-edges g))))
     (maphash
      #'(lambda (key val)
 	 val
-	 (if (not(eq (edge-to key) n))
+	 (if (not(eq (<edge>-to key) n))
 	     (remhash  key rez-tbl)))
-     (graph-edges g))
+     (<graph>-edges g))
     rez-tbl))
 
 ;;;;;;;;;; find-* ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -466,7 +466,7 @@ graphviz-prg  - программа для генерации графа;
 		 val
 	       (if (string= (to-string key) str)
 		   (setf v-rez key)))
-	     (graph-nodes g))
+	     (<graph>-nodes g))
     v-rez))
 
 (export 'find-edge )
@@ -478,7 +478,7 @@ graphviz-prg  - программа для генерации графа;
 		 val
 	       (if (string= (to-string key) str)
 		   (setf e-rez key)))
-	     (graph-edges g))
+	     (<graph>-edges g))
     e-rez))
 
 ;;;; to-graphviz ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -493,9 +493,9 @@ graphviz-prg  - программа для генерации графа;
 "@b(Описание:) to-graphviz ((r <edge>) s)!!!!!!
 "
   (format s "~S ~A ~S~%"
-	  (to-string (edge-from r))
+	  (to-string (<edge>-from r))
 	  "->"
-	  (to-string (edge-to r))))
+	  (to-string (<edge>-to r))))
 
 (defun x-preamble (&key (out t) (name "G") (rankdir "LR") (shape "box"))
 "x-preamble записывает преамбулу при выводе графа в gv-файл."
@@ -508,8 +508,8 @@ graphviz-prg  - программа для генерации графа;
 "@b(Описание:) to-graphviz ((g <graph>) s)!!!!!!
 "
   (x-preamble :out s)
-  (maphash #'(lambda (key val) val (to-graphviz key s)) (graph-nodes g))  
-  (maphash #'(lambda (key val) val (to-graphviz key s)) (graph-edges g))  
+  (maphash #'(lambda (key val) val (to-graphviz key s)) (<graph>-nodes g))  
+  (maphash #'(lambda (key val) val (to-graphviz key s)) (<graph>-edges g))  
   (x-postamble :out s))
 
 ;;;; make-graph data ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -603,7 +603,7 @@ graphviz-prg  - программа для генерации графа;
   (maphash
    #'(lambda (key val)
        val
-       (setf (gethash (edge-to key) ht) (edge-to key)))
+       (setf (gethash (<edge>-to key) ht) (<edge>-to key)))
    (outlet-edges n))
   (print-items ht)
   ht)
@@ -616,7 +616,7 @@ graphviz-prg  - программа для генерации графа;
   (maphash
    #'(lambda (key val)
        val
-       (setf (gethash (edge-from key) ht) (edge-from key)))
+       (setf (gethash (<edge>-from key) ht) (<edge>-from key)))
    (inlet-edges n))
   (print-items ht)
   ht)
