@@ -29,6 +29,8 @@
            remove-from
            find-edge
            insert-to
+           <graph>-nodes-count
+           <graph>-edges-count
            )
   (:export view-graph
            make-random-graph
@@ -55,32 +57,31 @@
  структуры данных типа
  @link[uri='https://ru.wikipedia.org/wiki/Граф_(математика)'](Граф).
 
-Проект определяет следующие основные классы: @begin(list)
+Проект определяет следующие основные классы: 
+@begin(list)
 @item(@ref[id=class-node](<node>) - вершина графа;)
 @item(@ref[id=class-edge](<edge>) - ребро графа;)
-@item(@ref[id=class-graph](<graph>) - граф.)  @end(list)
-
+@item(@ref[id=class-graph](<graph>) - граф.)  
+@end(list)
 
  @b(Пример использования:)
 @begin[lang=lisp](code)
-(let*
-  ((g (make-instance 'mnas-graph:<graph>))
-   (v1 (make-instance 'mnas-graph:<node> :owner g :name \"v1\"))
-   (v2 (make-instance 'mnas-graph:<node> :owner g :name \"v2\"))
-   (v3 (make-instance 'mnas-graph:<node> :owner g :name \"v3\"))
-   (r1 (make-instance 'mnas-graph:<edge> :from v1 :to v2))
-   (r2 (make-instance 'mnas-graph:<edge> :from v2 :to v3))
-   (r3 (make-instance 'mnas-graph:<edge> :from v3 :to v1)))
- (mnas-graph:insert-to v1 g)
- (mnas-graph:insert-to v2 g)
- (mnas-graph:insert-to v3 g)
- (mnas-graph:insert-to r1 g)
- (mnas-graph:insert-to r2 g)
- (mnas-graph:insert-to r3 g)
- (mnas-graph:view-graph g))
-@end(code)
-
-и отображения через graphviz."))
+  (let*
+      ((g (make-instance 'mnas-graph:<graph>))
+       (v1 (make-instance 'mnas-graph:<node> :owner g :name \"v1\"))
+       (v2 (make-instance 'mnas-graph:<node> :owner g :name \"v2\"))
+       (v3 (make-instance 'mnas-graph:<node> :owner g :name \"v3\"))
+       (r1 (make-instance 'mnas-graph:<edge> :from v1 :to v2))
+       (r2 (make-instance 'mnas-graph:<edge> :from v2 :to v3))
+       (r3 (make-instance 'mnas-graph:<edge> :from v3 :to v1)))
+    (mnas-graph:insert-to v1 g)
+    (mnas-graph:insert-to v2 g)
+    (mnas-graph:insert-to v3 g)
+    (mnas-graph:insert-to r1 g)
+    (mnas-graph:insert-to r2 g)
+    (mnas-graph:insert-to r3 g)
+    (mnas-graph:view-graph g))
+@end(code) и отображения через graphviz."))
 
 ;;;; (declaim (optimize (compilation-speed 0) (debug 3) (safety 0) (space 0) (speed 0)))
 ;;;; (declaim (optimize (space 0) (compilation-speed 0)  (speed 0) (safety 3) (debug 3)))
@@ -664,3 +665,15 @@ graphviz-prg  - программа для генерации графа;
 		    (nea-from-nodes key)))
 	       ht))
     (setf count-after (hash-table-count ht))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(export '(<graph>-nodes-count <graph>-edges-count))
+        
+(defmethod <graph>-nodes-count ((graph <graph>))
+  " @b(Описание:) метод @b(<graph>-nodes-count) возвращает количество вершин графа @b(graph)."
+  (hash-table-count (<graph>-nodes graph)))
+
+(defmethod <graph>-edges-count ((graph <graph>))
+  " @b(Описание:) метод @b(<graph>-nodes-count) возвращает количество ребер графа @b(graph)."
+  (hash-table-count (<graph>-edges graph)))
