@@ -1,8 +1,15 @@
 ;;;; demos.lisp
 
-(in-package #:mnas-graph)
+(defpackage #:mnas-graph/demos
+  (:use #:cl #:mnas-graph)
+  (:export demo-1
+           demo-2
+           demo-3
+           demo-4
+           demo-5))
 
-(export 'demo-1 )
+(in-package #:mnas-graph/demos)
+
 (defun demo-1 () 
   (view-graph
    (make-graph
@@ -10,7 +17,6 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(export 'demo-2 )
 (defun demo-2 () 
   (view-graph
    (make-graph
@@ -33,7 +39,6 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(export 'demo-3 )
 (defun demo-3 () 
   (view-graph
    (make-graph
@@ -63,7 +68,6 @@
       ("A" "B") ("B" "C") ("C" "D") ("D" "E") ("E" "A")
       )) :graphviz-prg :filter-fdp))
 
-(export 'demo-4 )
 (defun demo-4 () 
   (view-graph
    (make-graph
@@ -86,7 +90,6 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(export 'demo-5 )
 (defun demo-5 ()
   (view-graph (make-random-graph :node-max-number   10 :edges-number   6) :graphviz-prg :filter-neato)
   (view-graph (make-random-graph :node-max-number   16 :edges-number  10) :graphviz-prg :filter-neato)

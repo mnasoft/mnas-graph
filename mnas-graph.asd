@@ -10,8 +10,17 @@
   :depends-on ("mnas-hash-table")
   :components ((:module "src"
 		:serial nil
-                :components ((:file "mnas-graph")
-	       (:file "demos" :depends-on ("mnas-graph"))))))
+                :components ((:file "mnas-graph")))))
+
+(defsystem "mnas-graph/demos"
+  :description "Тестирование систем, входящих  в проект mnas-graph"
+  :author "Nick Matvyeyev <mnasoft@gmail.com>"
+  :license "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 or later"  
+  :depends-on ("mnas-graph")
+  :components ((:module "src/demos"
+		:serial nil
+                :components ((:file "demos" :depends-on ("mnas-graph"))
+                             ))))
 
 (defsystem "mnas-graph/tests"
   :description "Тестирование систем, входящих  в проект mnas-graph"
