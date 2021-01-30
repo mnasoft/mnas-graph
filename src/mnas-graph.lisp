@@ -32,20 +32,10 @@
            <graph>-nodes-count
            <graph>-edges-count
            )
-  (:export view-graph
+  
+  (:export make-graph
            make-random-graph
-           to-graphviz
-           make-graph
            )
-  (:export *output-path*
-           *viewer-path*
-           *filter-dot*
-           *filter-neato*
-           *filter-circo*
-           *filter-fdp*
-           *filter-sfdp*
-           *filter-twopi*
-           *filter-patchwork*)
   (:documentation
    " Проект mnas-graph определяет базовые функции для создания
  структуры данных типа
@@ -83,68 +73,6 @@
 
 (in-package #:mnas-graph)
 
-(defparameter *graph-count* -1
-  "Счетчик созданных вершин, ребер, графов")
-
-(defparameter *output-path*
-  (cond ((uiop/os:os-windows-p) (namestring (probe-file "~/."))) 
-	((uiop/os:os-unix-p) (namestring (probe-file "~/."))))
-  "Каталог для вывода файлов Графа по-умолчанию.")
-
-(export '*viewer-path*)
-
-(defparameter *viewer-path*
-  (cond
-    ((uiop/os:os-windows-p)
-     (cond
-       ((probe-file "C:/Program Files (x86)/Adobe/Acrobat Reader DC/Reader/AcroRd32.exe") "C:/Program Files (x86)/Adobe/Acrobat Reader DC/Reader/AcroRd32.exe")
-       ((probe-file "C:/Program Files/Adobe/Reader 11.0/Reader/AcroRd32.exe") "C:/Program Files/Adobe/Reader 11.0/Reader/AcroRd32.exe")))
-    ((uiop/os:os-unix-p)
-     (cond
-       ((probe-file "/usr/bin/xdg-open") "/usr/bin/xdg-open")
-       ((probe-file "/usr/bin/atril") "/usr/bin/atril")
-       ((probe-file "/usr/bin/atril") "/usr/bin/okular")
-       )))
-  "Программа просмотрщик Графа")
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defun make-filter-prg-path (program)
-  (cond
-    ((and (uiop/os:os-windows-p)
-	  (uiop:getenv "MSYSTEM_PREFIX"))
-     (concatenate 'string (uiop:getenv "MSYSTEM_PREFIX") "/" "bin" "/" program "." "exe"))
-    ((uiop/os:os-unix-p)
-     (concatenate 'string "/usr/bin/" program))))
-
-(defparameter *filter-dot* (make-filter-prg-path "dot")
-  "dot       - filter for drawing directed graphs"
-  )
-
-(defparameter *filter-neato* (make-filter-prg-path "neato")
-  "neato     - filter for drawing undirected graphs"
-  )
-
-(defparameter *filter-twopi* (make-filter-prg-path "twopi")
-  "twopi     - filter for radial layouts of graphs"
-  )
-
-(defparameter *filter-circo* (make-filter-prg-path "circo")
-  "circo     - filter for circular layout of graphs"
-  )
-
-(defparameter *filter-fdp* (make-filter-prg-path "fdp")
-  "fdp       - filter for drawing undirected graphs"
-  )
-
-(defparameter *filter-sfdp* (make-filter-prg-path "sfdp")
-  "sfdp      - filter for drawing large undirected graphs"
-  )
-
-(defparameter *filter-patchwork* (make-filter-prg-path "patchwork")
-  "patchwork - filter for tree maps"
-  )
-
 ;;;; generics ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defgeneric to-string    (obj)
@@ -153,18 +81,15 @@
 (defgeneric insert-to    (obj container)
   (:documentation "Добавляет obj в container"))
 
-(defgeneric remove-from  (obj container)
-  (:documentation "Добавляет obj в container"))
+(defgeneric remove-from  (obj container) (:documentation "Добавляет obj в container"))
 
-(defgeneric inlet-nodes  (graph)           (:documentation "Возвращает хеш-таблицу конечных вершин (вершин-стока)"))
+(defgeneric inlet-nodes  (graph) (:documentation "Возвращает хеш-таблицу конечных вершин (вершин-стока)"))
 
-(defgeneric outlet-nodes (graph)           (:documentation "Возвращает хеш-таблицу начальных вершин (веншин-иточников)"))
+(defgeneric outlet-nodes (graph) (:documentation "Возвращает хеш-таблицу начальных вершин (веншин-иточников)"))
 
-(defgeneric inlet-edges  (node)            (:documentation "Возвращает хеш-таблицу начальных ребер (истоков)"))
+(defgeneric inlet-edges  (node) (:documentation "Возвращает хеш-таблицу начальных ребер (истоков)"))
 
-(defgeneric outlet-edges (node)
-  (:documentation
-   " Возвращает хеш-таблицу конечных ребер (устий)"))
+(defgeneric outlet-edges (node) (:documentation " Возвращает хеш-таблицу конечных ребер (устий)"))
 
 (defgeneric find-node    (graph <node>-name) (:documentation "Поиск вершины по имени"))
 
@@ -175,25 +100,6 @@
 (defgeneric nea-from-nodes  (node)         (:documentation "Возвращает хеш-таблицу вершин, с которыми соединена вершина node, в направлении от нее к ним"))
 
 (defgeneric nea-to-nodes    (node)         (:documentation "Возвращает хеш-таблицу вершин, с которыми соединена вершина node, в направлении от них к ней"))
-
-(defgeneric to-graphviz  (obj stream)      (:documentation "Выполняет объекта obj в формат программы graphviz"))
-
-(defgeneric view-graph   (graph &key fpath fname graphviz-prg out-type dpi viewer)
-  (:documentation "Выполняет визуализацию графа graph
-fpath         - каталог для вывода результатов работы программы;
-fname         - имя gv-файла;
-out-type      - тип выходного файла;
-dpi           - количество точек на дюйм;
-viewer        - программа для просмотра графа;
-graphviz-prg  - программа для генерации графа;
- :filter-dot
- :filter-neato
- :filter-twopi
- :filter-circo
- :filter-fdp  
- :filter-sfdp 
- :filter-patchwork 
-"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -264,107 +170,7 @@ graphviz-prg  - программа для генерации графа;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defclass <printer-viewer> ()
-  ((graphviz-prg :accessor printer-viewer-graphviz-prg :initarg :graphviz-prg :initform :filter-dot
-		 :documentation "Программа для вывода")
-   (dpi          :accessor printer-viewer-dpi          :initarg :dpi          :initform "300"
-		 :documentation "Разрешение принтера")
-   (executable   :accessor printer-viewer-executable   :initarg :executable   :initform "C:/Program Files/Internet Explorer/iexplore.exe"
-		 :documentation "Путь к выполняемой программе")
-   (out-type     :accessor printer-viewer-out-type :initarg :out-type         :initform "pdf"
-		 :documentation "Формат файла для вывода"))
-  (:documentation "Принтер-просмотрщик"))
 
-(defmethod print-object :after ((pv <printer-viewer>) s)
-  (format s "
- graphviz-prg = ~S
- dpi          = ~S
- executable   = ~S
- out-type     = ~S~%"
-	  (printer-viewer-graphviz-prg pv)
-	  (printer-viewer-dpi pv)
-	  (printer-viewer-executable pv)
-	  (printer-viewer-out-type  pv)
-	  ))
-
-(defclass <pdf-printer-viewer> (<printer-viewer>) ()
-  (:documentation "PDF - принтер-просмотрщик"))
-
-(defmethod initialize-instance ((pv <pdf-printer-viewer>)
-				&key
-				  (graphviz-prg :filter-dot)
-				  (dpi "300")
-				  (executable
-				   (cond
-				     ((uiop/os:os-windows-p)
-				      (cond
-					((probe-file "C:/Program Files (x86)/Adobe/Acrobat Reader DC/Reader/AcroRd32.exe") "C:/Program Files (x86)/Adobe/Acrobat Reader DC/Reader/AcroRd32.exe")
-					((probe-file "C:/Program Files/Adobe/Reader 11.0/Reader/AcroRd32.exe") "C:/Program Files/Adobe/Reader 11.0/Reader/AcroRd32.exe")))
-				     ((uiop/os:os-unix-p)
-				      (cond
-					((probe-file "/usr/bin/atril") "/usr/bin/atril")
-					((probe-file "/usr/bin/okular") "/usr/bin/okular"))))
-				   )
-				  (out-type "pdf")
-				  )
-  (setf (printer-viewer-graphviz-prg pv) graphviz-prg)
-  (setf (printer-viewer-dpi          pv) dpi)
-  (setf (printer-viewer-executable   pv) executable)
-  (setf (printer-viewer-out-type     pv) out-type))
-
-(defclass <svg-printer-viewer> (<printer-viewer>) ()
-  (:documentation "SVG - принтер-просмотрщик"))
-
-(defmethod initialize-instance
-    ((pv <svg-printer-viewer>)
-     &key
-       (graphviz-prg :filter-dot)
-       (dpi "300")
-       (executable
-	(cond
-	  ((uiop/os:os-windows-p)
-	   (cond
-	     ((probe-file "C:/Program Files/Internet Explorer/iexplore.exe") "C:/Program Files/Internet Explorer/iexplore.exe")
-	     ((probe-file "C:/Program Files/Mozilla Firefox/firefox.exe") "C:/Program Files/Mozilla Firefox/firefox.exe")))
-	  ((uiop/os:os-unix-p)
-	   (cond
-	     ((probe-file "/usr/bin/atril") "/usr/bin/atril")
-	     ((probe-file "/usr/bin/atril") "/usr/bin/okular"))))
-	)
-       (out-type "svg")
-       )
-  (setf (printer-viewer-graphviz-prg pv) graphviz-prg)
-  (setf (printer-viewer-dpi          pv) dpi)
-  (setf (printer-viewer-executable   pv) executable)
-  (setf (printer-viewer-out-type     pv) out-type))
-
-; (printer-viewer graphviz-prg pv)
-; (printer-viewer-dpi          pv)
-; (printer-viewer-executable   pv)
-; (printer-viewer-out-type     pv)
-
-(defmethod view-graph-new ((g <graph>) (pv <printer-viewer>)
-			   &key
-			     (fpath *output-path*)
-			     (fname  (format nil "graph-~6,'0D" (incf *graph-count*)))
-			     (graphviz-prg :filter-dot)
-			     (out-type "pdf")
-			     (dpi "300")
-			     (viewer *viewer-path*))
-  (with-open-file (out (concatenate 'string fpath "/" fname ".gv")
-		       :direction :output :if-exists :supersede :external-format :UTF8)
-    (to-graphviz g out))
-  (sb-ext:run-program (graphviz-prg graphviz-prg)
-		      (list (concatenate 'string "-T" out-type)
-			    (concatenate 'string "-Gdpi=" dpi)
-			    "-o"
-			    (concatenate 'string fpath "/" fname ".gv" "." out-type)
-			    (concatenate 'string fpath "/" fname ".gv")))
-  (when viewer
-    (sb-ext:run-program viewer
-			(list (concatenate 'string fpath "/" fname ".gv" "." out-type))
-			:wait nil))
-  g)
 
 ;;;;;;;;;; to-string ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -478,8 +284,6 @@ graphviz-prg  - программа для генерации графа;
 
 ;;;;;;;;;; find-* ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(export 'find-node )
-
 (defmethod find-node ((g <graph>) (str string))
   "@b(Описание:) find-node ((g <graph>) (str string))!!!!!!
 "
@@ -490,8 +294,6 @@ graphviz-prg  - программа для генерации графа;
 		     (setf v-rez key)))
 	     (<graph>-nodes g))
     v-rez))
-
-(export 'find-edge )
 
 (defmethod find-edge ((g <graph>) (str string))
   "@b(Описание:) find-edge ((g <graph>) (str string))!!!!!!
@@ -504,46 +306,7 @@ graphviz-prg  - программа для генерации графа;
 	     (<graph>-edges g))
     e-rez))
 
-;;;; to-graphviz ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(export 'to-graphviz )
-
-(defmethod to-graphviz ((n <node>) s)
-  "@b(Описание:) to-graphviz ((n <node>) s)!!!!!!
-"
-  (format s "~S~%" (to-string n)))
-
-(export 'to-graphviz )
-
-(defmethod to-graphviz ((r <edge>) s)
-  "@b(Описание:) to-graphviz ((r <edge>) s)!!!!!!
-"
-  (format s "~S ~A ~S~%"
-	  (to-string (<edge>-from r))
-	  "->"
-	  (to-string (<edge>-to r))))
-
-(defun x-preamble (&key (out t) (name "G") (rankdir "LR") (shape "box"))
-  "x-preamble записывает преамбулу при выводе графа в gv-файл."
-  (format out "digraph ~A {~%  rankdir=~A~%  node[shape=~A]~%" name rankdir shape))
-
-(defun x-postamble (&key (out t))
-  "x-preamble записывает постамбулу при выводе графа в gv-файл."
-  (format out "~&}~%"))
-
-(export 'to-graphviz )
-
-(defmethod to-graphviz ((g <graph>) s)
-  "@b(Описание:) to-graphviz ((g <graph>) s)!!!!!!
-"
-  (x-preamble :out s)
-  (maphash #'(lambda (key val) val (to-graphviz key s)) (<graph>-nodes g))  
-  (maphash #'(lambda (key val) val (to-graphviz key s)) (<graph>-edges g))  
-  (x-postamble :out s))
-
 ;;;; make-graph data ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(export 'make-graph )
 
 (defun make-graph (edges &key nodes)
   "@b(Описание:) make-graph возвращает граф с ребрами edges и вершинами вершинами nodes."
@@ -560,50 +323,6 @@ graphviz-prg  - программа для генерации графа;
     g))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defun graphviz-prg (key)
-  "graphviz-prg - возвращает путь к программе dot или ее вариациям."
-  (when (symbolp key)
-    (ecase key
-      (:filter-dot       *filter-dot*      )
-      (:filter-neato     *filter-neato*    )
-      (:filter-twopi     *filter-twopi*    )
-      (:filter-circo     *filter-circo*    )
-      (:filter-fdp       *filter-fdp*      )
-      (:filter-sfdp      *filter-sfdp*     )
-      (:filter-patchwork *filter-patchwork*))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(export 'view-graph )
-
-(defmethod view-graph ((g <graph>) 
-		       &key
-			 (fpath *output-path*)
-			 (fname  (format nil "graph-~6,'0D" (incf *graph-count*)))
-			 (graphviz-prg :filter-dot)
-			 (out-type "pdf")
-			 (dpi "300")
-			 (viewer *viewer-path*))
-  "@b(Описание:)  view-graph 
-"
-  (with-open-file (out (concatenate 'string fpath "/" fname ".gv")
-		       :direction :output :if-exists :supersede :external-format :UTF8)
-    (to-graphviz g out))
-  (sb-ext:run-program (graphviz-prg graphviz-prg)
-		      (list (concatenate 'string "-T" out-type)
-			    (concatenate 'string "-Gdpi=" dpi)
-			    "-o"
-			    (concatenate 'string fpath "/" fname ".gv" "." out-type)
-			    (concatenate 'string fpath "/" fname ".gv")))
-  (when viewer
-    (sb-ext:run-program viewer
-			(list (concatenate 'string fpath "/" fname ".gv" "." out-type))
-			:wait nil))
-  g)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(export 'make-random-graph )
 
 (defun make-random-graph (&key (node-max-number 100) (edges-number node-max-number))
   "@b(Описание:) make-random-graph создает случайный граф.
@@ -681,8 +400,6 @@ graphviz-prg  - программа для генерации графа;
     (setf count-after (hash-table-count ht))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(export '(<graph>-nodes-count <graph>-edges-count))
 
 (defmethod <graph>-nodes-count ((graph <graph>))
   " @b(Описание:) метод @b(<graph>-nodes-count) возвращает количество вершин графа @b(graph)."
