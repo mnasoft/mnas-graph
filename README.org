@@ -4,7 +4,7 @@
 #+OPTIONS: p:nil pri:nil prop:nil stat:t tags:t tasks:t tex:t
 #+OPTIONS: timestamp:t title:t toc:t todo:t |:t
 #+TITLE: Mnas-Graph
-#+DATE: <2019-03-30 Сб>
+#+DATE: <2021-01-30 Сб>
 #+AUTHOR: Nick Matvyeyev 
 #+EMAIL: mnasoft@gmail.com
 #+LANGUAGE: ru
@@ -14,5 +14,17 @@
 
 #+INCLUDE: "~/org/header/header.org"
 
-Этот проект определяет базовые функции для создания и отображения через =graphviz= структуры данных типа =Graph= (граф).
+* Назначение
+Этот проект определяет базовые функции для создания и отображения структуры данных типа [[https://ru.wikipedia.org/wiki/Граф_(математика)][Граф]].
 
+Проебразование графа в формат пригодный для визуализации осуществляется при помощи программы [[https://graphviz.org][Graphviz]].
+
+* Мотивация 
+
+* Примеры
+
+#+begin_src lisp
+  (mnas-graph/view:view-graph
+    (mnas-graph:make-graph
+     '(("a" "b") ("a" "c") ("a" "d") ("b" "c") ("c" "d"))))
+#+end_src
