@@ -1,33 +1,40 @@
 * Ссылки [[~/org/sbcl/sbcl-referencies.org][Ссылки]]
 * Генерирование документации
-#+name: codex
-#+BEGIN_SRC lisp
-  (loop
-    :for i :in
-    '((:mnas-graph                :mnas-graph)
-      (:mnas-graph/filter         nil)
-      (:mnas-graph/printer-viewer nil)
-      (:mnas-graph/view           nil)
-      (:mnas-graph/demos          nil)
-      )
-    :do (apply #'mnas-package:document i))
-  (codex:document :mnas-graph)
-#+END_SRC
-
-#+RESULTS: codex
-: NIL
 
 #+name: graphs
-#+BEGIN_SRC lisp :var codex=codex
-  (loop
-    :for i :in
-    '(:mnas-graph
-      :mnas-graph/filter
-      :mnas-graph/printer-viewer
-      :mnas-graph/view
-      :mnas-graph/demos)
-    :do (mnas-package:make-codex-graphs i i))
+#+BEGIN_SRC lisp
+  (defun make-document ()
+     (loop
+       :for i :in
+       '((:mnas-graph                :mnas-graph)
+         (:mnas-graph/filter         nil)
+         (:mnas-graph/printer-viewer nil)
+         (:mnas-graph/view           nil)
+         (:mnas-graph/demos          nil)
+         )
+       :do (apply #'mnas-package:document i)))
+
+  (defun make-graphs ()
+     (loop
+       :for i :in
+       '(:mnas-graph
+         :mnas-graph/filter
+         :mnas-graph/printer-viewer
+         :mnas-graph/view
+         :mnas-graph/demos)
+       :do (mnas-package:make-codex-graphs i i)))
+
+  (defun make-all ()
+    (make-document)
+    (make-graphs)
+    (codex:document :mnas-graph)
+    (make-graphs))
+
+  (make-all)
 #+END_SRC
+
+#+RESULTS: graphs
+: NIL
 
 * Публикация
 #+name: publish
@@ -48,3 +55,7 @@
 	rsync -Pazh --delete ../docs/build/$CDIR/html/ $CPL/$CDIR
      fi
 #+END_SRC
+
+
+
+
