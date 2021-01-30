@@ -8,19 +8,32 @@
   (:export *graph-count*
            *output-path*
            *viewer-path*
-           ))
+           )
+  (:documentation
+   " Пакет @b(mnas-graph/view) определяет функции для вывода и визуализации графов.
+
+ Вывод представления графа в файл производится в формате программы
+ @link[uri=\"https://graphviz.org\"](graphviz).
+
+ Преобразование графа в пригодный для визуального представления формат
+ выполняется при помощи программы
+ @link[uri=\"https://graphviz.org\"](graphviz) или ее фильтров укладки.
+
+ В настоящее время доступны только базовые возможности визуализации графов. 
+"
+   ))
 
 (in-package  #:mnas-graph/view)
 
 (defparameter *graph-count* -1
-  "Счетчик созданных вершин, ребер, графов")
+  " @b(Описание:) глобальная переменная @b(*graph-count*) используется
+ для задния имени \(по-умолчанию\) файлу, содержащему граф.")
 
 (defparameter *output-path*
   (cond ((uiop/os:os-windows-p) (namestring (probe-file "~/."))) 
 	((uiop/os:os-unix-p) (namestring (probe-file "~/."))))
-  "Каталог для вывода файлов Графа по-умолчанию.")
-
-(export '*viewer-path*)
+  "@b(Описание:) глобальная переменная @b(*output-path*) определяет
+ каталог для вывода файлов графов \(по-умолчанию.\)")
 
 (defparameter *viewer-path*
   (cond
@@ -38,57 +51,65 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defgeneric to-graphviz  (obj stream)      (:documentation "Выполняет объекта obj в формат программы graphviz"))
+(defgeneric to-graphviz (obj stream)
+  (:documentation
+   "@b(Описание:) обобщенная функция @b(to-graphviz) выполняет объекта
+   @b(obj) в поток @b(stream) в формате программы @link[uri=\"https://graphviz.org\"](Graphviz)." ))
 
-(defgeneric view-graph   (graph &key fpath fname graphviz-prg out-type dpi viewer)
-  (:documentation "Выполняет визуализацию графа graph
-fpath         - каталог для вывода результатов работы программы;
-fname         - имя gv-файла;
-out-type      - тип выходного файла;
-dpi           - количество точек на дюйм;
-viewer        - программа для просмотра графа;
-graphviz-prg  - программа для генерации графа;
- :filter-dot
- :filter-neato
- :filter-twopi
- :filter-circo
- :filter-fdp  
- :filter-sfdp 
- :filter-patchwork 
+(defgeneric view-graph (graph &key fpath fname graphviz-prg out-type dpi viewer)
+  (:documentation
+   "@b(Описание:) обобщенная функция @b(view-graph) выполняет визуализацию графа @b(graph).
+
+ @b(Переменые:)
+@begin(list)
+ @item(fpath - каталог для вывода результатов работы программы;)
+ @item(fname - имя gv-файла;)
+ @item(out-type - тип выходного файла;)
+ @item(dpi - количество точек на дюйм;)
+ @item(viewer - программа для просмотра графа;)
+ @item(graphviz-prg - программа для генерации графа.)
+@end(list)
+
+ graphviz-prg может принимать одно из следующих значений:
+@begin(list)
+ @item(:filter-dot;)
+ @item(:filter-neato;)
+ @item(:filter-twopi;)
+ @item(:filter-circo;)
+ @item(:filter-fdp;)
+ @item(:filter-sfdp;)
+ @item(:filter-patchwork.)
+@end(list)
 "))
 
 ;;;; to-graphviz ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(export 'to-graphviz )
-
 (defmethod to-graphviz ((n <node>) s)
-  "@b(Описание:) to-graphviz ((n <node>) s)!!!!!!
-"
+  " @b(Описание:) метод @b(to-graphviz) выполняет вывод вершины графа
+ @b(n) в поток @(s)."
   (format s "~S~%" (to-string n)))
 
-(export 'to-graphviz )
-
 (defmethod to-graphviz ((r <edge>) s)
-  "@b(Описание:) to-graphviz ((r <edge>) s)!!!!!!
-"
+  " @b(Описание:) метод @b(to-graphviz) выполняет вывод ребра графа
+ @b(r) в поток @(s)."
   (format s "~S ~A ~S~%"
 	  (to-string (<edge>-from r))
 	  "->"
 	  (to-string (<edge>-to r))))
 
 (defun x-preamble (&key (out t) (name "G") (rankdir "LR") (shape "box"))
-  "x-preamble записывает преамбулу при выводе графа в gv-файл."
-  (format out "digraph ~A {~%  rankdir=~A~%  node[shape=~A]~%" name rankdir shape))
+  "@b(Описание:) функция @b(x-preamble) выводит преамбулу при выводе
+ графа в поток @b(out) в формате gv-файла."
+  (format out "digraph ~A {~%  rankdir=~A~% node[shape=~A]~%" name rankdir shape))
 
 (defun x-postamble (&key (out t))
-  "x-preamble записывает постамбулу при выводе графа в gv-файл."
+  "@b(Описание:) функция @b(x-postamble) записывает постамбулу при
+ выводе графа в поток @b(out) в формате gv-файла."
   (format out "~&}~%"))
 
-(export 'to-graphviz )
-
 (defmethod to-graphviz ((g <graph>) s)
-  "@b(Описание:) to-graphviz ((g <graph>) s)!!!!!!
-"
+  " @b(Описание:) метод @b(to-graphviz) выполняет вывод графа
+ @b(g) в поток @(s)."
   (x-preamble :out s)
   (maphash #'(lambda (key val) val (to-graphviz key s)) (<graph>-nodes g))  
   (maphash #'(lambda (key val) val (to-graphviz key s)) (<graph>-edges g))  
@@ -97,7 +118,8 @@ graphviz-prg  - программа для генерации графа;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun graphviz-prg (key)
-  "graphviz-prg - возвращает путь к программе dot или ее вариациям."
+  " @b(Описание:) функция @b(graphviz-prg) возвращает путь к программе
+ dot или ее вариациям."
   (when (symbolp key)
     (ecase key
       (:filter-dot       *filter-dot*      )
@@ -118,8 +140,16 @@ graphviz-prg  - программа для генерации графа;
 			 (out-type "pdf")
 			 (dpi "300")
 			 (viewer *viewer-path*))
-  "@b(Описание:)  view-graph 
-"
+  " @b(Описание:) метод @b(view-graph) выполняет визализацию графа @b(g). 
+
+ Выполнение метода проходит в три этапа:
+@begin(enum)
+@item(Вывод графа @b(g) в gv-файл в формате программы
+ @link[uri=\"https://graphviz.org\"](Graphviz).)
+@item(Преобразование gv-файла в формат @b(out-type) при помощи программы
+ @link[uri=\"https://graphviz.org\"](Graphviz).)
+@item(Визуализация результата вывода просмотрщиком, заданным параметром @b(viewer).)
+@end(enum)"
   (with-open-file (out (concatenate 'string fpath "/" fname ".gv")
 		       :direction :output :if-exists :supersede :external-format :UTF8)
     (to-graphviz g out))
