@@ -7,14 +7,14 @@
 #+DATE: <2021-01-30 Сб>
 #+AUTHOR: Nick Matvyeyev 
 #+EMAIL: mnasoft@gmail.com
-#+LANGUAGE: ru
+#+LANGUAGE: en
 #+SELECT_TAGS: export
 #+EXCLUDE_TAGS: noexport
 #+CREATOR: Emacs 26.1 (Org mode 9.1.9)
 
 #+INCLUDE: "~/org/header/header.org"
 
-* Назначение
+* Purpose
 This project defines the basic functions for creating and displaying a
 data structure of the [[https://en.wikipedia.org/wiki/Graph_(discrete_mathematics)][Graph]] type.
 
