@@ -4,6 +4,17 @@
               :authors ("Nick Matvyeyev")
               :output-format (:type :multi-html
                               :template :minima)
-              :sources ("manual_tmp.scr"
+              :sources ("mnas-graph.scr"
                         "mnas-graph-graph.scr"
-                        ))))
+
+                        "mnas-graph-view.scr"
+                        "mnas-graph-view-graph.scr"
+
+                        "mnas-graph-printer-viewer.scr"
+                        "mnas-graph-printer-viewer-graph.scr"
+
+                        "mnas-graph-filter.scr"
+                        "mnas-graph-filter-graph.scr"
+
+                        "mnas-graph-demos.scr"
+                        "mnas-graph-demos-graph.scr"))))

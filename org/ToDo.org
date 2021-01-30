@@ -3,17 +3,7 @@
 1. [X] Перенести *.lisp в src.
 2. [X] Отделить демонстрационные функции - mnas-graph/demos. 
 3. [X] Отделить функции визуализации - mnas-graph/view. 
-4. [X] Отделить печати-просмотра - printer-viewer.
-5. [X] Отделить filters - mnas-graph/filters. 
-6. [ ] Настроить генерацию документации.
+4. [X] Отделить классы печати-просмотра - printer-viewer.
+5. [X] Отделить фильтры вывода filters - mnas-graph/filters. 
+6. [X] Настроить генерацию документации.
 7. [ ] Добавить документацию.
-
-
-
-* To push an existing repository from the command line
-
-#+begin_src shell
-git remote add origin git@github.com:mnasoft/mnas-graph.git
-git branch -M main
-git push -u origin main
-#+end_src

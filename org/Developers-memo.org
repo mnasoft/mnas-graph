@@ -4,7 +4,11 @@
 #+BEGIN_SRC lisp
   (loop
     :for i :in
-    '((:mnas-graph :mnas-graph)
+    '((:mnas-graph                :mnas-graph)
+      (:mnas-graph/filter         nil)
+      (:mnas-graph/printer-viewer nil)
+      (:mnas-graph/view           nil)
+      (:mnas-graph/demos          nil)
       )
     :do (apply #'mnas-package:document i))
   (codex:document :mnas-graph)
@@ -17,7 +21,11 @@
 #+BEGIN_SRC lisp :var codex=codex
   (loop
     :for i :in
-    '(:mnas-graph)
+    '(:mnas-graph
+      :mnas-graph/filter
+      :mnas-graph/printer-viewer
+      :mnas-graph/view
+      :mnas-graph/demos)
     :do (mnas-package:make-codex-graphs i i))
 #+END_SRC
 
@@ -40,6 +48,3 @@
 	rsync -Pazh --delete ../docs/build/$CDIR/html/ $CPL/$CDIR
      fi
 #+END_SRC
-
-
-
