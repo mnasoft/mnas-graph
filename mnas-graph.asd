@@ -82,7 +82,8 @@
 (defsystem "mnas-graph/docs"
   :description "Зависимости для сборки документации"
   :author "Nick Matvyeyev <mnasoft@gmail.com>"
-  :license "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 or later"  
-  :depends-on ("mnas-graph"
-               ;; "mnas-package"
-               "codex"))
+  :license "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 or later"
+  :depends-on ("mnas-graph" "codex" "mnas-package")
+  :components ((:module "src/docs"
+		:serial nil
+                :components ((:file "docs")))))
