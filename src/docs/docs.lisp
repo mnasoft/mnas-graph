@@ -1,7 +1,6 @@
-
 (defpackage #:mnas-graph/docs
   (:use #:cl ) 
-  (:nicknames "MSTR/DOCS")
+  (:nicknames "MGRAPH/DOCS")
   (:export make-all)
   (:documentation "Пакет @b(mnas-graph/docs) содержит функции
   генерирования и публикации документации."))
