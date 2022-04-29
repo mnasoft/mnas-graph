@@ -96,7 +96,21 @@
 
 (defgeneric find-edge    (graph edge-name) (:documentation "Поиск ребра по имени"))
 
-;;(defgeneric connected-nodes (node)         (:documentation "Поиск достижимых вершин"))
+(defgeneric connected-nodes (node &key direction)
+  (:documentation
+   " @b(Описание:) обобщенная функция @b(connected-nodes) возвращает
+ хеш-таблицу доситжимых вершин при поиске в глубину начиная с вершины
+ @b(node).
+ Параметр @b(direction) задает направление поиска:
+@begin(list)
+ @item(:direction-to - поиск ведется в направлении ребер входящих в
+        вершину;)
+ @item(:direction-ftom - поиск ведется в направлении ребер исходящих
+        из вершины.)
+@end(list)
+ 
+"))
+
 
 (defgeneric nea-from-nodes  (node)         (:documentation "Возвращает хеш-таблицу вершин, с которыми соединена вершина node, в направлении от нее к ним"))
 
