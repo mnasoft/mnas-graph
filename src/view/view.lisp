@@ -98,9 +98,9 @@
   " @b(Описание:) метод @b(to-graphviz) выполняет вывод ребра графа
  @b(r) в поток @(s)."
   (format s "~S ~A ~S~%"
-	  (<node>-name (<edge>-from r))
+	  (<node>-name (beg-node r))
 	  "->"
-	  (<node>-name (<edge>-to   r))))
+	  (<node>-name (end-node r))))
 
 (defun x-preamble (&key (out t) (name "G") (rankdir "LR") (shape "box"))
   "@b(Описание:) функция @b(x-preamble) выводит преамбулу при выводе

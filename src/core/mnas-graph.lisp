@@ -8,8 +8,8 @@
   (:export <node>-name
            <node>-owner
            <node>-counter)
-  (:export <edge>-from
-           <edge>-to)
+  (:export beg-node
+           end-node)
   (:export <graph>-nodes
            <graph>-edges)
   ;; <node> 
@@ -160,8 +160,8 @@
   (:documentation "@b(Описание:) класс @b(<node>) представляет вершину графа."))
 
 (defclass <edge> ()
-  ((start :accessor <edge>-from :initarg :from :initform nil :documentation "Начальная вершина ребра")
-   (end   :accessor <edge>-to   :initarg :to   :initform nil :documentation "Конечная  вершина ребра"))
+  ((start :accessor beg-node :initarg :from :initform nil :documentation "Начальная вершина ребра")
+   (end   :accessor end-node   :initarg :to   :initform nil :documentation "Конечная  вершина ребра"))
   (:documentation "@b(Описание:) класс @b(<edge>) представляет ребро графа.
                                                                                 "))
 
@@ -220,8 +220,8 @@
 
 (defmethod print-object :after ((x <edge>) s)
   (format s "~S->~S"
-          (<node>-name (<edge>-from x))
-          (<node>-name (<edge>-to   x))))
+          (<node>-name (beg-node x))
+          (<node>-name (end-node   x))))
 
 (defmethod print-object        ((x <graph>) s))
 
@@ -263,8 +263,8 @@
   "@b(Описание:) to-string !!!!!!
 "
   (format nil "~A->~A"
-           (<node>-name (<edge>-from x))
-           (<node>-name (<edge>-to x))))
+           (<node>-name (beg-node x))
+           (<node>-name (end-node x))))
 
 ;;;;;;;;;; insert-to ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -279,10 +279,10 @@
   "@b(Описание:) insert-to ((e <edge>) (g <graph>))!!!!!!
 "
   (setf (gethash e (<graph>-edges g)) e)
-  (setf (<node>-owner (<edge>-from e)) g)
-  (setf (<node>-owner (<edge>-to   e)) g)
-  (setf (gethash (<edge>-from e) (<graph>-nodes g)) (<edge>-from e))
-  (setf (gethash (<edge>-to   e) (<graph>-nodes g)) (<edge>-to   e))
+  (setf (<node>-owner (beg-node e)) g)
+  (setf (<node>-owner (end-node   e)) g)
+  (setf (gethash (beg-node e) (<graph>-nodes g)) (beg-node e))
+  (setf (gethash (end-node   e) (<graph>-nodes g)) (end-node   e))
   e)
 
 ;;;;;;;;;; remove-from ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -295,8 +295,8 @@
     (maphash #'(lambda(key val)
 		 val
 		 (if (or
-		      (eq (<edge>-from key) n)
-		      (eq (<edge>-to key)   n))
+		      (eq (beg-node key) n)
+		      (eq (end-node key)   n))
 		     (remhash key rh)))
 	     rl)
     (if (remhash n (<graph>-nodes g))
@@ -326,7 +326,7 @@
     (maphash
      #'(lambda (key val)
 	 val
-	 (if (not(eq (<edge>-from key) n))
+	 (if (not(eq (beg-node key) n))
 	     (remhash  key rez-tbl)))
      (<graph>-edges g))
     rez-tbl))
@@ -338,7 +338,7 @@
     (maphash
      #'(lambda (key val)
 	 val
-	 (if (not(eq (<edge>-to key) n))
+	 (if (not(eq (end-node key) n))
 	     (remhash  key rez-tbl)))
      (<graph>-edges g))
     rez-tbl))
@@ -424,7 +424,7 @@
   (maphash
    #'(lambda (key val)
        val
-       (setf (gethash (<edge>-to key) ht) (<edge>-to key)))
+       (setf (gethash (end-node key) ht) (end-node key)))
    (outlet-edges n))
   (print-items ht)
   ht)
@@ -460,7 +460,7 @@
   (maphash
    #'(lambda (key val)
        val
-       (setf (gethash (<edge>-from key) ht) (<edge>-from key)))
+       (setf (gethash (beg-node key) ht) (beg-node key)))
    (inlet-edges n))
   (print-items ht)
   ht)

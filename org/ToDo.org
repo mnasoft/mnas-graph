@@ -15,8 +15,8 @@
    - [ ] цвета.
 9. [ ] Изменить формат вывода вершины.
 10. [X] Выполнить переименование:
-    - [X] <edge>-from ->       <graph>-edges-count -> count-edges;
-
+    - [X] <edge>-from -> beg-node;
+    - [X] <edge>-to   -> end-node;
 
    
 * DoNe
