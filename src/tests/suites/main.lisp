@@ -20,9 +20,11 @@
                            :nodes
                            '("k")))
   (setf (mnas-graph::color (mnas-graph:find-node  *g* "a")) "red")
+  (setf (mnas-graph::shape (mnas-graph:find-node  *g* "a")) "ellipse")
   (mnas-graph::to-string (mnas-graph:find-node  *g* "a"))
-  
-  (mnas-graph::to-graphviz *g* t)
+  (mnas-graph::to-string (mnas-graph:find-edge  *g* "a->c"))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;  
+  (mnas-graph/view::to-graphviz *g* t)
   (mnas-graph/view:view-graph *g*)
 
   (mnas-graph:to-nodes "c" *g*)
