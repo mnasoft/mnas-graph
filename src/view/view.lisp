@@ -98,9 +98,9 @@
   " @b(Описание:) метод @b(to-graphviz) выполняет вывод ребра графа
  @b(r) в поток @(s)."
   (format s "~S ~A ~S~%"
-	  (<node>-name (beg-node r))
+	  (name (beg-node r))
 	  "->"
-	  (<node>-name (end-node r))))
+	  (name (end-node r))))
 
 (defun x-preamble (&key (out t) (name "G") (rankdir "LR") (shape "box"))
   "@b(Описание:) функция @b(x-preamble) выводит преамбулу при выводе
@@ -116,8 +116,8 @@
   " @b(Описание:) метод @b(to-graphviz) выполняет вывод графа
  @b(g) в поток @(s)."
   (x-preamble :out s)
-  (maphash #'(lambda (key val) val (to-graphviz key s)) (<graph>-nodes g))  
-  (maphash #'(lambda (key val) val (to-graphviz key s)) (<graph>-edges g))  
+  (maphash #'(lambda (key val) val (to-graphviz key s)) (nodes g))  
+  (maphash #'(lambda (key val) val (to-graphviz key s)) (edges g))  
   (x-postamble :out s))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

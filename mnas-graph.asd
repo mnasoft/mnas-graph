@@ -6,10 +6,13 @@
  data structure and displaying it via graphviz."
   :author "Nick Matvyeyev <mnasoft@gmail.com>"
   :license "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 or later"  
-  :version "0.0.5"
+  :version "0.0.6"
   :serial nil
   :in-order-to ((test-op (test-op "mnas-graph/tests")))
-  :depends-on ("mnas-graph/core" "mnas-graph/view" "mnas-graph/demos" "mnas-hash-table"))
+  :depends-on ("mnas-graph/core"
+               "mnas-graph/view"
+               "mnas-graph/demos"
+               "mnas-hash-table"))
 
 (defsystem "mnas-graph/core"
   :description "Describe mnas-graph here"
@@ -20,7 +23,25 @@
   :depends-on ("mnas-hash-table")
   :components ((:module "src/core"
 		:serial nil
-                :components ((:file "mnas-graph")))))
+                :components
+                ((:file "mnas-graph")
+                 (:module "methods"
+                  :depends-on ("mnas-graph")
+                  :serial nil
+                  :components
+                  ((:file "clear")
+                   (:file "count-edges")
+                   (:file "count-nodes")
+                   (:file "find-edge")
+                   (:file "find-node")
+                   (:file "inlet-edges")
+                   (:file "insert-to")
+                   (:file "outlet-edges")
+                   (:file "remove-from")
+                   (:file "to-string")
+
+                   (:file "rest")
+                   ))))))
 
 (defsystem "mnas-graph/view"
   :description "Describe mnas-graph here"

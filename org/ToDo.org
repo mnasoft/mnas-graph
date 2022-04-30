@@ -14,10 +14,9 @@
    - [ ] формы;
    - [ ] цвета.
 9. [ ] Изменить формат вывода вершины.
-10. [X] Выполнить переименование:
-    - [X] <edge>-from -> beg-node;
-    - [X] <edge>-to   -> end-node;
-
+10. [-] Выполнить переименование:
+    - [ ] <node>-counter -> удалить;
+    - [ ] graph-clear -> clear;
    
 * DoNe
 1. [X] Перенести *.lisp в src.
@@ -32,5 +31,11 @@
    имя файла было случайным (взамен константного). Вызов
    программы-просмотрщика выполнять без задержки.
 9. [X] Выполнить переименование:
-   + [X] <graph>-edges-count -> count-edges;
-   + [X] <graph>-nodes-count -> count-nodes;
+   - [X] <graph>-edges-count -> count-edges;
+   - [X] <graph>-nodes-count -> count-nodes;
+   - [X] <edge>-from -> beg-node;
+   - [X] <edge>-to   -> end-node;     
+   - [X] <node>-name -> name;
+   - [X] <node>-owner -> owner;
+   - [X] <graph>-nodes -> nodes;
+   - [X] <graph>-edges -> edges;

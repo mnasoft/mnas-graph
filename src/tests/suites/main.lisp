@@ -23,10 +23,15 @@
   (setf (mnas-graph::shape (mnas-graph:find-node  *g* "a")) "ellipse")
   (mnas-graph::to-string (mnas-graph:find-node  *g* "a"))
   (mnas-graph::to-string (mnas-graph:find-edge  *g* "a->c"))
+  (mnas-graph:name (mnas-graph:find-edge  *g* "a->c"))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;  
   (mnas-graph/view::to-graphviz *g* t)
   (mnas-graph/view:view-graph *g*)
 
+  (mnas-graph:name-edges *g*)
+  (mnas-graph:name
+   (mnas-graph:find-node  *g* "a"))
+  
   (mnas-graph:to-nodes "c" *g*)
   (mnas-graph:from-nodes "c" *g*)
 
@@ -37,7 +42,9 @@
   (mnas-graph:connected-nodes
    (mnas-graph:find-node  *g* "a")))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (def-test section-variables ()
   (is-true (= 5 5))
   )
-(mnas-graph:<node>-counter
+
