@@ -8,6 +8,6 @@
 
 ;;;; ./src/tests/run/run.lisp
 
-(in-package :dxf/tests)
+(in-package :mnas-graph/tests)
 
 (run-tests)

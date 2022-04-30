@@ -39,8 +39,13 @@
   (cond
     ((uiop/os:os-windows-p)
      (cond
-       ((probe-file "C:/Program Files (x86)/Adobe/Acrobat Reader DC/Reader/AcroRd32.exe") "C:/Program Files (x86)/Adobe/Acrobat Reader DC/Reader/AcroRd32.exe")
-       ((probe-file "C:/Program Files/Adobe/Reader 11.0/Reader/AcroRd32.exe") "C:/Program Files/Adobe/Reader 11.0/Reader/AcroRd32.exe")))
+       ((probe-file "C:/Program Files (x86)/Adobe/Acrobat Reader DC/Reader/AcroRd32.exe")
+        "C:/Program Files (x86)/Adobe/Acrobat Reader DC/Reader/AcroRd32.exe")
+       ((probe-file "C:/Program Files/Adobe/Reader 11.0/Reader/AcroRd32.exe")
+        "C:/Program Files/Adobe/Reader 11.0/Reader/AcroRd32.exe")
+       ((probe-file "C:/Program Files/Adobe/Acrobat DC/Acrobat/Acrobat.exe")
+        "C:/Program Files/Adobe/Acrobat DC/Acrobat/Acrobat.exe")
+       (t (assert (probe-file "C:/Program Files/Adobe/Acrobat DC/Acrobat/Acrobat.exe")))))
     ((uiop/os:os-unix-p)
      (cond
        ((probe-file "/usr/bin/xdg-open") "/usr/bin/xdg-open")

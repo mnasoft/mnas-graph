@@ -64,13 +64,13 @@
 		:serial nil
                 :components ((:file "demos")))))
 
-(defsystem "dxf/tests"
+(defsystem "mnas-graph/tests"
   :description "Тестирование систем, входящих  в проект mnas-graph"
   :author "Nick Matvyeyev <mnasoft@gmail.com>"
   :license "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 or later"  
-  :depends-on ("dxf" "fiveam")
+  :depends-on ("mnas-graph" "fiveam")
   :perform (test-op (o s)
-		    (uiop:symbol-call :dxf/tests :run-tests))
+		    (uiop:symbol-call :mnas-graph/tests :run-tests))
   :components ((:module "src/tests"
 		:serial nil
                 :components ((:file "tests")))

@@ -21,6 +21,8 @@
            )
   ;; <node> & <edge>
   (:export to-string)
+  (:export to-nodes
+           from-nodes)
   ;; <graph>
   (:export graph-clear
            inlet-nodes
@@ -29,8 +31,8 @@
            remove-from
            find-edge
            insert-to
-           <graph>-nodes-count
-           <graph>-edges-count
+           count-nodes
+           count-edges
            )
   
   (:export make-graph
@@ -84,13 +86,31 @@
 
 (defgeneric remove-from  (obj container) (:documentation "Добавляет obj в container"))
 
-(defgeneric inlet-nodes  (graph) (:documentation "Возвращает хеш-таблицу конечных вершин (вершин-стока)"))
+(defgeneric inlet-nodes (graph)
+  (:documentation
+   "@b(Описание:) обобщенная функция @b(inlet-nodes) возвращает
+ хеш-таблицу вершин-стоков для графа @b(graph).
 
-(defgeneric outlet-nodes (graph) (:documentation "Возвращает хеш-таблицу начальных вершин (веншин-иточников)"))
+ @b(Пример использования:)
+@begin[lang=lisp](code)
+ (let ((g (make-random-graph :node-max-number 16)))   
+   (mnas-graph/view:view-graph g)
+   (inlet-nodes g))
+@end(code)
 
-(defgeneric inlet-edges  (node) (:documentation "Возвращает хеш-таблицу начальных ребер (истоков)"))
+"))
 
-(defgeneric outlet-edges (node) (:documentation " Возвращает хеш-таблицу конечных ребер (устий)"))
+(defgeneric outlet-nodes (graph)
+  (:documentation
+   "@b(Описание:) обобщенная функция @b(outlet-nodes) возвращает
+хеш-таблицу вершин-истоков для графа @b(graph)."))
+
+(defgeneric inlet-edges (node)
+  (:documentation
+   "@b(Описание:) обобщенная функция @b(inlet-edges) возвращает
+ хеш-таблицу исходящих ребер (истоков) для вершины @b(node)"))
+
+(defgeneric outlet-edges (node) (:documentation " Возвращает хеш-таблицу конечных ребер (стоков)"))
 
 (defgeneric find-node    (graph <node>-name) (:documentation "Поиск вершины по имени"))
 
@@ -128,9 +148,16 @@
 (defclass <node> ()
   ((name    :accessor <node>-name   :initarg :name  :initform nil :documentation "Имя вершины")
    (owner   :accessor <node>-owner  :initarg :owner :initform nil :documentation "Владелец вершины объект типа graph")
+;;;
+   (shape    :accessor shape    :initarg :shape    :initform nil :documentation "shape - box, ellipse, ...")
+   (color    :accessor color    :initarg :color    :initform nil :documentation "color - red, blue, ...")
+   (style    :accessor style    :initarg :style    :initform nil :documentation "style - bold, ...")
+   (label    :accessor label    :initarg :label    :initform nil :documentation "label - \"John Fitzgerald Kennedy\nb. 29.5.1917 Brookline\nd. 22.11.1963 Dallas\"")
+   (image    :accessor image    :initarg :image    :initform nil :documentation "image - \"images/kennedyface.jpg\"")
+   (labelloc :accessor labelloc :initarg :labelloc :initform nil :documentation "label - b, ...")
+;;;;   
    (counter :accessor <node>-counter                :initform 0   :documentation "Количество, созданных вершин" :allocation :class))
-  (:documentation "@b(Описание:) класс @b(<node>) представляет вершину графа.
-                                                                                "))
+  (:documentation "@b(Описание:) класс @b(<node>) представляет вершину графа."))
 
 (defclass <edge> ()
   ((start :accessor <edge>-from :initarg :from :initform nil :documentation "Начальная вершина ребра")
@@ -158,8 +185,12 @@
 
 (defmethod print-object        ((x <node>) s))
 
+#+nil(defmethod print-object :after ((x <node>) s)
+       (format s "~S:~S"   (not(null (<node>-owner x))) (<node>-name x)))
+
 (defmethod print-object :after ((x <node>) s)
   (format s "~S:~S"   (not(null (<node>-owner x))) (<node>-name x)))
+
 
 (defmethod print-object        ((x <edge>) s))
 
@@ -271,8 +302,6 @@
 	     (remhash  key rez-tbl)))
      (<graph>-edges g))
     rez-tbl))
-
-(export 'inlet-edges )
 
 (defmethod inlet-edges ((n <node>) &aux (g (<node>-owner n)))
   "@b(Описание:) inlet-edges ((n <node>) &aux (g (<node>-owner n)))!!!!!!
@@ -450,10 +479,24 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defmethod <graph>-nodes-count ((graph <graph>))
-  " @b(Описание:) метод @b(<graph>-nodes-count) возвращает количество вершин графа @b(graph)."
+(defmethod count-nodes ((graph <graph>))
+  " @b(Описание:) метод @b(count-nodes) возвращает количество вершин
+графа @b(graph).
+
+ @b(Пример использования:)
+@begin[lang=lisp](code);
+ (count-nodes (make-random-graph)) -> some wat less then 100
+@end(code)
+"
   (hash-table-count (<graph>-nodes graph)))
 
-(defmethod <graph>-edges-count ((graph <graph>))
-  " @b(Описание:) метод @b(<graph>-nodes-count) возвращает количество ребер графа @b(graph)."
+(defmethod count-edges ((graph <graph>))
+  " @b(Описание:) метод @b(count-edges) возвращает количество ребер
+ графа @b(graph).
+
+ @b(Пример использования:)
+@begin[lang=lisp](code);
+ (count-edges (make-random-graph)) -> 100
+@end(code)
+"
   (hash-table-count (<graph>-edges graph)))
