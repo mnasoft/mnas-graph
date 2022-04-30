@@ -173,10 +173,25 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defmethod initialize-instance :around ((x <node>) &key name (owner nil))
+(defmethod initialize-instance :around ((x <node>)
+                                        &key
+                                          name
+                                          shape    
+                                          color
+                                          style
+                                          label
+                                          image
+                                          labelloc
+                                          owner )
   (call-next-method x
-		    :name   name
-    		    :owner  owner 
+		    :name     name
+    		    :owner    owner
+                    :shape    shape
+                    :color    color
+                    :style    style
+                    :label    label
+                    :image    image
+                    :labelloc labelloc
 		    :number (<node>-counter x))
   (when owner (insert-to x owner))
   (incf (<node>-counter x)))
@@ -188,14 +203,25 @@
 #+nil(defmethod print-object :after ((x <node>) s)
        (format s "~S:~S"   (not(null (<node>-owner x))) (<node>-name x)))
 
-(defmethod print-object :after ((x <node>) s)
-  (format s "~S:~S"   (not(null (<node>-owner x))) (<node>-name x)))
+(defmethod print-object :after ((node <node>) s)
+  (format s "~S" (<node>-name node))
+  (let ((props
+          (loop :for (key val) :in
+                `(("shape"    ,(shape    node))
+                  ("color"    ,(color    node))
+                  ("style"    ,(style    node))
+                  ("label"    ,(label    node))
+                  ("image"    ,(image    node))
+                  ("labelloc" ,(labelloc node)))
+                :when val :collect (format nil "~A=~S" key val))))
+    (when props (format s " [~{~A~^, ~}]~%" props))))
 
-
-(defmethod print-object        ((x <edge>) s))
+(defmethod print-object ((x <edge>) s))
 
 (defmethod print-object :after ((x <edge>) s)
-  (format s "(~S->~S)" (<edge>-from x) (<edge>-to x)))
+  (format s "~S->~S"
+          (<node>-name (<edge>-from x))
+          (<node>-name (<edge>-to   x))))
 
 (defmethod print-object        ((x <graph>) s))
 
@@ -236,7 +262,9 @@
 (defmethod to-string ((x <edge>))
   "@b(Описание:) to-string !!!!!!
 "
-  (format nil "~A->~A" (to-string (<edge>-from x)) (to-string (<edge>-to x))))
+  (format nil "~A->~A"
+           (<node>-name (<edge>-from x))
+           (<node>-name (<edge>-to x))))
 
 ;;;;;;;;;; insert-to ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

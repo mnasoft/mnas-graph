@@ -92,15 +92,15 @@
 (defmethod to-graphviz ((n <node>) s)
   " @b(Описание:) метод @b(to-graphviz) выполняет вывод вершины графа
  @b(n) в поток @(s)."
-  (format s "~S~%" (to-string n)))
+  (format s "~A~%" n))
 
 (defmethod to-graphviz ((r <edge>) s)
   " @b(Описание:) метод @b(to-graphviz) выполняет вывод ребра графа
  @b(r) в поток @(s)."
   (format s "~S ~A ~S~%"
-	  (to-string (<edge>-from r))
+	  (<node>-name (<edge>-from r))
 	  "->"
-	  (to-string (<edge>-to r))))
+	  (<node>-name (<edge>-to   r))))
 
 (defun x-preamble (&key (out t) (name "G") (rankdir "LR") (shape "box"))
   "@b(Описание:) функция @b(x-preamble) выводит преамбулу при выводе

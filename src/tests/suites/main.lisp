@@ -19,7 +19,10 @@
                              ("e" "g") ("h" "j") ("b" "f"))
                            :nodes
                            '("k")))
-
+  (setf (mnas-graph::color (mnas-graph:find-node  *g* "a")) "red")
+  (mnas-graph::to-string (mnas-graph:find-node  *g* "a"))
+  
+  (mnas-graph::to-graphviz *g* t)
   (mnas-graph/view:view-graph *g*)
 
   (mnas-graph:to-nodes "c" *g*)
