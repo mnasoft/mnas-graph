@@ -108,12 +108,20 @@
  @item(:direction-ftom - поиск ведется в направлении ребер исходящих
         из вершины.)
 @end(list)
- 
 "))
 
-(defgeneric nea-from-nodes  (node)         (:documentation "Возвращает хеш-таблицу вершин, с которыми соединена вершина node, в направлении от нее к ним"))
+(defgeneric nea-from-nodes  (node)
+  (:documentation
+   "@b(Описание:) обобщенная функция @b(nea-from-nodes) возвращает
+ хеш-таблицу вершин, с которыми соединена вершина @b(node), в
+ направлении от нее к ним."))
 
-(defgeneric nea-to-nodes    (node)         (:documentation "Возвращает хеш-таблицу вершин, с которыми соединена вершина node, в направлении от них к ней"))
+(defgeneric nea-to-nodes    (node)
+  (:documentation
+   "@b(Описание:) обобщенная функция @b(nea-to-nodes) возвращает
+ хеш-таблицу вершин, с которыми соединена вершина @b(node), в
+ направлении от них к ней"))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -305,7 +313,19 @@
 ;;;; make-graph data ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun make-graph (edges &key nodes)
-  "@b(Описание:) make-graph возвращает граф с ребрами edges и вершинами вершинами nodes."
+  "@b(Описание:) функция @b(make-graph) возвращает граф с ребрами
+ @b(edges) и вершинами вершинами @b(nodes).
+ 
+ @b(Пример использования:)
+@begin[lang=lisp](code)
+  (mnas-graph/view:view-graph
+   (make-graph '((\"a\" \"c\") (\"b\" \"c\") (\"c\" \"d\")
+                 (\"c\" \"g\") (\"c\" \"e\") (\"e\" \"f\")
+                 (\"e\" \"g\") (\"h\" \"j\") (\"b\" \"f\"))
+               :nodes
+               '(\"k\")))
+@end(code)
+"
   (let ((g (make-instance '<graph>))
 	(vs (remove-duplicates (append (apply #'append edges) nodes) :test #'equal)))
     (mapc #'(lambda (v) (insert-to (make-instance '<node> :name v) g)) vs)
@@ -321,16 +341,14 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun make-random-graph (&key (node-max-number 100) (edges-number node-max-number))
-  "@b(Описание:) make-random-graph создает случайный граф.
+  "@b(Описание:) функция @b(make-random-graph) возвращает случайный граф
+ с количеством ребер равным @b(edges-number) и количеством вершин не
+ превышающим @b(node-max-number).
 
- @b(Переменые:)
-@begin(list)
- @item(node-max-number - количество вершин графа;)
- @item(edges-number    - количество вершин графа.)
-@end(list)
 @b(Пример использования:)
 @begin[lang=lisp](code)
- (make-random-graph)
+  (mnas-graph/view:view-graph
+   (make-random-graph :node-max-number 20 :edges-number 10))
 @end(code)
 "
   (make-graph
@@ -344,8 +362,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod nea-to-nodes  ((n <node>) &aux (ht (make-hash-table)))
-  "@b(Описание:) nea-to-nodes возвращает хеш-таблицу вершин, с которыми соединена вершина <node>, в направлении от нее к ним.
-"
+  "@b(Описание:) метод @b(nea-to-nodes) возвращает хеш-таблицу вершин, с
+ которыми соединена вершина <node>, в направлении от нее к ним."
   (maphash
    #'(lambda (key val)
        val
@@ -353,6 +371,30 @@
    (outlet-edges n))
   (print-items ht)
   ht)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; to-nodes
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defmethod to-nodes  ((node string) (g <graph>))
+  (nea-to-nodes (find-node g node)))
+
+(defmethod to-nodes  ((node <node>) (g <graph>))
+  (when (eq (<node>-owner node) g)
+    (nea-to-nodes node)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; from-nodes
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defmethod from-nodes  ((node string) (g <graph>))
+  (nea-from-nodes (find-node g node)))
+
+(defmethod from-nodes  ((node <node>) (g <graph>))
+  (when (eq (<node>-owner node) g)
+    (nea-from-nodes node)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod nea-from-nodes  ((n <node>) &aux (ht (make-hash-table)))
   "@b(Описание:) nea-from-nodes
@@ -368,8 +410,19 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defmethod connected-nodes ((n <node>) &key (direction :direction-to) &aux (ht (make-hash-table )))
-  "@b(Описание:) connected-nodes ((n <node>) &key (direction :direction-to) &aux (ht (make-hash-table )))!!!!!!
+(defmethod connected-nodes ((n <node>)
+                            &key (direction :direction-to)
+                            &aux (ht (make-hash-table )))
+  "@b(Описание:) обобщенная функция @b(connected-nodes) возвращает
+ хеш-таблицу доситжимых вершин при поиске в глубину начиная с вершины
+ @b(node).
+ Параметр @b(direction) задает направление поиска:
+@begin(list)
+ @item(:direction-to - поиск ведется в направлении ребер входящих в
+        вершину;)
+ @item(:direction-ftom - поиск ведется в направлении ребер исходящих
+        из вершины.)
+@end(list)
 "
   (setf (gethash n ht) n)
   (do ((count-before -1) (count-after  0))
