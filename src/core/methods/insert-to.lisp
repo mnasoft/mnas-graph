@@ -13,8 +13,8 @@
   "@b(Описание:) insert-to ((e <edge>) (g <graph>))!!!!!!
 "
   (setf (gethash e (edges g)) e)
-  (setf (owner (beg-node e)) g)
-  (setf (owner (end-node   e)) g)
-  (setf (gethash (beg-node e) (nodes g)) (beg-node e))
-  (setf (gethash (end-node   e) (nodes g)) (end-node   e))
+  (setf (owner (tail e)) g)
+  (setf (owner (head   e)) g)
+  (setf (gethash (tail e) (nodes g)) (tail e))
+  (setf (gethash (head e) (nodes g)) (head e))
   e)

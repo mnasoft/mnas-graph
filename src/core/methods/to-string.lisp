@@ -16,6 +16,6 @@
   "@b(Описание:) to-string !!!!!!
 "
   (format nil "~A->~A"
-           (name (beg-node x))
-           (name (end-node x))))
+           (name (tail x))
+           (name (head x))))
 

@@ -10,8 +10,8 @@
     (maphash #'(lambda(key val)
 		 val
 		 (if (or
-		      (eq (beg-node key) n)
-		      (eq (end-node key)   n))
+		      (eq (tail key) n)
+		      (eq (head key)   n))
 		     (remhash key rh)))
 	     rl)
     (if (remhash n (nodes g))

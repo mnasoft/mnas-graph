@@ -6,7 +6,7 @@
  data structure and displaying it via graphviz."
   :author "Nick Matvyeyev <mnasoft@gmail.com>"
   :license "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 or later"  
-  :version "0.0.6"
+  :version "0.0.8"
   :serial nil
   :in-order-to ((test-op (test-op "mnas-graph/tests")))
   :depends-on ("mnas-graph/core"
@@ -25,8 +25,23 @@
 		:serial nil
                 :components
                 ((:file "mnas-graph")
+                 (:module "generics"
+                  :depends-on ("mnas-graph"
+                               )
+                  :components
+                  ((:file "generics")))
+                 (:module "classes"
+                  :depends-on ("mnas-graph"
+                               )
+                  :components
+                  ((:file "attributes")
+                   (:file "node")
+                   (:file "edge")
+                   (:file "graph")))
                  (:module "methods"
-                  :depends-on ("mnas-graph")
+                  :depends-on ("mnas-graph"
+                               "generics"
+                               "classes")
                   :serial nil
                   :components
                   ((:file "clear")
@@ -39,7 +54,7 @@
                    (:file "outlet-edges")
                    (:file "remove-from")
                    (:file "to-string")
-
+;;;;
                    (:file "rest")
                    ))))))
 

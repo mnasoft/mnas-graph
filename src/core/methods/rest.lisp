@@ -25,7 +25,7 @@
   (maphash
    #'(lambda (key val)
        val
-       (setf (gethash (end-node key) ht) (end-node key)))
+       (setf (gethash (head key) ht) (head key)))
    (outlet-edges n))
   (print-items ht)
   ht)
@@ -60,7 +60,7 @@
   (maphash
    #'(lambda (key val)
        val
-       (setf (gethash (beg-node key) ht) (beg-node key)))
+       (setf (gethash (tail key) ht) (tail key)))
    (inlet-edges n))
   (print-items ht)
   ht)

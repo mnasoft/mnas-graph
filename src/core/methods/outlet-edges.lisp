@@ -9,7 +9,7 @@
     (maphash
      #'(lambda (key val)
 	 val
-	 (if (not(eq (beg-node key) n))
+	 (if (not(eq (tail key) n))
 	     (remhash  key rez-tbl)))
      (edges g))
     rez-tbl))
