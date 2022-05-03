@@ -1,7 +1,10 @@
 ;;;; ./src/view/view.lisp
 
 (defpackage #:mnas-graph/view
-  (:use #:cl #:mnas-graph #:mnas-graph/printer-viewer #:mnas-graph/filter)
+  (:use #:cl
+        #:mnas-graph
+        #:mnas-graph/printer-viewer
+        #:mnas-graph/filter)
   (:export view-graph
            view-graph-new
            to-graphviz)

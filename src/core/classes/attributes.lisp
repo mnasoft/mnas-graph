@@ -2,102 +2,101 @@
 
 (in-package #:mnas-graph)
 
-(defclass <shape> ()
-  ((shape
-    :accessor shape
-    :initarg :shape
-    :initform nil
-    :documentation "shape - box, ellipse, ...
+(defmacro class-slot (slot doc-slot doc-class)
+  (let ((class    (read-from-string (string-downcase (format nil "<~A>" slot))))
+        (initarg  (read-from-string (string-downcase (format nil ":~A"  slot))))
+        (slot-doc (format nil "Type: ~{~A~^, ~}"
+                          (mapcar #'(lambda (el)
+                                      (concatenate 'string 
+                                                   "@link[uri=\""
+                                                   "https://graphviz.org/docs/"
+                                                   el "/\"]("
+                                                   (car(last (mnas-string:split "/" el)))
+                                                   ")"))
+                                  (mnas-string:split
+                                   (coerce  (list #\Space #\NewLine #\Return) 'string) doc-slot))))
+        (class-doc (format nil "Attribute: ~{~A~^, ~}"
+                           (mapcar #'(lambda (el)
+                                       (concatenate 'string 
+                                                    "@link[uri=\""
+                                                    "https://graphviz.org/docs/"
+                                                    el "/\"]("
+                                                    (car(last (mnas-string:split "/" el)))
+                                                    ")"))
+                                   (mnas-string:split
+                                    (coerce  (list #\Space #\NewLine #\Return) 'string) doc-class)))))
+    `(defclass ,class ()
+       ((,slot
+         :accessor ,slot
+         :initarg  ,initarg
+         :initform nil
+         :documentation ,slot-doc))
+       (:documentation  ,class-doc))))
 
-@link[uri=\"https://graphviz.org/docs/attrs/shape/\"](shape) "))
-  (:documentation "@link[uri=\"https://graphviz.org/docs/attrs/shape/\"](shape)"))
+(defmacro pr-obj-after (slot)
+  (let ((class (read-from-string (string-downcase (format nil "<~A>" slot))))
+        (fmt   (concatenate 'string
+                            (string-downcase
+                             (format nil "~S" slot))
+                            "=~S")))
+    `(defmethod print-object :after ((,slot ,class) s)
+       (when (,slot ,slot) 
+         (format s ,fmt (,slot ,slot))))))
 
-(defmethod print-object :after ((x <shape>) s)
-  (format s "shape=~S " (shape x)))
+(defmacro def-my-class (slot doc-slot doc-class)
+  `(list
+    (class-slot   ,slot ,doc-slot ,doc-class)
+    (pr-obj-after ,slot)))
 
-(defclass <color> ()
-  ((color
-    :accessor color
-    :initarg :color
-    :initform nil
-    :documentation "color - red, blue, ...
-@link[uri=\"https://graphviz.org/docs/attrs/color/\"](color)
-")))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defclass <fillcolor> ()
-  ((fillcolor
-    :accessor fillcolor
-    :initarg :fillcolor
-    :initform nil
-    :documentation "fillcolor - red, yellow, ...
-@link[uri=\"https://graphviz.org/docs/attrs/fillcolor/\"](fillcolor)
-")))
+(def-my-class shape
+  "attr-types/shape" "attrs/shape")
 
-(defclass <style> ()
-  ((style
-    :accessor style
-    :initarg :style
-    :initform nil
-    :documentation "style - bold, ... "))
-   (:documentation "@link[uri=\"https://graphviz.org/docs/attrs/style/\"](style)"))
+(def-my-class color
+  "attr-types/color attr-types/colorList"
+  "attrs/color")
 
-(defclass <label> ()
-  ((label
-    :accessor label
-    :initarg :label
-    :initform nil
-    :documentation "label - \"John Fitzgerald Kennedy\nb. 29.5.1917 Brookline\nd. 22.11.1963 Dallas\"
+(def-my-class fillcolor
+  "attr-types/color attr-types/colorList"
+  "attrs/fillcolor")
 
-@link[uri=\"https://graphviz.org/docs/attrs/label/\"](label)"))
-   (:documentation "@link[uri=\"https://graphviz.org/docs/attrs/label/\"](label)"))
+(def-my-class style
+  "attr-types/style"
+  "attrs/style")
 
-(defclass <image> ()
-  ((image
-    :accessor image
-    :initarg :image
-    :initform nil
-    :documentation "image - \"images/kennedyface.jpg\""))
-   (:documentation "@link[uri=\"https://graphviz.org/docs/attrs/image/\"](image)"))
+(def-my-class label
+  "attr-types/lblString"
+  "attrs/label")
 
-(defclass <labelloc> ()
-  ((labelloc
-    :accessor labelloc
-    :initarg :labelloc
-    :initform nil
-    :documentation "@link[uri=\"https://graphviz.org/docs/attrs/labelloc/\"](labelloc)"))
-  (:documentation "@link[uri=\"https://graphviz.org/docs/attrs/labelloc/\"](labelloc)"))
+(def-my-class image
+  "attr-types/string"
+  "attrs/image")
 
-(defclass <arrowhead> ()
-  ((arrowhead
-    :accessor arrowhead
-    :initarg :arrowhead
-    :initform nil
-    :documentation "@link[uri=\"https://graphviz.org/docs/attr-types/arrowType/\"](arrowhead)"))
-  (:documentation "@link[uri=\"https://graphviz.org/docs/attr-types/arrowType/\"](arrowhead)"))
+(def-my-class labelloc
+  "attr-types/string"
+  "attrs/labelloc")
 
-(defclass <arrowtail> ()
-  ((arrowtail
-    :accessor arrowtail
-    :initarg :arrowtail
-    :initform nil
-    :documentation "@link[uri=\"https://graphviz.org/docs/attr-types/arrowType/\"](arrowhead)"))
-  (:documentation "@link[uri=\"https://graphviz.org/docs/attr-types/arrowType/\"](arrowhead)"))
+(def-my-class arrowhead
+  "attr-types/arrowType"
+  "attrs/arrowhead")
+
+(def-my-class arrowtail
+  "attr-types/arrowType"
+  "attrs/arrowtail")
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defclass <node-attributes>
-    (<shape>
-     <color>
-     <fillcolor>
-     <style>
-     <label>
-     <image>
-     <labelloc>)
+    (
+     <color> ;; <shape>  <fillcolor> <style> <label> <image> <labelloc>
+     )
   ()
   (:documentation "@link[uri=\"https://graphviz.org/doc/info/attrs.html\"](Attributes) "))
 
 (defclass <edge-attributes>
-    (<color>
-     <arrowhead>
-     <arrowtail>)
+    (
+                                        ;<color> <arrowhead> <arrowtail>
+     )
   ()
   (:documentation "@link[uri=\"https://graphviz.org/doc/info/attrs.html\"](Attributes) "))

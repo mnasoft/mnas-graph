@@ -20,7 +20,7 @@
   :license "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 or later"  
   :serial nil
   :in-order-to ((test-op (test-op "mnas-graph/tests")))
-  :depends-on ("mnas-hash-table")
+  :depends-on ("mnas-hash-table" "mnas-string")
   :components ((:module "src/core"
 		:serial nil
                 :components

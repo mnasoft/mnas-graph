@@ -21,36 +21,21 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defmethod initialize-instance :around ((x <node>)
-                                        &key
-                                          name owner
-;;;;                                          
-                                          shape color fillcolor style
-                                          label image labelloc)
-  (call-next-method x
-		    :name      name
-    		    :owner     owner
-;;;;
-                    :shape     shape
-                    :color     color
-                    :fillcolor fillcolor
-                    :style     style
-                    :label     label
-                    :image     image
-                    :labelloc  labelloc
-		    :number (<node>-counter x))
+(defmethod initialize-instance :after ((x <node>) &key owner)
   (when owner (insert-to x owner))
   (incf (<node>-counter x)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defmethod print-object        ((x <node>) s))
+;;(defmethod print-object ((node <node>) s))
 
-#+nil(defmethod print-object :after ((x <node>) s)
-       (format s "~S:~S"   (not(null (owner x))) (name x)))
-
+#+nil
 (defmethod print-object :after ((node <node>) s)
-  (format s "~S" (name node))
+  (break "(defmethod print-object :after ((node <node>) s)")
+  (format s "~S [" (name node))
+  (format s " ]"))
+
+#+nil
   (let ((props
           (loop :for (key val) :in
                 `(("shape"     ,(shape     node))
@@ -61,4 +46,8 @@
                   ("image"     ,(image     node))
                   ("labelloc"  ,(labelloc  node)))
                 :when val :collect (format nil "~A=~S" key val))))
-    (when props (format s " [~{~A~^, ~}]~%" props))))
+    (when props (format s " [~{~A~^, ~}]~%" props)))
+
+#+nil
+(defmethod print-object :after ((x <node>) s)
+  (format s "~S:~S"   (not(null (owner x))) (name x)))

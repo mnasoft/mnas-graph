@@ -17,12 +17,12 @@
     "Конечная  вершина ребра"))
   (:documentation "@b(Описание:) класс @b(<edge>) представляет ребро графа.
                                                                                 "))
-(defmethod print-object ((x <edge>) s))
-
-(defmethod print-object :after ((x <edge>) s)
-  (format s "~S->~S"
+(defmethod print-object ((x <edge>) s)
+    (format s "~S->~S"
           (name (tail x))
           (name (head x))))
+
+#+nil(defmethod print-object :after ((x <edge>) s))
 
 (defmethod initialize-instance :after ((edge <edge>) &key (owner))
   (assert (or
@@ -30,12 +30,3 @@
            (subtypep (type-of owner) '<graph>)))
   (when (subtypep (type-of owner) '<graph>)
     (insert-to edge owner)))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(progn
-  (defparameter *g* (make-instance '<graph>))
-  (defparameter *e* (make-instance '<edge>
-                 :owner nil ;;*g*
-                 :tail (make-instance '<node> :owner *g* :name "a")
-                 :head (make-instance '<node> :owner *g* :name "b"))))

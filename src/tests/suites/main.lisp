@@ -48,3 +48,37 @@
   (is-true (= 5 5))
   )
 
+(progn
+  (defparameter *g*
+    (make-instance 'mnas-graph:<graph>))
+  (defparameter *e*
+    (make-instance
+     'mnas-graph:<edge>
+     :owner *g*
+     :tail (make-instance
+            'mnas-graph:<node>
+            :owner *g* :name "a")
+     :head (make-instance
+            'mnas-graph:<node>
+            :owner *g* :name "b")))
+  ;;#+nil
+  (setf (mnas-graph::color
+         (mnas-graph:find-node *g* "a"))
+        "red")
+  #+nil  (setf (mnas-graph::color
+                (mnas-graph:find-edge *g* "a->b"))
+               "green")
+  #+nil
+  (mnas-graph/view:view-graph *g*))
+
+(defparameter *n-t* (make-instance
+            'mnas-graph:<node> 
+            ;;:owner *g*
+            :name "a" :color "red"))
+
+(mnas-graph:name   *n-t*)
+(mnas-graph::color *n-t*)
+
+(make-instance 'mnas-graph:<color>)
+*n-t*
+

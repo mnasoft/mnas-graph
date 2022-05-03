@@ -1,7 +1,11 @@
 ;;;; .src/core/mnas-graph.lisp
 
 (defpackage #:mnas-graph
-  (:use #:cl #:mnas-hash-table)
+  (:use #:cl
+        #:mnas-hash-table)
+  (:export color <color> 
+           ;;shape <shape>
+           )
   (:export <node> 
            <edge>
            <graph>)
