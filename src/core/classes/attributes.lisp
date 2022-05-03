@@ -38,7 +38,7 @@
         (fmt   (concatenate 'string
                             (string-downcase
                              (format nil "~S" slot))
-                            "=~S")))
+                            "=~S ")))
     `(defmethod print-object :after ((,slot ,class) s)
        (when (,slot ,slot) 
          (format s ,fmt (,slot ,slot))))))
@@ -89,7 +89,7 @@
 
 (defclass <node-attributes>
     (
-     <color> ;; <shape>  <fillcolor> <style> <label> <image> <labelloc>
+     <color> <shape>  <fillcolor> <style> <label> <image> <labelloc>
      )
   ()
   (:documentation "@link[uri=\"https://graphviz.org/doc/info/attrs.html\"](Attributes) "))

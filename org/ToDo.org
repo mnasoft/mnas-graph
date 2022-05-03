@@ -10,7 +10,12 @@
    - [ ] <node>-counter -> удалить;
 8. [ ] Добавить слоты в класс graph:
    - [ ] направление отрисовки;
-
+9. [X] исключить используемые пакеты из списка пакетов:
+   - [X] mnas-hash-table из mnas-prgph;
+   - [X] mnas-graph из mnas-graph/view; 
+   - [X] mnas-graph/printer-viewer из mnas-graph/view; 
+   - [X] mnas-graph/filter из mnas-graph/view; 
+   
 * DoNe
 1. [X] Перенести *.lisp в src.
 2. [X] Отделить демонстрационные функции - mnas-graph/demos. 

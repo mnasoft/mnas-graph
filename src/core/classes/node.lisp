@@ -27,7 +27,11 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;(defmethod print-object ((node <node>) s))
+(defmethod print-object ((node <node>) s)
+  (format s "~S [ " (name node)))
+
+(defmethod print-object :after ((node <node>) s)
+  (format s "]"))
 
 #+nil
 (defmethod print-object :after ((node <node>) s)

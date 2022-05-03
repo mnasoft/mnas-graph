@@ -2,9 +2,17 @@
 
 (defpackage #:mnas-graph
   (:use #:cl
-        #:mnas-hash-table)
-  (:export color <color> 
-           ;;shape <shape>
+        )
+  (:export color     <color> 
+           shape     <shape>
+           fillcolor <fillcolor>
+           style     <style>
+           label     <label>
+           image     <image>
+           labelloc  <labelloc>
+           arrowhead <arrowhead>
+           arrowtail <arrowtail>
+           
            )
   (:export <node> 
            <edge>

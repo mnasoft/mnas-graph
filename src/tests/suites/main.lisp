@@ -72,13 +72,16 @@
   (mnas-graph/view:view-graph *g*))
 
 (defparameter *n-t* (make-instance
-            'mnas-graph:<node> 
-            ;;:owner *g*
-            :name "a" :color "red"))
+                     'mnas-graph:<node> 
+                     ;;:owner *g*
+                     :name "a" :color "red"
+                     :shape "ellipse"))
 
 (mnas-graph:name   *n-t*)
 (mnas-graph::color *n-t*)
 
 (make-instance 'mnas-graph:<color>)
+(setf (mnas-graph:color *n-t*) "nil")
+(setf (mnas-graph:shape *n-t*) "box")
 *n-t*
 

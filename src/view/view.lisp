@@ -1,10 +1,7 @@
 ;;;; ./src/view/view.lisp
 
 (defpackage #:mnas-graph/view
-  (:use #:cl
-        #:mnas-graph
-        #:mnas-graph/printer-viewer
-        #:mnas-graph/filter)
+  (:use #:cl)
   (:export view-graph
            view-graph-new
            to-graphviz)
@@ -92,18 +89,18 @@
 
 ;;;; to-graphviz ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defmethod to-graphviz ((n <node>) s)
+(defmethod to-graphviz ((n mnas-graph:<node>) s)
   " @b(Описание:) метод @b(to-graphviz) выполняет вывод вершины графа
  @b(n) в поток @(s)."
   (format s "~A~%" n))
 
-(defmethod to-graphviz ((r <edge>) s)
+(defmethod to-graphviz ((r mnas-graph:<edge>) s)
   " @b(Описание:) метод @b(to-graphviz) выполняет вывод ребра графа
  @b(r) в поток @(s)."
   (format s "~S ~A ~S~%"
-	  (name (tail r))
+	  (mnas-graph:name (mnas-graph:tail r))
 	  "->"
-	  (name (head r))))
+	  (mnas-graph:name (mnas-graph:head r))))
 
 (defun x-preamble (&key (out t) (name "G") (rankdir "LR") (shape "box"))
   "@b(Описание:) функция @b(x-preamble) выводит преамбулу при выводе
@@ -115,12 +112,12 @@
  выводе графа в поток @b(out) в формате gv-файла."
   (format out "~&}~%"))
 
-(defmethod to-graphviz ((g <graph>) s)
+(defmethod to-graphviz ((g mnas-graph:<graph>) s)
   " @b(Описание:) метод @b(to-graphviz) выполняет вывод графа
  @b(g) в поток @(s)."
   (x-preamble :out s)
-  (maphash #'(lambda (key val) val (to-graphviz key s)) (nodes g))  
-  (maphash #'(lambda (key val) val (to-graphviz key s)) (edges g))  
+  (maphash #'(lambda (key val) val (to-graphviz key s)) (mnas-graph:nodes g))  
+  (maphash #'(lambda (key val) val (to-graphviz key s)) (mnas-graph:edges g))  
   (x-postamble :out s))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -140,7 +137,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defmethod view-graph ((g <graph>) 
+(defmethod view-graph ((g mnas-graph:<graph>) 
 		       &key
 			 (fpath *output-path*)
 			 (fname  (format nil "graph-~6,'0D" (incf *graph-count*)))
@@ -173,7 +170,7 @@
 			:wait nil))
   g)
 
-(defmethod view-graph-new ((g <graph>) (pv <printer-viewer>)
+(defmethod view-graph-new ((g mnas-graph:<graph>) (pv mnas-graph/printer-viewer:<printer-viewer>)
 			   &key
 			     (fpath *output-path*)
 			     (fname  (format nil "graph-~6,'0D" (incf *graph-count*)))
