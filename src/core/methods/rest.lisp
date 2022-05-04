@@ -17,48 +17,48 @@
     (sort names #'string<)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;; nea-to-nodes
+;;;; find-outlet-nodes
 
-(defmethod nea-to-nodes  ((n <node>) &aux (ht (make-hash-table)))
-  "@b(Описание:) метод @b(nea-to-nodes) возвращает хеш-таблицу вершин, с
+(defmethod find-outlet-nodes  ((node <node>) &aux (ht (make-hash-table)))
+  "@b(Описание:) метод @b(find-outlet-nodes) возвращает хеш-таблицу вершин, с
  которыми соединена вершина <node>, в направлении от нее к ним."
   (maphash
    #'(lambda (key val)
        val
        (setf (gethash (head key) ht) (head key)))
-   (outlet-edges n))
+   (outlet-edges node))
   (mnas-hash-table:print-items ht)
   ht)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; to-nodes
 
-(defmethod to-nodes  ((node string) (g <graph>))
-  (nea-to-nodes (find-node g node)))
+(defmethod to-nodes  ((node string) (graph <graph>))
+  (find-outlet-nodes (find-node graph node)))
 
-(defmethod to-nodes  ((node <node>) (g <graph>))
-  (when (eq (owner node) g)
-    (nea-to-nodes node)))
+(defmethod to-nodes  ((node <node>) (graph <graph>))
+  (when (eq (owner node) graph)
+    (find-outlet-nodes node)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; from-nodes
 
-(defmethod from-nodes  ((node string) (g <graph>))
-  (nea-from-nodes (find-node g node)))
+(defmethod from-nodes  ((node string) (graph <graph>))
+  (find-inlet-nodes (find-node graph node)))
 
-(defmethod from-nodes  ((node <node>) (g <graph>))
-  (when (eq (owner node) g)
-    (nea-from-nodes node)))
+(defmethod from-nodes  ((node <node>) (graph <graph>))
+  (when (eq (owner node) graph)
+    (find-inlet-nodes node)))
 
 (defmethod inlet-nodes ((graph <graph>))
   (error "(defmethod inlet-nodes ((graph <graph>)) - not yet defined.")
   )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;; nea-from-nodes
+;;;; find-inlet-nodes
 
-(defmethod nea-from-nodes  ((n <node>) &aux (ht (make-hash-table)))
-  "@b(Описание:) nea-from-nodes
+(defmethod find-inlet-nodes  ((n <node>) &aux (ht (make-hash-table)))
+  "@b(Описание:) find-inlet-nodes
 Возвращает хеш-таблицу вершин, с которыми соединена вершина <node>, в направлении от них к ней.
 "
   (maphash
@@ -97,7 +97,7 @@
 		    #'(lambda (key val)
 			val
 			(setf (gethash  key ht) key))
-		    (nea-to-nodes key)))
+		    (find-outlet-nodes key)))
 	       ht))
     (when (eq direction :direction-from)
       (maphash #'(lambda (key val)
@@ -106,6 +106,6 @@
 		    #'(lambda (key val)
 			val
 			(setf (gethash  key ht) key))
-		    (nea-from-nodes key)))
+		    (find-inlet-nodes key)))
 	       ht))
     (setf count-after (hash-table-count ht))))

@@ -19,9 +19,10 @@
                            :nodes
                            '("k")))
 
+(mnas-graph/view:view-graph *g*)
 
 (mnas-graph:to-string
-(mnas-graph:insert-to   "m" *g*) (mnas-graph/view:view-graph *g*)
+(mnas-graph:insert-to   "m" *g*) 
 (mnas-graph:remove-from "e" *g*)  
 (mnas-graph:inlet-nodes
 (mnas-graph:outlet-nodes
@@ -33,8 +34,7 @@ outlet-edges
 find-node
 find-edge
 connected-nodes
-(mnas-graph:nea-from-nodes (mnas-graph:find-node *g* "c"))
-(mnas-graph:nea-to-nodes (mnas-graph:find-node *g* "c"))
+(mnas-graph:find-inlet-nodes (mnas-graph:find-node *g* "c"))
+(mnas-graph:find-outlet-nodes (mnas-graph:find-node *g* "c"))
 
-nea-to-nodes
 

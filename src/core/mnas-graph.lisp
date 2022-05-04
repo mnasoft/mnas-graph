@@ -166,7 +166,6 @@
            attr-xlabel <xlabel>
            attr-xlp <xlp>
            attr-z <z>
-           
            )
   (:export <node> 
            <edge>
@@ -179,10 +178,11 @@
            head)
   (:export nodes
            edges)
-  ;; <node> 
+  ;; <node>
+  (:export find-inlet-nodes
+           find-outlet-nodes
+           )
   (:export connected-nodes
-           nea-from-nodes
-           nea-to-nodes
            inlet-edges
            outlet-edges
            )

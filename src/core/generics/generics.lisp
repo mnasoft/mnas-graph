@@ -54,14 +54,14 @@
 @end(list)
 "))
 
-(defgeneric nea-from-nodes  (node)
+(defgeneric find-inlet-nodes  (node)
   (:documentation
-   "@b(Описание:) обобщенная функция @b(nea-from-nodes) возвращает
+   "@b(Описание:) обобщенная функция @b(find-inlet-nodes) возвращает
  хеш-таблицу вершин, с которыми соединена вершина @b(node), в
  направлении от нее к ним."))
 
-(defgeneric nea-to-nodes    (node)
+(defgeneric find-outlet-nodes    (node)
   (:documentation
-   "@b(Описание:) обобщенная функция @b(nea-to-nodes) возвращает
+   "@b(Описание:) обобщенная функция @b(find-outlet-nodes) возвращает
  хеш-таблицу вершин, с которыми соединена вершина @b(node), в
  направлении от них к ней"))

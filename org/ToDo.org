@@ -15,7 +15,7 @@
    - [X] mnas-graph из mnas-graph/view; 
    - [X] mnas-graph/printer-viewer из mnas-graph/view; 
    - [X] mnas-graph/filter из mnas-graph/view; 
-   
+
 * DoNe
 1. [X] Перенести *.lisp в src.
 2. [X] Отделить демонстрационные функции - mnas-graph/demos. 
@@ -42,11 +42,14 @@
     - [X] <graph>-nodes -> nodes;
     - [X] <graph>-edges -> edges;
     - [X] graph-clear -> clear;
-11. [X] Выполнить переименование:      
+11. [X] Выполнить переименование: 
     - [X] beg-node -> tail;
     - [X] end-node -> head;
-12. [X] Изменить формат вывода вершин для добавления к ним атрибутов:
+12. [X] Выполнить переименование:       
+    - [X] nea-from-nodes -> find-inlet-nodes;
+    - [X] nea-to-nodes   -> find-outlet-nodes;
+13. [X] Изменить формат вывода вершин для добавления к ним атрибутов:
     - [X] формы;
     - [X] цвета;
     - [X] и т.п.
-13. [X] Изменить формат вывода вершины. 
+14. [X] Изменить формат вывода вершины. 
