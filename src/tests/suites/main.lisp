@@ -19,7 +19,7 @@
                            :nodes
                            '("k")))
 
-(mnas-graph/view:view-graph *g*)
+
 
 (mnas-graph:to-string
 (mnas-graph:insert-to   "m" *g*) 
@@ -38,3 +38,4 @@ connected-nodes
 (mnas-graph:find-outlet-nodes (mnas-graph:find-node *g* "c"))
 
 
+(mnas-graph/view:view-graph *g*)
