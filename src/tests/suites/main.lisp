@@ -12,77 +12,29 @@
   (is-true (= 5 5))
   )
 
-(progn 
-  (defparameter *g*
+(defparameter *g*
     (mnas-graph:make-graph '(("a" "c") ("b" "c") ("c" "d")
                              ("c" "g") ("c" "e") ("e" "f")
                              ("e" "g") ("h" "j") ("b" "f"))
                            :nodes
                            '("k")))
-  (setf (mnas-graph::sl-color (mnas-graph:find-node  *g* "a")) "red")
-  (setf (mnas-graph::sl-shape (mnas-graph:find-node  *g* "a")) "ellipse")
-  (mnas-graph::to-string (mnas-graph:find-edge  *g* "a->c"))
-  (setf (mnas-graph::sl-color (mnas-graph:find-edge  *g* "a->c")) "green")
-  (mnas-graph:name (mnas-graph:find-edge  *g* "a->c"))
-  (setf (mnas-graph::sl-fillcolor (mnas-graph:find-edge  *g* "e->g")) "magenta")
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;  
-  (mnas-graph/view::to-graphviz *g* t)
 
 
-  (mnas-graph:name-edges *g*)
-  (mnas-graph:name
-   (mnas-graph:find-node  *g* "a"))
-  
-  (mnas-graph:to-nodes "c" *g*)
-  (mnas-graph:from-nodes "c" *g*)
+(mnas-graph:to-string
+(mnas-graph:insert-to   "m" *g*) (mnas-graph/view:view-graph *g*)
+(mnas-graph:remove-from "e" *g*)  
+(mnas-graph:inlet-nodes
+(mnas-graph:outlet-nodes
 
-  (mnas-graph:nea-from-nodes
-   (mnas-graph:find-node  *g* "c"))
-  (mnas-graph:nea-to-nodes
-   (mnas-graph:find-node  *g* "c"))
-  (mnas-graph:connected-nodes
-   (mnas-graph:find-node  *g* "a")))
+(ql:quickload :mnas-hash-table)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+inlet-edges
+outlet-edges
+find-node
+find-edge
+connected-nodes
+(mnas-graph:nea-from-nodes (mnas-graph:find-node *g* "c"))
+(mnas-graph:nea-to-nodes (mnas-graph:find-node *g* "c"))
 
-(def-test section-variables ()
-  (is-true (= 5 5))
-  )
-
-(progn
-  (defparameter *g*
-    (make-instance 'mnas-graph:<graph>))
-  (defparameter *e*
-    (make-instance
-     'mnas-graph:<edge>
-     :owner *g*
-     :tail (make-instance
-            'mnas-graph:<node>
-            :owner *g* :name "a")
-     :head (make-instance
-            'mnas-graph:<node>
-            :owner *g* :name "b")))
-  ;;#+nil
-  (setf (mnas-graph::color
-         (mnas-graph:find-node *g* "a"))
-        "red")
-  #+nil  (setf (mnas-graph::color
-                (mnas-graph:find-edge *g* "a->b"))
-               "green")
-  #+nil
-  (mnas-graph/view:view-graph *g*))
-
-(defparameter *n-t* (make-instance
-                     'mnas-graph:<node> 
-                     ;;:owner *g*
-                     :name "a" :color "red"
-                     :shape "ellipse"))
-
-(mnas-graph:name   *n-t*)
-(mnas-graph::color *n-t*)
-
-(make-instance 'mnas-graph:<color>)
-(setf (mnas-graph:color *n-t*) "nil")
-(setf (mnas-graph:shape *n-t*) "box")
-*n-t*
+nea-to-nodes
 

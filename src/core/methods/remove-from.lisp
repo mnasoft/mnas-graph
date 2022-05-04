@@ -2,20 +2,26 @@
 
 (in-package #:mnas-graph)
 
-(defmethod remove-from ((n <node>) (g <graph> ))
-  "@b(Описание:) remove-from ((n <node>) (g <graph> ))!!!!!!
+(defmethod remove-from ((node-name string) (g <graph>)
+                        &aux (node (find-node g node-name)))
+  "@b(Описание:) remove-from ((node <node>) (g <graph> ))!!!!!!
+"
+  (remove-from node g))
+
+(defmethod remove-from ((node <node>) (g <graph> ))
+  "@b(Описание:) remove-from ((node <node>) (g <graph> ))!!!!!!
 "
   (let* ((rh (edges g))
-	 (rl (hash-table-copy rh)))
+	 (rl (mnas-hash-table:hash-table-copy rh)))
     (maphash #'(lambda(key val)
 		 val
 		 (if (or
-		      (eq (tail key) n)
-		      (eq (head key)   n))
+		      (eq (tail key) node)
+		      (eq (head key)   node))
 		     (remhash key rh)))
 	     rl)
-    (if (remhash n (nodes g))
-	n)))
+    (if (remhash node (nodes g))
+	node)))
 
 (defmethod remove-from ((e <edge>) (g <graph> ) )
   "@b(Описание:) remove-from ((e <edge>) (g <graph> ) )!!!!!!

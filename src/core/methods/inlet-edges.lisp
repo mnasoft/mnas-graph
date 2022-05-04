@@ -5,7 +5,7 @@
 (defmethod inlet-edges ((n <node>) &aux (g (owner n)))
   "@b(Описание:) inlet-edges ((n <node>) &aux (g (owner n)))!!!!!!
 "
-  (let ((rez-tbl (hash-table-copy (edges g))))
+  (let ((rez-tbl (mnas-hash-table:hash-table-copy (edges g))))
     (maphash
      #'(lambda (key val)
 	 val

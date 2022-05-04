@@ -27,7 +27,7 @@
        val
        (setf (gethash (head key) ht) (head key)))
    (outlet-edges n))
-  (print-items ht)
+  (mnas-hash-table:print-items ht)
   ht)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -50,6 +50,10 @@
   (when (eq (owner node) g)
     (nea-from-nodes node)))
 
+(defmethod inlet-nodes ((graph <graph>))
+  (error "(defmethod inlet-nodes ((graph <graph>)) - not yet defined.")
+  )
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; nea-from-nodes
 
@@ -62,7 +66,7 @@
        val
        (setf (gethash (tail key) ht) (tail key)))
    (inlet-edges n))
-  (print-items ht)
+  (mnas-hash-table:print-items ht)
   ht)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
