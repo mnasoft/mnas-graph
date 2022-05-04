@@ -19,14 +19,15 @@
                              ("e" "g") ("h" "j") ("b" "f"))
                            :nodes
                            '("k")))
-  (setf (mnas-graph::color (mnas-graph:find-node  *g* "a")) "red")
-  (setf (mnas-graph::shape (mnas-graph:find-node  *g* "a")) "ellipse")
-  (mnas-graph::to-string (mnas-graph:find-node  *g* "a"))
+  (setf (mnas-graph::sl-color (mnas-graph:find-node  *g* "a")) "red")
+  (setf (mnas-graph::sl-shape (mnas-graph:find-node  *g* "a")) "ellipse")
   (mnas-graph::to-string (mnas-graph:find-edge  *g* "a->c"))
+  (setf (mnas-graph::sl-color (mnas-graph:find-edge  *g* "a->c")) "green")
   (mnas-graph:name (mnas-graph:find-edge  *g* "a->c"))
+  (setf (mnas-graph::sl-fillcolor (mnas-graph:find-edge  *g* "e->g")) "magenta")
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;  
   (mnas-graph/view::to-graphviz *g* t)
-  (mnas-graph/view:view-graph *g*)
+
 
   (mnas-graph:name-edges *g*)
   (mnas-graph:name

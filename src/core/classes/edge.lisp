@@ -17,12 +17,16 @@
     "Конечная  вершина ребра"))
   (:documentation "@b(Описание:) класс @b(<edge>) представляет ребро графа.
                                                                                 "))
-(defmethod print-object ((x <edge>) s)
-    (format s "~S->~S"
-          (name (tail x))
-          (name (head x))))
 
-#+nil(defmethod print-object :after ((x <edge>) s))
+(defmethod print-object ((edge <edge>) s)
+    (format s "~S->~S ["
+          (name (tail edge))
+          (name (head edge))))
+
+(defmethod print-object :after ((edge <edge>) s)
+  (format s "]"))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod initialize-instance :after ((edge <edge>) &key (owner))
   (assert (or

@@ -33,25 +33,3 @@
 (defmethod print-object :after ((node <node>) s)
   (format s "]"))
 
-#+nil
-(defmethod print-object :after ((node <node>) s)
-  (break "(defmethod print-object :after ((node <node>) s)")
-  (format s "~S [" (name node))
-  (format s " ]"))
-
-#+nil
-  (let ((props
-          (loop :for (key val) :in
-                `(("shape"     ,(shape     node))
-                  ("color"     ,(color     node))
-                  ("fillcolor" ,(fillcolor node))
-                  ("style"     ,(style     node))
-                  ("label"     ,(label     node))
-                  ("image"     ,(image     node))
-                  ("labelloc"  ,(labelloc  node)))
-                :when val :collect (format nil "~A=~S" key val))))
-    (when props (format s " [~{~A~^, ~}]~%" props)))
-
-#+nil
-(defmethod print-object :after ((x <node>) s)
-  (format s "~S:~S"   (not(null (owner x))) (name x)))

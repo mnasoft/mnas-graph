@@ -1,0 +1,194 @@
+* Атрибуты, укладывающиеся в схему
+#+name: attributes
+| Name               | Used By | Type               |
+|--------------------+---------+--------------------|
+| area               | NC      | double             |
+| arrowhead          | E       | arrowType          |
+| arrowsize          | E       | double             |
+| arrowtail          | E       | arrowType          |
+| bb                 | G       | rect               |
+| bgcolor            | GC      | color colorList    |
+| center             | G       | bool               |
+| charset            | G       | string             |
+| class              | ENCG    | string             |
+| clusterrank        | G       | clusterMode        |
+| color              | ENC     | color colorList    |
+| colorscheme        | ENCG    | string             |
+| comment            | ENG     | string             |
+| compound           | G       | bool               |
+| concentrate        | G       | bool               |
+| constraint         | E       | bool               |
+| decorate           | E       | bool               |
+| defaultdist        | G       | double             |
+| dim                | G       | int                |
+| dimen              | G       | int                |
+| dir                | E       | dirType            |
+| diredgeconstraints | G       | string bool        |
+| distortion         | N       | double             |
+| dpi                | G       | double             |
+| edgehref           | E       | escString          |
+| edgetarget         | E       | escString          |
+| edgetooltip        | E       | escString          |
+| epsilon            | G       | double             |
+| esep               | G       | addDouble addPoint |
+| fillcolor          | NEC     | color colorList    |
+| fixedsize          | N       | bool string        |
+| fontcolor          | ENGC    | color              |
+| fontname           | ENGC    | string             |
+| fontnames          | G       | string             |
+| fontpath           | G       | string             |
+| fontsize           | ENGC    | double             |
+| forcelabels        | G       | bool               |
+| gradientangle      | NCG     | int                |
+| group              | N       | string             |
+| head_lp            | E       | point              |
+| headclip           | E       | bool               |
+| headhref           | E       | escString          |
+| headlabel          | E       | lblString          |
+| headport           | E       | portPos            |
+| headtarget         | E       | escString          |
+| headtooltip        | E       | escString          |
+| height             | N       | double             |
+| href               | GCNE    | escString          |
+| id                 | GCNE    | escString          |
+| image              | N       | string             |
+| imagepath          | G       | string             |
+| imagepos           | N       | string             |
+| imagescale         | N       | bool string        |
+| inputscale         | G       | double             |
+| label              | ENGC    | lblString          |
+| label_scheme       | G       | int                |
+| labelangle         | E       | double             |
+| labeldistance      | E       | double             |
+| labelfloat         | E       | bool               |
+| labelfontcolor     | E       | color              |
+| labelfontname      | E       | string             |
+| labelfontsize      | E       | double             |
+| labelhref          | E       | escString          |
+| labeljust          | GC      | string             |
+| labelloc           | NGC     | string             |
+| labeltarget        | E       | escString          |
+| labeltooltip       | E       | escString          |
+| landscape          | G       | bool               |
+| layer              | ENC     | layerRange         |
+| layerlistsep       | G       | string             |
+| layers             | G       | layerList          |
+| layerselect        | G       | layerRange         |
+| layersep           | G       | string             |
+| layout             | G       | string             |
+| len                | E       | double             |
+| levels             | G       | int                |
+| levelsgap          | G       | double             |
+| lhead              | E       | string             |
+| lheight            | GC      | double             |
+| lp                 | EGC     | point              |
+| ltail              | E       | string             |
+| lwidth             | GC      | double             |
+| margin             | NCG     | double point       |
+| maxiter            | G       | int                |
+| mclimit            | G       | double             |
+| mindist            | G       | double             |
+| minlen             | E       | int                |
+| mode               | G       | string             |
+| model              | G       | string             |
+| mosek              | G       | bool               |
+| newrank            | G       | bool               |
+| nodesep            | G       | double             |
+| nojustify          | GCNE    | bool               |
+| normalize          | G       | double bool        |
+| notranslate        | G       | bool               |
+| nslimit            | G       | double             |
+| nslimit1           | G       | double             |
+| ordering           | GN      | string             |
+| orientation        | NG      | double  string     |
+| outputorder        | G       | outputMode         |
+| overlap            | G       | string bool        |
+| overlap_scaling    | G       | double             |
+| overlap_shrink     | G       | bool               |
+| pack               | G       | bool int false     |
+| packmode           | G       | packMode           |
+| pad                | G       | double  point      |
+| page               | G       | double  point      |
+| pagedir            | G       | pagedir            |
+| pencolor           | C       | color              |
+| penwidth           | CNE     | double             |
+| peripheries        | NC      | int                |
+| pin                | N       | bool               |
+| pos                | EN      | point splineType   |
+| quadtree           | G       | quadType bool      |
+| quantum            | G       | double             |
+| rank               | S       | rankType           |
+| rankdir            | G       | rankdir            |
+| ranksep            | G       | double doubleList  |
+| ratio              | G       | double string      |
+| rects              | N       | rect               |
+| regular            | N       | bool               |
+| remincross         | G       | bool               |
+| repulsiveforce     | G       | double             |
+| resolution         | G       | double             |
+| root               | GN      | string  bool       |
+| rotate             | G       | int                |
+| rotation           | G       | double             |
+| samehead           | E       | string             |
+| sametail           | E       | string             |
+| samplepoints       | N       | int                |
+| scale              | G       | double point       |
+| searchsize         | G       | int                |
+| sep                | G       | addDouble addPoint |
+| shape              | N       | shape              |
+| shapefile          | N       | string             |
+| showboxes          | ENG     | int                |
+| sides              | N       | int                |
+| size               | G       | double point       |
+| skew               | N       | double             |
+| smoothing          | G       | smoothType         |
+| sortv              | GCN     | int                |
+| splines            | G       | bool string        |
+| start              | G       | startType          |
+| style              | ENCG    | style              |
+| stylesheet         | G       | string             |
+| tail_lp            | E       | point              |
+| tailclip           | E       | bool               |
+| tailhref           | E       | escString          |
+| taillabel          | E       | lblString          |
+| tailport           | E       | portPos            |
+| tailtarget         | E       | escString          |
+| tailtooltip        | E       | escString          |
+| target             | ENGC    | escString string   |
+| tooltip            | NECG    | escString          |
+| truecolor          | G       | bool               |
+| vertices           | N       | pointList          |
+| viewport           | G       | viewPort           |
+| voro_margin        | G       | double             |
+| weight             | E       | int double         |
+| width              | N       | double             |
+| xdotversion        | G       | string             |
+| xlabel             | EN      | lblString          |
+| xlp                | NE      | point              |
+| z                  | N       | double             |
+
+
+#+begin_src lisp :var attributes=attributes
+  (defparameter mnas-graph::*attributes* attributes)
+#+end_src
+
+#+RESULTS:
+: MNAS-GRAPH::*ATTRIBUTES*
+
+* TODO Атрибуты, имеющие особености (не укладывающиеся в схему)
+#+name:attributes-not-shema
+| Name        | Used By | Type   |
+|-------------+---------+--------|
+| _background | G       | string |
+| K           | GC      | double |
+| Damping     | G       | double |
+
+* Атрибуты, имеющие синонимы
+#+name:attributes-with-synonym
+| Name     | Used By | Type      |
+|----------+---------+-----------|
+| tailURL  | E       | escString |
+| labelURL | E       | escString |
+| headURL  | E       | escString |
+| edgeURL  | E       | escString |
+| URL      | ENGC    | escString |

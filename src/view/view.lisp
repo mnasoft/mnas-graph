@@ -94,13 +94,12 @@
  @b(n) в поток @(s)."
   (format s "~A~%" n))
 
-(defmethod to-graphviz ((r mnas-graph:<edge>) s)
+(defmethod to-graphviz ((edge mnas-graph:<edge>) s)
   " @b(Описание:) метод @b(to-graphviz) выполняет вывод ребра графа
- @b(r) в поток @(s)."
-  (format s "~S ~A ~S~%"
-	  (mnas-graph:name (mnas-graph:tail r))
-	  "->"
-	  (mnas-graph:name (mnas-graph:head r))))
+ @b(edge) в поток @(s)."
+  (format s "~A~%" edge
+;; (mnas-graph:name (mnas-graph:tail edge)) "->" (mnas-graph:name (mnas-graph:head edge))
+          ))
 
 (defun x-preamble (&key (out t) (name "G") (rankdir "LR") (shape "box"))
   "@b(Описание:) функция @b(x-preamble) выводит преамбулу при выводе
@@ -127,13 +126,13 @@
  dot или ее вариациям."
   (when (symbolp key)
     (ecase key
-      (:filter-dot       *filter-dot*      )
-      (:filter-neato     *filter-neato*    )
-      (:filter-twopi     *filter-twopi*    )
-      (:filter-circo     *filter-circo*    )
-      (:filter-fdp       *filter-fdp*      )
-      (:filter-sfdp      *filter-sfdp*     )
-      (:filter-patchwork *filter-patchwork*))))
+      (:filter-dot       mnas-graph/filter:*filter-dot*      )
+      (:filter-neato     mnas-graph/filter:*filter-neato*    )
+      (:filter-twopi     mnas-graph/filter:*filter-twopi*    )
+      (:filter-circo     mnas-graph/filter:*filter-circo*    )
+      (:filter-fdp       mnas-graph/filter:*filter-fdp*      )
+      (:filter-sfdp      mnas-graph/filter:*filter-sfdp*     )
+      (:filter-patchwork mnas-graph/filter:*filter-patchwork*))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
