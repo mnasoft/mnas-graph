@@ -2,8 +2,6 @@
 
 (in-package #:mnas-graph)
 
-(defparameter *graphviz.org* "https://graphviz.org/docs/")
-
 (defparameter *attributes*
   '(("area" "NC" "double")
     ("arrowhead" "E" "arrowType")

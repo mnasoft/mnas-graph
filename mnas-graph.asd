@@ -31,13 +31,18 @@
                   :components
                   ((:file "generics")))
                  (:module "classes"
-                  :depends-on ("mnas-graph"
-                               )
+                  :serial nil
+                  :depends-on ("mnas-graph")
                   :components
                   ((:file "attributes")
-                   (:file "node")
-                   (:file "edge")
-                   (:file "graph")))
+                   (:file "node"
+                    :depends-on ("attributes"))
+                   (:file "edge"
+                    :depends-on ("attributes"))
+                   (:file "graph"
+                    :depends-on ("attributes"
+                                 "node"
+                                 "edge"))))
                  (:module "methods"
                   :depends-on ("mnas-graph"
                                "generics"

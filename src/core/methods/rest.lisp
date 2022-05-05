@@ -7,14 +7,23 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defmethod name-edges ((g <graph>))
-  (let ((names nil))
+(export 'ids)
+(defmethod ids ((ht hash-table) &key (sort t) (predicate #'string<))
+  (let ((ids nil))
     (maphash
      #'(lambda (key val)
-         (push (name val) names))
-     (edges g))
-    #+nil
-    (sort names #'string<)))
+         (declare (ignore key))
+         (push (name val) ids))
+     ht)
+    (if sort
+        (sort ids predicate)
+        ids)))
+
+(defmethod edge-names ((g <graph>))
+  (ids (edges g)))
+
+(defmethod node-names ((g <graph>))
+  (ids (nodes g)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; find-outlet-nodes
@@ -50,17 +59,40 @@
   (when (eq (owner node) graph)
     (find-inlet-nodes node)))
 
-(defmethod inlet-nodes ((graph <graph>))
-  (error "(defmethod inlet-nodes ((graph <graph>)) - not yet defined.")
-  )
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; inlet-nodes
+
+(defmethod inlet-nodes ((graph <graph>) &aux (ht (make-hash-table)))
+  (maphash
+   #'(lambda (key val)
+       (when (inlet-p key)
+         (setf (gethash key ht) key)))
+   (nodes graph))
+  ht)
+
+(defmethod outlet-nodes ((graph <graph>) &aux (ht (make-hash-table)))
+  (maphash
+   #'(lambda (key val)
+       (when (outlet-p key)
+         (setf (gethash key ht) key)))
+   (nodes graph))
+  ht)
+
+(defmethod isolated-nodes ((graph <graph>) &aux (ht (make-hash-table)))
+  (maphash
+   #'(lambda (key val)
+       (when (isolated-p key)
+         (setf (gethash key ht) key)))
+   (nodes graph))
+  ht)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; find-inlet-nodes
 
 (defmethod find-inlet-nodes  ((n <node>) &aux (ht (make-hash-table)))
-  "@b(Описание:) find-inlet-nodes
-Возвращает хеш-таблицу вершин, с которыми соединена вершина <node>, в направлении от них к ней.
-"
+  "@b(Описание:) метод @b(find-inlet-nodes) возвращает хеш-таблицу
+   вершин, с которыми соединена вершина node, в направлении от них к
+   ней."
   (maphash
    #'(lambda (key val)
        val
@@ -68,6 +100,32 @@
    (inlet-edges n))
   (mnas-hash-table:print-items ht)
   ht)
+
+;;;;
+
+(export 'isolated-p)
+
+(defmethod isolated-p ((node <node>) )
+  (let ((inlet  (hash-table-count (find-inlet-nodes node)))
+        (outlet (hash-table-count (find-outlet-nodes node))))
+    (when (and (= 0 inlet) (= 0 outlet))
+      t)))
+
+(export 'inlet-p)
+
+(defmethod inlet-p ((node <node>) )
+  (let ((inlet  (hash-table-count (find-inlet-nodes node)))
+        (outlet (hash-table-count (find-outlet-nodes node))))
+    (when (and (< 0 inlet) (= 0 outlet))
+      t)))
+
+(export 'outlet-p)
+
+(defmethod outlet-p ((node <node>) )
+  (let ((inlet  (hash-table-count (find-inlet-nodes node)))
+        (outlet (hash-table-count (find-outlet-nodes node))))
+    (when (and (< 0 outlet) (= 0 inlet))
+      t)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; connected-nodes

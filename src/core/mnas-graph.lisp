@@ -14,49 +14,49 @@
            attr-clusterrank <clusterrank>
            attr-color       <color>
            attr-colorscheme <colorscheme>
-           attr-comment <comment>
-           attr-compound <compound>
+           attr-comment     <comment>
+           attr-compound    <compound>
            attr-concentrate <concentrate>
-           attr-constraint <constraint>
-           attr-decorate <decorate>
+           attr-constraint  <constraint>
+           attr-decorate    <decorate>
            attr-defaultdist <defaultdist>
-           attr-dim <dim>
-           attr-dimen <dimen>
-           attr-dir <dir>
+           attr-dim         <dim>
+           attr-dimen       <dimen>
+           attr-dir         <dir>
            attr-diredgeconstraints <diredgeconstraints>
-           attr-distortion <distortion>
-           attr-dpi <dpi>
-           attr-edgehref <edgehref>
-           attr-edgetarget <edgetarget>
+           attr-distortion  <distortion>
+           attr-dpi         <dpi>
+           attr-edgehref    <edgehref>
+           attr-edgetarget  <edgetarget>
            attr-edgetooltip <edgetooltip>
-           attr-epsilon <epsilon>
-           attr-esep <esep>
-           attr-fillcolor <fillcolor>
-           attr-fixedsize <fixedsize>
-           attr-fontcolor <fontcolor>
-           attr-fontname <fontname>
-           attr-fontnames <fontnames>
-           attr-fontpath <fontpath>
-           attr-fontsize <fontsize>
+           attr-epsilon     <epsilon>
+           attr-esep        <esep>
+           attr-fillcolor   <fillcolor>
+           attr-fixedsize   <fixedsize>
+           attr-fontcolor   <fontcolor>
+           attr-fontname    <fontname>
+           attr-fontnames   <fontnames>
+           attr-fontpath    <fontpath>
+           attr-fontsize    <fontsize>
            attr-forcelabels <forcelabels>
            attr-gradientangle <gradientangle>
-           attr-group <group>
-           attr-head_lp <head_lp>
-           attr-headclip <headclip>
-           attr-headhref <headhref>
-           attr-headlabel <headlabel>
-           attr-headport <headport>
-           attr-headtarget <headtarget>
+           attr-group       <group>
+           attr-head_lp     <head_lp>
+           attr-headclip    <headclip>
+           attr-headhref    <headhref>
+           attr-headlabel   <headlabel>
+           attr-headport    <headport>
+           attr-headtarget  <headtarget>
            attr-headtooltip <headtooltip>
-           attr-height <height>
-           attr-href <href>
-           attr-id <id>
-           attr-image <image>
-           attr-imagepath <imagepath>
-           attr-imagepos <imagepos>
-           attr-imagescale <imagescale>
-           attr-inputscale <inputscale>
-           attr-label <label>
+           attr-height      <height>
+           attr-href        <href>
+           attr-id          <id>
+           attr-image       <image>
+           attr-imagepath   <imagepath>
+           attr-imagepos    <imagepos>
+           attr-imagescale  <imagescale>
+           attr-inputscale  <inputscale>
+           attr-label       <label>
            attr-label_scheme <label_scheme>
            attr-labelangle <labelangle>
            attr-labeldistance <labeldistance>
@@ -179,12 +179,18 @@
   (:export nodes
            edges)
   ;; <node>
+  (:export isolated-p
+           inlet-p
+           outlet-p)
+
   (:export find-inlet-nodes
            find-outlet-nodes
            )
-  (:export connected-nodes
+  (:export isolated-nodes
            inlet-edges
            outlet-edges
+           
+           connected-nodes
            )
   ;; <node> & <edge>
   (:export to-string
@@ -209,7 +215,9 @@
   (:export make-graph
            make-random-graph
            )
-  (:export name-edges
+  (:export ids
+           edge-names
+           node-names
            )
   (:documentation
    " Пакет @b(mnas-graph) определяет базовые функции для создания
@@ -248,6 +256,8 @@
 ;;;; (setf sb-impl::*default-external-format* :utf8)
 
 (in-package #:mnas-graph)
+
+(defparameter *graphviz.org* "https://graphviz.org/docs/")
 
 ;;;; make-graph data ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -296,7 +306,11 @@
        (push (list
 	      (format nil "~A" (random node-max-number))
 	      (format nil "~A" (random node-max-number)))
-	     lst)))))
+	     lst)))
+   :nodes (loop :for i :from 0 :to node-max-number
+                :collect (format nil "~A" (random node-max-number)))
+   
+   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

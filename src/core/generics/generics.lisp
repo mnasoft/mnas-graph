@@ -10,6 +10,22 @@
 
 (defgeneric remove-from  (obj container) (:documentation "Добавляет obj в container"))
 
+;;;;
+
+(defgeneric isolated-nodes (graph)
+  (:documentation
+   "@b(Описание:) обобщенная функция @b(inlet-nodes) возвращает
+ хеш-таблицу изолированных вершин для графа @b(graph).
+
+ @b(Пример использования:)
+@begin[lang=lisp](code)
+ (let ((g (make-random-graph :node-max-number 16)))   
+   (mnas-graph/view:view-graph g)
+   (inlet-nodes g))
+@end(code)
+
+"))
+
 (defgeneric inlet-nodes (graph)
   (:documentation
    "@b(Описание:) обобщенная функция @b(inlet-nodes) возвращает
@@ -23,6 +39,7 @@
 @end(code)
 
 "))
+
 
 (defgeneric outlet-nodes (graph)
   (:documentation
@@ -57,11 +74,36 @@
 (defgeneric find-inlet-nodes  (node)
   (:documentation
    "@b(Описание:) обобщенная функция @b(find-inlet-nodes) возвращает
- хеш-таблицу вершин, с которыми соединена вершина @b(node), в
- направлении от нее к ним."))
+ хеш-таблицу ближайших вершин, с которыми соединена вершина @b(node),
+ в направлении от нее к ним."))
 
-(defgeneric find-outlet-nodes    (node)
+(defgeneric find-outlet-nodes (node)
   (:documentation
    "@b(Описание:) обобщенная функция @b(find-outlet-nodes) возвращает
- хеш-таблицу вершин, с которыми соединена вершина @b(node), в
- направлении от них к ней"))
+ хеш-таблицу ближайших вершин, с которыми соединена вершина @b(node), в
+ направлении от них к ней."))
+
+(defgeneric name (obj)
+  (:documentation
+   "@b(Описание:) обобщенная функция @b(name) возвращает имя объекта."))
+
+(defgeneric edge-names (graph)
+  (:documentation
+   "@b(Описание:) обобщенная функция @b(edge-names) возвращает список
+   имен ребер графа @b(graph)."))
+
+(defgeneric to-nodes  (node graph)
+  (:documentation
+   "@b(Описание:) обобщенная функция @b(to-nodes) возвращает хеш-таблицу
+ ближайших вершин, с которыми соединена вершина @b(node),
+ принадлежащая графу @b(graph), в направлении от них к ней."
+   ))
+
+(defgeneric from-nodes (node graph)
+  (:documentation
+   "@b(Описание:) обобщенная функция @b(from-nodes) возвращает
+ хеш-таблицу ближайших вершин, с которыми соединена вершина @b(node),
+ принадлежащая графу @b(graph), в направлении от нее к ним."))
+
+
+

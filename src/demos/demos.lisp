@@ -1,7 +1,7 @@
 ;;;; ./src/demos/demos.lisp
 
 (defpackage #:mnas-graph/demos
-  (:use #:cl #:mnas-graph)
+  (:use #:cl)
   (:export demo-1
            demo-2
            demo-3
@@ -110,3 +110,42 @@
 (mnas-graph/demos:demo-4)
 (mnas-graph/demos:demo-5)
 ")
+
+(defun fill-nodes (g &key
+                       (outlet-color   "red")
+                       (inlet-color    "green")
+                       (izolated-color "tan"))
+  (labels ((foo (nodes color)
+             (map nil
+                  #'(lambda (node)
+                      (setf (mnas-graph:attr-fillcolor node) color)
+                      (setf (mnas-graph:attr-style node)     "filled"))
+                  nodes))) 
+    (let ((outlet   (mnas-hash-table:keys
+                     (mnas-graph:outlet-nodes   g)))
+          (inlet    (mnas-hash-table:keys
+                     (mnas-graph:inlet-nodes    g)))
+          (izolated (mnas-hash-table:keys
+                     (mnas-graph:isolated-nodes g))))
+      (foo outlet outlet-color)
+      (foo inlet inlet-color)
+      (foo izolated izolated-color)
+      g)))
+
+(defun demo-6 (&key
+                 (node-max-number 25)
+                 (edges-number    16)
+                 (outlet-color   "red")
+                 (inlet-color    "green")
+                 (izolated-color "tan")
+                 (graphviz-prg :filter-neato))
+  (let ((g (mnas-graph:make-random-graph
+            :node-max-number node-max-number
+            :edges-number edges-number)))
+    (fill-nodes g :outlet-color outlet-color
+                  :inlet-color inlet-color
+                  :izolated-color izolated-color)
+    (mnas-graph/view:view-graph g :graphviz-prg graphviz-prg)))
+
+
+(demo-6)
