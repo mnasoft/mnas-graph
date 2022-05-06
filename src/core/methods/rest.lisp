@@ -26,20 +26,6 @@
   (ids (nodes g)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;; find-outlet-nodes
-
-(defmethod find-outlet-nodes  ((node <node>) &aux (ht (make-hash-table)))
-  "@b(Описание:) метод @b(find-outlet-nodes) возвращает хеш-таблицу вершин, с
- которыми соединена вершина <node>, в направлении от нее к ним."
-  (maphash
-   #'(lambda (key val)
-       val
-       (setf (gethash (head key) ht) (head key)))
-   (outlet-edges node))
-  (mnas-hash-table:print-items ht)
-  ht)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; to-nodes
 
 (defmethod to-nodes  ((node string) (graph <graph>))
@@ -98,7 +84,32 @@
        val
        (setf (gethash (tail key) ht) (tail key)))
    (inlet-edges n))
-  (mnas-hash-table:print-items ht)
+  ht)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; find-outlet-nodes
+
+(defmethod find-outlet-nodes  ((node <node>) &aux (ht (make-hash-table)))
+  "@b(Описание:) метод @b(find-outlet-nodes) возвращает хеш-таблицу вершин, с
+ которыми соединена вершина <node>, в направлении от нее к ним."
+  (maphash
+   #'(lambda (key val)
+       val
+       (setf (gethash (head key) ht) (head key)))
+   (outlet-edges node))
+  ht)
+
+(export 'find-both-nodes)
+(defmethod find-both-nodes  ((node <node>) &aux (ht (make-hash-table)))
+  "@b(Описание:) метод @b(find-both-nodes) возвращает хеш-таблицу вершин, с
+ которыми соединена вершина <node>, в направлении от нее к ним."
+  (maphash
+   #'(lambda (key val)
+       val
+       (setf (gethash (head key) ht) (head key))
+       (setf (gethash (tail key) ht) (tail key))
+       (remhash node ht))
+   (both-edges node))
   ht)
 
 ;;;;
@@ -131,8 +142,8 @@
 ;;;; connected-nodes
 
 (defmethod connected-nodes ((n <node>)
-                            &key (direction :direction-to)
-                            &aux (ht (make-hash-table )))
+                            &key (direction :both) ; :forward :backward :both
+                            &aux (ht (make-hash-table ))) 
   "@b(Описание:) обобщенная функция @b(connected-nodes) возвращает
  хеш-таблицу доситжимых вершин при поиске в глубину начиная с вершины
  @b(node).
@@ -148,7 +159,7 @@
   (do ((count-before -1) (count-after  0))
       ((= count-before count-after) ht)
     (setf count-before (hash-table-count ht))
-    (when (eq direction :direction-to)
+    (when (eq direction :forward)
       (maphash #'(lambda (key val)
 		   val
 		   (maphash
@@ -157,7 +168,7 @@
 			(setf (gethash  key ht) key))
 		    (find-outlet-nodes key)))
 	       ht))
-    (when (eq direction :direction-from)
+    (when (eq direction :backward)
       (maphash #'(lambda (key val)
 		   val
 		   (maphash
