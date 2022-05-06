@@ -64,7 +64,7 @@
 
                    (:file "ids")
                    (:file "edge-names")
-                   (:file "node-names"))
+                   (:file "node-names")
 
                   (:file "inlet-nodes")
                   (:file "outlet-nodes")
