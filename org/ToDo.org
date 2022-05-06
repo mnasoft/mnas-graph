@@ -14,8 +14,17 @@
    - [X] mnas-hash-table из mnas-prgph;
    - [X] mnas-graph из mnas-graph/view; 
    - [X] mnas-graph/printer-viewer из mnas-graph/view; 
-   - [X] mnas-graph/filter из mnas-graph/view; 
-
+   - [X] mnas-graph/filter из mnas-graph/view;
+10. [-] Добавить вторым параметром graph:
+    - [X] find-backward-nodes; 
+    - [X] find-forward-nodes;
+    - [X] find-both-nodes;
+    - [X] inlet-edges;
+    - [X] outlet-edges;
+    - [X] isolated-p;
+    - [X] inlet-p;
+    - [X] outlet-p;
+    - [ ] connected-nodes;
 * DoNe
 1. [X] Перенести *.lisp в src.
 2. [X] Отделить демонстрационные функции - mnas-graph/demos. 
@@ -35,21 +44,20 @@
 10. [X] Выполнить переименование:
     - [X] <graph>-edges-count -> count-edges;
     - [X] <graph>-nodes-count -> count-nodes;
-    - [X] <edge>-from -> beg-node;
-    - [X] <edge>-to   -> end-node;     
+    - [X] <edge>-from -> beg-node -> tail;
+    - [X] <edge>-to   -> end-node -> head;     
     - [X] <node>-name -> name;
     - [X] <node>-owner -> owner;
     - [X] <graph>-nodes -> nodes;
     - [X] <graph>-edges -> edges;
     - [X] graph-clear -> clear;
-11. [X] Выполнить переименование: 
-    - [X] beg-node -> tail;
-    - [X] end-node -> head;
-12. [X] Выполнить переименование:       
-    - [X] nea-from-nodes -> find-inlet-nodes;
-    - [X] nea-to-nodes   -> find-outlet-nodes;
-13. [X] Изменить формат вывода вершин для добавления к ним атрибутов:
+11. [X] Выполнить переименование:       
+    - [X] nea-from-nodes -> find-inlet-nodes  -> find-backward-nodes;
+    - [X] nea-to-nodes   -> find-outlet-nodes -> find-forward-nodes;
+    - [X] from-nodes -> backward-nodes;
+    - [X] to-nodes   -> forward-nodes;      
+12. [X] Изменить формат вывода вершин для добавления к ним атрибутов:
     - [X] формы;
     - [X] цвета;
     - [X] и т.п.
-14. [X] Изменить формат вывода вершины. 
+13. [X] Изменить формат вывода вершины. 

@@ -26,4 +26,4 @@
 (progn
   (defparameter *g* (make-random-graph :node-max-number 100))
   (view-graph *g* :graphviz-prg :filter-neato)
-  (connected-nodes (find-node *g* "57") :direction :direction-to))
+  (connected-nodes (find-node *g* "57") *g* :direction :direction-to))

@@ -46,18 +46,18 @@
    "@b(Описание:) обобщенная функция @b(outlet-nodes) возвращает
 хеш-таблицу вершин-истоков для графа @b(graph)."))
 
-(defgeneric inlet-edges (node)
+(defgeneric inlet-edges (node graph)
   (:documentation
    "@b(Описание:) обобщенная функция @b(inlet-edges) возвращает
  хеш-таблицу исходящих ребер (истоков) для вершины @b(node)"))
 
-(defgeneric outlet-edges (node) (:documentation " Возвращает хеш-таблицу конечных ребер (стоков)"))
+(defgeneric outlet-edges (node graph) (:documentation " Возвращает хеш-таблицу конечных ребер (стоков)"))
 
 (defgeneric find-node    (graph name) (:documentation "Поиск вершины по имени"))
 
 (defgeneric find-edge    (graph edge-name) (:documentation "Поиск ребра по имени"))
 
-(defgeneric connected-nodes (node &key direction)
+(defgeneric connected-nodes (node graph &key direction)
   (:documentation
    " @b(Описание:) обобщенная функция @b(connected-nodes) возвращает
  хеш-таблицу доситжимых вершин при поиске в глубину начиная с вершины
@@ -71,17 +71,23 @@
 @end(list)
 "))
 
-(defgeneric find-inlet-nodes  (node)
+(defgeneric find-forward-nodes (node graph)
   (:documentation
-   "@b(Описание:) обобщенная функция @b(find-inlet-nodes) возвращает
- хеш-таблицу ближайших вершин, с которыми соединена вершина @b(node),
- в направлении от нее к ним."))
-
-(defgeneric find-outlet-nodes (node)
-  (:documentation
-   "@b(Описание:) обобщенная функция @b(find-outlet-nodes) возвращает
+   "@b(Описание:) обобщенная функция @b(find-forward-nodes) возвращает
  хеш-таблицу ближайших вершин, с которыми соединена вершина @b(node), в
- направлении от них к ней."))
+ направлении течения."))
+
+(defgeneric find-backward-nodes  (node graph)
+  (:documentation
+   "@b(Описание:) обобщенная функция @b(find-backward-nodes) возвращает
+ хеш-таблицу ближайших вершин, с которыми соединена вершина @b(node),
+ в направлении против течения."))
+
+(defgeneric find-both-nodes  (node graph)
+  (:documentation
+   "@b(Описание:) обобщенная функция @b(find-backward-nodes) возвращает
+ хеш-таблицу ближайших вершин, с которыми соединена вершина @b(node),
+ в направлениях по и против течения."))
 
 (defgeneric name (obj)
   (:documentation
@@ -92,16 +98,16 @@
    "@b(Описание:) обобщенная функция @b(edge-names) возвращает список
    имен ребер графа @b(graph)."))
 
-(defgeneric to-nodes  (node graph)
+(defgeneric forward-nodes  (node graph)
   (:documentation
-   "@b(Описание:) обобщенная функция @b(to-nodes) возвращает хеш-таблицу
+   "@b(Описание:) обобщенная функция @b(forward-nodes) возвращает хеш-таблицу
  ближайших вершин, с которыми соединена вершина @b(node),
  принадлежащая графу @b(graph), в направлении от них к ней."
    ))
 
-(defgeneric from-nodes (node graph)
+(defgeneric backward-nodes (node graph)
   (:documentation
-   "@b(Описание:) обобщенная функция @b(from-nodes) возвращает
+   "@b(Описание:) обобщенная функция @b(backward-nodes) возвращает
  хеш-таблицу ближайших вершин, с которыми соединена вершина @b(node),
  принадлежащая графу @b(graph), в направлении от нее к ним."))
 

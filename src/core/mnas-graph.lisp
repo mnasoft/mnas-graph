@@ -183,8 +183,8 @@
            inlet-p
            outlet-p)
 
-  (:export find-inlet-nodes
-           find-outlet-nodes
+  (:export find-backward-nodes
+           find-forward-nodes
            )
   (:export isolated-nodes
            inlet-edges
@@ -195,8 +195,8 @@
   ;; <node> & <edge>
   (:export to-string
            )
-  (:export to-nodes
-           from-nodes)
+  (:export forward-nodes
+           backward-nodes)
   ;; <graph>
   (:export clear
            )

@@ -26,24 +26,24 @@
   (ids (nodes g)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;; to-nodes
+;;;; forward-nodes
 
-(defmethod to-nodes  ((node string) (graph <graph>))
-  (find-outlet-nodes (find-node graph node)))
+(defmethod forward-nodes  ((node string) (graph <graph>))
+  (find-forward-nodes (find-node graph node) graph))
 
-(defmethod to-nodes  ((node <node>) (graph <graph>))
+(defmethod forward-nodes  ((node <node>) (graph <graph>))
   (when (eq (owner node) graph)
-    (find-outlet-nodes node)))
+    (find-forward-nodes node graph)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;; from-nodes
+;;;; backward-nodes
 
-(defmethod from-nodes  ((node string) (graph <graph>))
-  (find-inlet-nodes (find-node graph node)))
+(defmethod backward-nodes  ((node string) (graph <graph>))
+  (find-backward-nodes (find-node graph node) graph))
 
-(defmethod from-nodes  ((node <node>) (graph <graph>))
+(defmethod backward-nodes  ((node <node>) (graph <graph>))
   (when (eq (owner node) graph)
-    (find-inlet-nodes node)))
+    (find-backward-nodes node graph)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; inlet-nodes
@@ -51,7 +51,7 @@
 (defmethod inlet-nodes ((graph <graph>) &aux (ht (make-hash-table)))
   (maphash
    #'(lambda (key val)
-       (when (inlet-p key)
+       (when (inlet-p key graph)
          (setf (gethash key ht) key)))
    (nodes graph))
   ht)
@@ -59,7 +59,7 @@
 (defmethod outlet-nodes ((graph <graph>) &aux (ht (make-hash-table)))
   (maphash
    #'(lambda (key val)
-       (when (outlet-p key)
+       (when (outlet-p key graph)
          (setf (gethash key ht) key)))
    (nodes graph))
   ht)
@@ -67,40 +67,40 @@
 (defmethod isolated-nodes ((graph <graph>) &aux (ht (make-hash-table)))
   (maphash
    #'(lambda (key val)
-       (when (isolated-p key)
+       (when (isolated-p key graph)
          (setf (gethash key ht) key)))
    (nodes graph))
   ht)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;; find-inlet-nodes
+;;;; find-backward-nodes
 
-(defmethod find-inlet-nodes  ((n <node>) &aux (ht (make-hash-table)))
-  "@b(Описание:) метод @b(find-inlet-nodes) возвращает хеш-таблицу
+(defmethod find-backward-nodes  ((node <node>) (graph <graph>) &aux (ht (make-hash-table)))
+  "@b(Описание:) метод @b(find-backward-nodes) возвращает хеш-таблицу
    вершин, с которыми соединена вершина node, в направлении от них к
    ней."
   (maphash
    #'(lambda (key val)
        val
        (setf (gethash (tail key) ht) (tail key)))
-   (inlet-edges n))
+   (inlet-edges node graph))
   ht)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;; find-outlet-nodes
+;;;; find-forward-nodes
 
-(defmethod find-outlet-nodes  ((node <node>) &aux (ht (make-hash-table)))
-  "@b(Описание:) метод @b(find-outlet-nodes) возвращает хеш-таблицу вершин, с
+(defmethod find-forward-nodes  ((node <node>) (graph <graph>) &aux (ht (make-hash-table)))
+  "@b(Описание:) метод @b(find-forward-nodes) возвращает хеш-таблицу вершин, с
  которыми соединена вершина <node>, в направлении от нее к ним."
   (maphash
    #'(lambda (key val)
        val
        (setf (gethash (head key) ht) (head key)))
-   (outlet-edges node))
+   (outlet-edges node graph))
   ht)
 
 (export 'find-both-nodes)
-(defmethod find-both-nodes  ((node <node>) &aux (ht (make-hash-table)))
+(defmethod find-both-nodes  ((node <node>) (graph <graph>) &aux (ht (make-hash-table)))
   "@b(Описание:) метод @b(find-both-nodes) возвращает хеш-таблицу вершин, с
  которыми соединена вершина <node>, в направлении от нее к ним."
   (maphash
@@ -116,32 +116,32 @@
 
 (export 'isolated-p)
 
-(defmethod isolated-p ((node <node>) )
-  (let ((inlet  (hash-table-count (find-inlet-nodes node)))
-        (outlet (hash-table-count (find-outlet-nodes node))))
+(defmethod isolated-p ((node <node>) (graph <graph>))
+  (let ((inlet  (hash-table-count (find-backward-nodes node graph)))
+        (outlet (hash-table-count (find-forward-nodes  node graph))))
     (when (and (= 0 inlet) (= 0 outlet))
       t)))
 
 (export 'inlet-p)
 
-(defmethod inlet-p ((node <node>) )
-  (let ((inlet  (hash-table-count (find-inlet-nodes node)))
-        (outlet (hash-table-count (find-outlet-nodes node))))
+(defmethod inlet-p ((node <node>) (graph <graph>))
+  (let ((inlet  (hash-table-count (find-backward-nodes node graph)))
+        (outlet (hash-table-count (find-forward-nodes  node graph))))
     (when (and (< 0 inlet) (= 0 outlet))
       t)))
 
 (export 'outlet-p)
 
-(defmethod outlet-p ((node <node>) )
-  (let ((inlet  (hash-table-count (find-inlet-nodes node)))
-        (outlet (hash-table-count (find-outlet-nodes node))))
+(defmethod outlet-p ((node <node>) (graph <graph>))
+  (let ((inlet  (hash-table-count (find-backward-nodes node graph)))
+        (outlet (hash-table-count (find-forward-nodes  node graph))))
     (when (and (< 0 outlet) (= 0 inlet))
       t)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; connected-nodes
 
-(defmethod connected-nodes ((n <node>)
+(defmethod connected-nodes ((n <node>) (graph <graph>)
                             &key (direction :both) ; :forward :backward :both
                             &aux (ht (make-hash-table ))) 
   "@b(Описание:) обобщенная функция @b(connected-nodes) возвращает
@@ -166,7 +166,7 @@
 		    #'(lambda (key val)
 			val
 			(setf (gethash  key ht) key))
-		    (find-outlet-nodes key)))
+		    (find-forward-nodes key graph)))
 	       ht))
     (when (eq direction :backward)
       (maphash #'(lambda (key val)
@@ -175,6 +175,15 @@
 		    #'(lambda (key val)
 			val
 			(setf (gethash  key ht) key))
-		    (find-inlet-nodes key)))
+		    (find-backward-nodes key graph)))
+	       ht))
+    (when (eq direction :both)
+      (maphash #'(lambda (key val)
+		   val
+		   (maphash
+		    #'(lambda (key val)
+			val
+			(setf (gethash  key ht) key))
+		    (find-both-nodes key graph)))
 	       ht))
     (setf count-after (hash-table-count ht))))
