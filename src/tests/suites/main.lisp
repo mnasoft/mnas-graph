@@ -183,6 +183,7 @@
                        (mnas-graph:find-inlet-nodes
                         (mnas-graph:find-node g node)))
                       rez)))))
+;;;;
 
 (def-test test-find-inlet-nodes ()
   (with-fixture fix-graph-g ()
@@ -210,6 +211,23 @@
                       :collect (list node
                                      (mnas-graph:ids
                                       (mnas-graph:find-outlet-nodes
+                                       (mnas-graph:find-node *g* node)))))
+          '(("a" ("c")) ("b" ("f")) ("c" ("d" "e" "g")) ("d" NIL) ("e" ("f" "g"))
+            ("f" NIL) ("g" NIL) ("h" ("j")) ("j" NIL) ("k" NIL))
+          :do (is-true
+               (equal (mnas-graph:ids
+                       (mnas-graph:find-outlet-nodes
+                       (mnas-graph:find-node g node)))
+                      rez)))))
+
+(def-test test-find-outlet-nodes ()
+  (with-fixture fix-graph-g ()
+    (loop :for (node rez) :in
+          #+nil (loop :for node :in (mnas-graph:ids
+                                     (mnas-graph:nodes *g*))
+                      :collect (list node
+                                     (mnas-graph:ids
+                                      (mnas-graph:find-both-nodes
                                        (mnas-graph:find-node *g* node)))))
           '(("a" ("c")) ("b" ("f")) ("c" ("d" "e" "g")) ("d" NIL) ("e" ("f" "g"))
             ("f" NIL) ("g" NIL) ("h" ("j")) ("j" NIL) ("k" NIL))
