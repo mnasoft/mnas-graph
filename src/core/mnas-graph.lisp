@@ -181,16 +181,16 @@
   ;; <node>
   (:export isolated-p
            inlet-p
-           outlet-p)
-
+           outlet-p
+           )
   (:export find-backward-nodes
            find-forward-nodes
+           find-both-nodes
            )
   (:export isolated-nodes
            inlet-edges
-           outlet-edges
-           
-           connected-nodes
+           outlet-edges)
+  (:export connected-nodes
            )
   ;; <node> & <edge>
   (:export to-string

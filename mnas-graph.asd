@@ -47,7 +47,7 @@
                   :depends-on ("mnas-graph"
                                "generics"
                                "classes")
-                  :serial nil
+                  :serial t
                   :components
                   ((:file "clear")
                    (:file "count-edges")
@@ -59,9 +59,27 @@
                    (:file "outlet-edges")
                    (:file "remove-from")
                    (:file "to-string")
-;;;;
-                   (:file "rest")
-                   ))))))
+
+                   (:file "name")
+
+                   (:file "ids")
+                   (:file "edge-names")
+                   (:file "node-names"))
+
+                  (:file "inlet-nodes")
+                  (:file "outlet-nodes")
+                  (:file "isolated-nodes")
+                   
+                  (:file "find-forward-nodes")
+                  (:file "find-backward-nodes")
+                  (:file "find-both-nodes")
+                   
+                  (:file "isolated-p")
+                  (:file "inlet-p")
+                  (:file "outlet-p")
+                   
+                  (:file "connected-nodes")
+                  ))))))
 
 (defsystem "mnas-graph/view"
   :description "Describe mnas-graph here"

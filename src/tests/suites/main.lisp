@@ -286,12 +286,30 @@
             ("g" ("a" "b" "c" "d" "e" "f" "g")) ("h" ("h" "j")) ("j" ("h" "j"))
             ("k" ("k")))
           :do (is-true
-               (equal (mnas-graph:ids
-                       (mnas-graph:connected-nodes
-                        (mnas-graph:find-node node g) g
-                        :direction :both))
-                      rez)))
-    ))
+               (equal
+                (mnas-graph:ids
+                 (mnas-graph:connected-nodes
+                  (mnas-graph:find-node node g) g
+                  :direction :both))
+                rez)))
+    
+    (loop :for (depth rez) :in
+          #+nil (loop :for depth :in '(1 2 3 4 5)
+                      :collect
+                      (list depth
+                            (mnas-graph:ids
+                             (mnas-graph:connected-nodes
+                              (mnas-graph:find-node "a" *g*) *g*
+                              :direction :both :depth depth))))
+          '((1 ("a" "c")) (2 ("a" "c" "d" "e" "g")) (3 ("a" "c" "d" "e" "f" "g"))
+            (4 ("a" "b" "c" "d" "e" "f" "g")) (5 ("a" "b" "c" "d" "e" "f" "g")))
+          :do (is-true
+               (equal
+                (mnas-graph:ids
+                             (mnas-graph:connected-nodes
+                              (mnas-graph:find-node "a" g) g
+                              :direction :both :depth depth))
+                rez)))))
 
 ;;(mnas-graph/view:view-graph *g* :graphviz-prg :filter-neato)
 

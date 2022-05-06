@@ -2,7 +2,6 @@
 
 (in-package #:mnas-graph)
 
-
 (defmethod insert-to ((node-name string) (graph <graph>)
                       &aux (node (make-instance '<node> :name node-name)))
   "@b(Описание:) insert-to !!!!!!
