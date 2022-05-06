@@ -1,30 +1,16 @@
 * ToDo
-1. [ ] Добавить тесты.
-2. [ ] реализовать inlet-nodes  (graph)
-3. [ ] реализовать outlet-nodes (graph)
-4. [ ] view-graph vs view-graph-new ((g <graph>) (pv <printer-viewer>)
-5. [ ] Дать описание и пример использования в README.org.
-6. [ ] defgeneric connected-nodes (node &key direction) добавить
+1. [ ] defgeneric connected-nodes (node &key direction) добавить
    ключевой параметр depth, задающий глубину поиска.
-7. [ ] Выполнить переименование:
-   - [ ] <node>-counter -> удалить;
-8. [ ] Добавить слоты в класс graph:
-   - [ ] направление отрисовки;
-9. [X] исключить используемые пакеты из списка пакетов:
-   - [X] mnas-hash-table из mnas-prgph;
-   - [X] mnas-graph из mnas-graph/view; 
-   - [X] mnas-graph/printer-viewer из mnas-graph/view; 
-   - [X] mnas-graph/filter из mnas-graph/view;
-10. [-] Добавить вторым параметром graph:
-    - [X] find-backward-nodes; 
-    - [X] find-forward-nodes;
-    - [X] find-both-nodes;
-    - [X] inlet-edges;
-    - [X] outlet-edges;
-    - [X] isolated-p;
-    - [X] inlet-p;
-    - [X] outlet-p;
-    - [ ] connected-nodes;
+2. [ ] Рассмотреть целесообразность удаления:
+   - [ ] слота <node>-counter класса <node>;
+   - [ ] слота owner класса <node>;     
+3. [ ] Добавить слоты в класс <graph> для:
+   - [ ] задания направление отрисовки: LR, RL, TB, BT;
+   - [ ] задания вида узлов по умолчанию; 
+   - [ ] задания ребер узлов по умолчанию;
+   - [ ] задания прочих атрибутов.
+4. [ ] view-graph vs view-graph-new ((g <graph>) (pv <printer-viewer>)
+     
 * DoNe
 1. [X] Перенести *.lisp в src.
 2. [X] Отделить демонстрационные функции - mnas-graph/demos. 
@@ -51,13 +37,58 @@
     - [X] <graph>-nodes -> nodes;
     - [X] <graph>-edges -> edges;
     - [X] graph-clear -> clear;
-11. [X] Выполнить переименование:       
+11. [X] исключить используемые пакеты из списка пакетов:
+    - [X] mnas-hash-table из mnas-prgph;
+    - [X] mnas-graph из mnas-graph/view; 
+    - [X] mnas-graph/printer-viewer из mnas-graph/view; 
+    - [X] mnas-graph/filter из mnas-graph/view.      
+12. [X] Выполнить переименование:       
     - [X] nea-from-nodes -> find-inlet-nodes  -> find-backward-nodes;
     - [X] nea-to-nodes   -> find-outlet-nodes -> find-forward-nodes;
     - [X] from-nodes -> backward-nodes;
     - [X] to-nodes   -> forward-nodes;      
-12. [X] Изменить формат вывода вершин для добавления к ним атрибутов:
+13. [X] Изменить формат вывода вершин для добавления к ним атрибутов:
     - [X] формы;
     - [X] цвета;
     - [X] и т.п.
-13. [X] Изменить формат вывода вершины. 
+14. [X] Изменить формат вывода вершины. 
+15. [X] Добавить вторым параметром graph:
+    - [X] find-backward-nodes; 
+    - [X] find-forward-nodes;
+    - [X] find-both-nodes;
+    - [X] inlet-edges;
+    - [X] outlet-edges;
+    - [X] isolated-p;
+    - [X] inlet-p;
+    - [X] outlet-p;
+    - [X] connected-nodes.
+16. [X] Реализовать методы
+    - [X] inlet-nodes (graph);
+    - [X] outlet-nodes (graph);
+    - [X] isolated-nodes (graph).
+17. [X] Заменить вызовы:
+    - [X] backward-nodes -> find-backward-nodes;
+    - [X] forward-nodes  -> find-forward-nodes.
+18. [X] Поменять аргументы местами:
+    - [X] find-node;
+    - [X] find-edge.
+19. [X] Добавить тесты:
+    - [X] test-nodes;
+    - [X] test-node-names;
+    - [X] test-edges;
+    - [X] test-edge-names;
+    - [X] test-inlet-edges;
+    - [X] test-outlet-edges;
+    - [X] test-both-edges;
+    - [X] test-isolated-p;
+    - [X] test-inlet-p;
+    - [X] test-outlet-p;
+    - [X] test-inlet-nodes;
+    - [X] test-outlet-nodes;
+    - [X] test-isolated-nodes;
+    - [X] test-find-backward-nodes;
+    - [X] test-find-forward-nodes;
+    - [X] test-find-both-nodes;
+    - [X] test-connected-nodes.
+20. [X] Дать кратрое описание и несколько примеров использования в
+    README.org.

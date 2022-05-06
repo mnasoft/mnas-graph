@@ -2,7 +2,7 @@
 
 (in-package #:mnas-graph)
 
-(defmethod find-node ((g <graph>) (str string))
+(defmethod find-node ((str string) (g <graph>))
   "@b(Описание:) find-node ((g <graph>) (str string))!!!!!!
 "
   (let ((v-rez nil))

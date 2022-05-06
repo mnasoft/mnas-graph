@@ -53,11 +53,11 @@
 
 (defgeneric outlet-edges (node graph) (:documentation " Возвращает хеш-таблицу конечных ребер (стоков)"))
 
-(defgeneric find-node    (graph name) (:documentation "Поиск вершины по имени"))
+(defgeneric find-node    (name graph) (:documentation "Поиск вершины по имени"))
 
-(defgeneric find-edge    (graph edge-name) (:documentation "Поиск ребра по имени"))
+(defgeneric find-edge    (name graph) (:documentation "Поиск ребра по имени"))
 
-(defgeneric connected-nodes (node graph &key direction)
+(defgeneric connected-nodes (node graph &key direction depth)
   (:documentation
    " @b(Описание:) обобщенная функция @b(connected-nodes) возвращает
  хеш-таблицу доситжимых вершин при поиске в глубину начиная с вершины
@@ -97,19 +97,3 @@
   (:documentation
    "@b(Описание:) обобщенная функция @b(edge-names) возвращает список
    имен ребер графа @b(graph)."))
-
-(defgeneric forward-nodes  (node graph)
-  (:documentation
-   "@b(Описание:) обобщенная функция @b(forward-nodes) возвращает хеш-таблицу
- ближайших вершин, с которыми соединена вершина @b(node),
- принадлежащая графу @b(graph), в направлении от них к ней."
-   ))
-
-(defgeneric backward-nodes (node graph)
-  (:documentation
-   "@b(Описание:) обобщенная функция @b(backward-nodes) возвращает
- хеш-таблицу ближайших вершин, с которыми соединена вершина @b(node),
- принадлежащая графу @b(graph), в направлении от нее к ним."))
-
-
-

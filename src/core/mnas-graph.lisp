@@ -171,8 +171,8 @@
            <edge>
            <graph>)
   (:export name
-           owner
-           <node>-counter ;; Подлежит удалению
+           owner          ;; Возможно подлежит удалению
+           <node>-counter ;; Возможно подлежит удалению
            )
   (:export tail
            head)
@@ -195,8 +195,6 @@
   ;; <node> & <edge>
   (:export to-string
            )
-  (:export forward-nodes
-           backward-nodes)
   ;; <graph>
   (:export clear
            )
@@ -235,7 +233,7 @@
  @b(Пример использования:)
 @begin[lang=lisp](code)
   (let*
-      ((g (make-instance 'mnas-graph:<graph>))
+      ((g  (make-instance 'mnas-graph:<graph>))
        (v1 (make-instance 'mnas-graph:<node> :owner g :name \"v1\"))
        (v2 (make-instance 'mnas-graph:<node> :owner g :name \"v2\"))
        (v3 (make-instance 'mnas-graph:<node> :owner g :name \"v3\"))
@@ -248,7 +246,7 @@
     (mnas-graph:insert-to r1 g)
     (mnas-graph:insert-to r2 g)
     (mnas-graph:insert-to r3 g)
-    (mnas-graph:view-graph g))
+    (mnas-graph/view:view-graph g))
 @end(code)"))
 
 ;;;; (declaim (optimize (compilation-speed 0) (debug 3) (safety 0) (space 0) (speed 0)))
@@ -275,17 +273,17 @@
                '(\"k\")))
 @end(code)
 "
-  (let ((g (make-instance '<graph>))
+  (let ((graph (make-instance '<graph>))
 	(vs (remove-duplicates (append (apply #'append edges) nodes) :test #'equal)))
-    (mapc #'(lambda (v) (insert-to (make-instance '<node> :name v) g)) vs)
+    (mapc #'(lambda (v) (insert-to (make-instance '<node> :name v) graph)) vs)
     (mapc #'(lambda (el)
 	      (insert-to
 	       (make-instance '<edge>
-			      :tail (find-node g (first el))
-			      :head (find-node g (second el)))
-	       g))
+			      :tail (find-node (first el) graph )
+			      :head (find-node (second el) graph ))
+	       graph))
 	  edges)
-    g))
+    graph))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -313,8 +311,3 @@
    ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-
-
-

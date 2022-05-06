@@ -2,16 +2,16 @@
 
 (in-package #:mnas-graph)
 
-(defmethod remove-from ((node-name string) (g <graph>)
-                        &aux (node (find-node g node-name)))
-  "@b(Описание:) remove-from ((node <node>) (g <graph> ))!!!!!!
+(defmethod remove-from ((node-name string) (graph <graph>)
+                        &aux (node (find-node node-name graph)))
+  "@b(Описание:) remove-from ((node <node>) (graph <graph> ))!!!!!!
 "
-  (remove-from node g))
+  (remove-from node graph))
 
-(defmethod remove-from ((node <node>) (g <graph> ))
-  "@b(Описание:) remove-from ((node <node>) (g <graph> ))!!!!!!
+(defmethod remove-from ((node <node>) (graph <graph> ))
+  "@b(Описание:) remove-from ((node <node>) (graph <graph> ))!!!!!!
 "
-  (let* ((rh (edges g))
+  (let* ((rh (edges graph))
 	 (rl (mnas-hash-table:hash-table-copy rh)))
     (maphash #'(lambda(key val)
 		 val
@@ -20,11 +20,11 @@
 		      (eq (head key)   node))
 		     (remhash key rh)))
 	     rl)
-    (if (remhash node (nodes g))
+    (if (remhash node (nodes graph))
 	node)))
 
-(defmethod remove-from ((e <edge>) (g <graph> ) )
-  "@b(Описание:) remove-from ((e <edge>) (g <graph> ) )!!!!!!
+(defmethod remove-from ((edge <edge>) (graph <graph> ) )
+  "@b(Описание:) remove-from ((edge <edge>) (graph <graph> ) )!!!!!!
 "
-  (if (remhash e (edges g))
-      e))
+  (if (remhash edge (edges graph))
+      edge))

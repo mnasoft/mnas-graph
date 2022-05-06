@@ -2,7 +2,7 @@
 
 (in-package #:mnas-graph)
 
-(defmethod find-edge ((g <graph>) (str string))
+(defmethod find-edge ((str string) (g <graph>))
   "@b(Описание:) find-edge ((g <graph>) (str string))!!!!!!
 "
   (let ((e-rez nil))
