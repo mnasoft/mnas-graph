@@ -220,7 +220,7 @@
                        (mnas-graph:find-node g node)))
                       rez)))))
 
-(def-test test-find-outlet-nodes ()
+(def-test test-find-both-nodes ()
   (with-fixture fix-graph-g ()
     (loop :for (node rez) :in
           #+nil (loop :for node :in (mnas-graph:ids
@@ -229,27 +229,36 @@
                                      (mnas-graph:ids
                                       (mnas-graph:find-both-nodes
                                        (mnas-graph:find-node *g* node)))))
-          '(("a" ("c")) ("b" ("f")) ("c" ("d" "e" "g")) ("d" NIL) ("e" ("f" "g"))
-            ("f" NIL) ("g" NIL) ("h" ("j")) ("j" NIL) ("k" NIL))
+          '(("a" ("c")) ("b" ("f")) ("c" ("a" "d" "e" "g")) ("d" ("c"))
+            ("e" ("c" "f" "g")) ("f" ("b" "e")) ("g" ("c" "e"))
+            ("h" ("j")) ("j" ("h")) ("k" NIL))
           :do (is-true
                (equal (mnas-graph:ids
-                       (mnas-graph:find-outlet-nodes
-                       (mnas-graph:find-node g node)))
+                       (mnas-graph:find-both-nodes
+                        (mnas-graph:find-node g node)))
                       rez)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (def-test test-connected-nodes ()
   (with-fixture fix-graph-g ()
-    (is-true
-     (equal (mnas-graph:ids
-             (mnas-graph:connected-nodes
-              (mnas-graph:find-node g "c") :direction :backward))
-            #+nil
-            (mnas-graph:ids
-             (mnas-graph:connected-nodes
-              (mnas-graph:find-node *g* "c") :direction :backward))
-            '("a" "c")))
+    (loop :for (node rez) :in
+      #+nil (loop :for node :in (mnas-graph:ids
+                                 (mnas-graph:nodes *g*))
+                  :collect (list node
+                                 (mnas-graph:ids
+                                  (mnas-graph:connected-nodes
+                                   (mnas-graph:find-node *g* node)
+                                   :direction :backward))))
+      '(("a" ("a")) ("b" ("b")) ("c" ("a" "c")) ("d" ("a" "c" "d"))
+        ("e" ("a" "c" "e")) ("f" ("a" "b" "c" "e" "f")) ("g" ("a" "c" "e" "g"))
+        ("h" ("h")) ("j" ("h" "j")) ("k" ("k")))
+      :do (is-true
+           (equal (mnas-graph:ids
+                   (mnas-graph:connected-nodes
+                    (mnas-graph:find-node g node)
+                    :direction :backward))
+                  rez)))
     (is-true
      (equal (mnas-graph:ids
              (mnas-graph:connected-nodes
@@ -287,9 +296,6 @@ outlet-edges
 find-node
 find-edge
 connected-nodes
-(mnas-graph:find-inlet-nodes (mnas-graph:find-node *g* "c"))
-(mnas-graph:find-outlet-nodes (mnas-graph:find-node *g* "c"))
-
 
 (mnas-graph/view:view-graph *g*)
 )
