@@ -65,14 +65,18 @@
    (mnas-graph/view:view-graph g)
    (inlet-nodes g))
 @end(code)
-
 "))
-
 
 (defgeneric outlet-nodes (graph)
   (:documentation
    "@b(Описание:) обобщенная функция @b(outlet-nodes) возвращает
 хеш-таблицу вершин-истоков для графа @b(graph)."))
+
+(defgeneric both-edges (node graph)
+  (:documentation
+   "@b(Описание:) обобщенная функция @b(inlet-edges) возвращает
+ хеш-таблицу ребер, входящих в и исходящих из вершины @b(node) графа
+ @b(graph)."))
 
 (defgeneric inlet-edges (node graph)
   (:documentation

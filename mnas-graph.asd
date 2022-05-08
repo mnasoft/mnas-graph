@@ -54,9 +54,13 @@
                    (:file "count-nodes")
                    (:file "find-edge")
                    (:file "find-node")
+                   
+                   (:file "both-edges")
                    (:file "inlet-edges")
-                   (:file "insert-to")
                    (:file "outlet-edges")
+                   
+                   (:file "insert-to")
+
                    (:file "remove-from")
                    (:file "to-string")
 

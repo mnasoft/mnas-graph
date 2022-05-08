@@ -33,5 +33,5 @@
        (setf (gethash (head key) ht) (head key))
        (setf (gethash (tail key) ht) (tail key))
        (remhash node ht))
-   (both-edges node))
+   (both-edges node graph))
   ht)

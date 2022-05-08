@@ -187,9 +187,10 @@
            find-forward-nodes
            find-both-nodes
            )
-  (:export isolated-nodes
+  (:export 
            inlet-edges
-           outlet-edges)
+           outlet-edges
+           both-edges)
   (:export connected-nodes
            )
   ;; <node> & <edge>
@@ -198,7 +199,8 @@
   ;; <graph>
   (:export clear
            )
-  (:export inlet-nodes
+  (:export isolated-nodes
+           inlet-nodes
            outlet-nodes
            )
   (:export insert-to
