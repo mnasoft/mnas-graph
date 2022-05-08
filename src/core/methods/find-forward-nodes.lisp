@@ -6,6 +6,16 @@
   (make-hash-table))
 
 (defmethod find-forward-nodes ((node string) (graph <graph>))
+  "
+  @b(Пример использования:)
+@begin[lang=lisp](code)
+  (let ((graph (mnas-graph:make-graph
+                '((\"a\" \"c\") (\"c\" \"d\") (\"c\" \"g\") (\"c\" \"e\")
+                  (\"e\" \"f\") (\"e\" \"g\") (\"h\" \"j\") (\"b\" \"f\"))
+                :nodes '(\"k\"))))
+    (mnas-graph:find-forward-nodes \"c\" graph))
+@end(code)
+"
   (find-forward-nodes (find-node node graph) graph))
 
 (defmethod find-forward-nodes  ((node <node>) (graph <graph>) &aux (ht (make-hash-table)))
@@ -16,7 +26,7 @@
                 '((\"a\" \"c\") (\"c\" \"d\") (\"c\" \"g\") (\"c\" \"e\")
                   (\"e\" \"f\") (\"e\" \"g\") (\"h\" \"j\") (\"b\" \"f\"))
                 :nodes '(\"k\"))))
-    (mnas-graph:find-backward-nodes
+    (mnas-graph:find-forward-nodes
      (mnas-graph:find-node \"c\" graph) graph))
 @end(code)"
   (maphash

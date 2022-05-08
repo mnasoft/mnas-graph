@@ -77,9 +77,12 @@
 (defgeneric inlet-edges (node graph)
   (:documentation
    "@b(Описание:) обобщенная функция @b(inlet-edges) возвращает
- хеш-таблицу исходящих ребер (истоков) для вершины @b(node)"))
+ хеш-таблицу ребер, входящих в вершину @b(node) графа @b(graph)."))
 
-(defgeneric outlet-edges (node graph) (:documentation " Возвращает хеш-таблицу конечных ребер (стоков)"))
+(defgeneric outlet-edges (node graph)
+    (:documentation
+   "@b(Описание:) обобщенная функция @b(inlet-edges) возвращает
+ хеш-таблицу ребер, исходящих из вершины @b(node) графа @b(graph)."))
 
 (defgeneric find-node (name graph)
   (:documentation
@@ -89,8 +92,14 @@
 (defgeneric find-edge (name graph)
   (:documentation
    "@b(Описание:) обобщенная функция @b(find-edge) возвращает ребро с
-именем @b(name), поиск которого осуществляется среди ребер графа @b(graph).")
-  )
+именем @b(name), поиск которого осуществляется среди ребер графа @b(graph)."))
+
+(defgeneric ids (hash-table &key sort predicate)
+  (:documentation
+   "@b(Описание:) обобщенная функция @b(ids) возвращает список имен
+ключей, находящихся в хеш-таблице @b(hash-table). Если параметр
+@(sort) равен t возвращаемый список сортируется по предикату
+@b(predicate)."))
 
 (defgeneric connected-nodes (node graph &key direction depth)
   (:documentation
