@@ -44,27 +44,12 @@
   (:documentation
    "@b(Описание:) обобщенная функция @b(inlet-nodes) возвращает
  хеш-таблицу изолированных вершин для графа @b(graph).
-
- @b(Пример использования:)
-@begin[lang=lisp](code)
- (let ((g (make-random-graph :node-max-number 16)))   
-   (mnas-graph/view:view-graph g)
-   (inlet-nodes g))
-@end(code)
-
 "))
 
 (defgeneric inlet-nodes (graph)
   (:documentation
    "@b(Описание:) обобщенная функция @b(inlet-nodes) возвращает
  хеш-таблицу вершин-стоков для графа @b(graph).
-
- @b(Пример использования:)
-@begin[lang=lisp](code)
- (let ((g (make-random-graph :node-max-number 16)))   
-   (mnas-graph/view:view-graph g)
-   (inlet-nodes g))
-@end(code)
 "))
 
 (defgeneric outlet-nodes (graph)
@@ -87,6 +72,21 @@
     (:documentation
    "@b(Описание:) обобщенная функция @b(inlet-edges) возвращает
  хеш-таблицу ребер, исходящих из вершины @b(node) графа @b(graph)."))
+
+(defgeneric inlet-p (node graph)
+  (:documentation
+   "@b(Описание:) обобщенная функция @b(inlet-p) возвращает t, если
+вершина @b(node) графа  @b(graph) является стоком."))
+
+(defgeneric outlet-p (node graph)
+  (:documentation
+   "@b(Описание:) обобщенная функция @b(outlet-p) возвращает t, если
+вершина @b(node) графа @b(graph) является источником."))
+
+(defgeneric isolated-p (node graph)
+  (:documentation
+   "@b(Описание:) обобщенная функция @b(isolated-p) возвращает t, если
+вершина @b(node) графа @b(graph) является изолированой."))
 
 (defgeneric find-node (name graph)
   (:documentation
