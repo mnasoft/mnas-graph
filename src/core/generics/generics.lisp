@@ -81,12 +81,15 @@
 
 (defgeneric outlet-edges (node graph) (:documentation " Возвращает хеш-таблицу конечных ребер (стоков)"))
 
-(defgeneric find-node    (name graph) (:documentation "Поиск вершины по имени"))
-
-(defgeneric find-edge    (name graph)
+(defgeneric find-node (name graph)
   (:documentation
-   "@b(Описание:) обобщенная функция @b(find-edge)
-Поиск ребра по имени")
+   "@b(Описание:) обобщенная функция @b(find-node) возвращает ребро с
+именем @b(name), поиск которого осуществляется среди ребер графа @b(graph)."))
+
+(defgeneric find-edge (name graph)
+  (:documentation
+   "@b(Описание:) обобщенная функция @b(find-edge) возвращает ребро с
+именем @b(name), поиск которого осуществляется среди ребер графа @b(graph).")
   )
 
 (defgeneric connected-nodes (node graph &key direction depth)
