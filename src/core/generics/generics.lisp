@@ -8,6 +8,28 @@
  удаляя из него все вершины и ребра.
 "))
 
+(defgeneric count-edges (graph)
+  (:documentation
+   "@b(Описание:) метод @b(count-edges) возвращает количество ребер
+ графа @b(graph)."))
+
+(defgeneric count-nodes (graph)
+  (:documentation
+   "@b(Описание:) метод @b(count-nodes) возвращает количество вершин
+графа @b(graph)."))
+
+(defgeneric edge-names (graph)
+  (:documentation
+   "@b(Описание:) обобщенная функция @b(edge-names) возвращает
+ отсортированный список имен ребер графа @b(graph).
+  "))
+
+(defgeneric node-names (graph)
+  (:documentation
+   "@b(Описание:) обобщенная функция @b(edge-names) возвращает
+ отсортированный список имен вуршин графа @b(graph).
+  "))
+
 (defgeneric to-string (obj)
   (:documentation "Выполняет перобразование объекта в строку"))
 
@@ -61,7 +83,11 @@
 
 (defgeneric find-node    (name graph) (:documentation "Поиск вершины по имени"))
 
-(defgeneric find-edge    (name graph) (:documentation "Поиск ребра по имени"))
+(defgeneric find-edge    (name graph)
+  (:documentation
+   "@b(Описание:) обобщенная функция @b(find-edge)
+Поиск ребра по имени")
+  )
 
 (defgeneric connected-nodes (node graph &key direction depth)
   (:documentation
@@ -95,7 +121,7 @@
 
 (defgeneric find-both-nodes  (node graph)
   (:documentation
-   "@b(Описание:) обобщенная функция @b(find-backward-nodes) возвращает
+   "@b(Описание:) обобщенная функция @b(find-both-nodes) возвращает
  хеш-таблицу ближайших вершин, с которыми соединена вершина @b(node),
  в направлениях по и против течения."))
 

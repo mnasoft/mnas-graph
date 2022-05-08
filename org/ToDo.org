@@ -10,7 +10,8 @@
    - [ ] задания прочих атрибутов.
 3. [ ] view-graph vs view-graph-new ((g <graph>) (pv <printer-viewer>)
 4. [ ] Перенести документацию из методов в обобщенные функции.   
-
+5. [ ] Определить методы с аргументами типа nil для вершин, ребер и
+   графов (defmethod find-backward-nodes (node (graph <graph>))
      
 * DoNe
 1. [X] Перенести *.lisp в src.
