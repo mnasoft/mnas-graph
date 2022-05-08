@@ -2,7 +2,13 @@
 
 (in-package #:mnas-graph)
 
-(defgeneric to-string    (obj)
+(defgeneric clear (graph)
+  (:documentation
+   "@b(Описание:) обобщенная функция @b(clear) возвращает граф @b(graph),
+ удаляя из него все вершины и ребра.
+"))
+
+(defgeneric to-string (obj)
   (:documentation "Выполняет перобразование объекта в строку"))
 
 (defgeneric insert-to    (obj container)
@@ -59,16 +65,20 @@
 
 (defgeneric connected-nodes (node graph &key direction depth)
   (:documentation
-   " @b(Описание:) обобщенная функция @b(connected-nodes) возвращает
- хеш-таблицу доситжимых вершин при поиске в глубину начиная с вершины
- @b(node).
+   "@b(Описание:) обобщенная функция @b(connected-nodes) возвращает
+ хеш-таблицу вершин при поиске в глубину начиная с вершины @b(node).
+
  Параметр @b(direction) задает направление поиска:
 @begin(list)
- @item(:direction-to - поиск ведется в направлении ребер входящих в
+
+ @item(:forward - поиск ведется в направлении ребер исходящих из
+        вершины;)
+ @item(:backward - поиск ведется в направлении ребер входящих в
         вершину;)
- @item(:direction-ftom - поиск ведется в направлении ребер исходящих
-        из вершины.)
+ @item(:both - поиск ведется в обоих направлениях.)
 @end(list)
+
+ Параметр @b(depth) задает предельную глубину поиска.
 "))
 
 (defgeneric find-forward-nodes (node graph)

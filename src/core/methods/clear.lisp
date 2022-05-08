@@ -2,9 +2,7 @@
 
 (in-package #:mnas-graph)
 
-(defmethod clear ((g <graph>))
-  "@b(Описание:) clear ((g <graph>))!!!!!!
-"
-  (clrhash (nodes g))
-  (clrhash (edges g))
-  g)
+(defmethod clear ((graph <graph>))
+  (clrhash (nodes graph))
+  (clrhash (edges graph))
+  graph)
