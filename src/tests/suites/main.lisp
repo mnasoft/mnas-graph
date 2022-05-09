@@ -95,14 +95,14 @@
                       :collect
                       (list node (mnas-graph:ids
                                   (mnas-graph:both-edges
-                                   (mnas-graph:find-node node *g*)))))
+                                   (mnas-graph:find-node node *g*) *g*))))
           '(("a" ("a->c")) ("b" ("b->f")) ("c" ("a->c" "c->d" "c->e" "c->g"))
             ("d" ("c->d")) ("e" ("c->e" "e->f" "e->g")) ("f" ("b->f" "e->f"))
             ("g" ("c->g" "e->g")) ("h" ("h->j")) ("j" ("h->j")) ("k" NIL))
           :do (is-true
                (equal (mnas-graph:ids
                        (mnas-graph:both-edges
-                        (mnas-graph:find-node node g)))
+                        (mnas-graph:find-node node g) g))
                       rez)))))
 
 (def-test test-isolated-p ()

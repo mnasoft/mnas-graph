@@ -36,7 +36,10 @@
 (defgeneric insert-to    (obj container)
   (:documentation "Добавляет obj в container"))
 
-(defgeneric remove-from  (obj container) (:documentation "Добавляет obj в container"))
+(defgeneric remove-from  (obj container)
+  (:documentation
+   "@b(Описание:) обобщенная функция @b(remove-from) возвращает объект
+ @b(obj), удаляемый из контейнера @b(container)."))
 
 ;;;;
 

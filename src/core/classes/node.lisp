@@ -13,10 +13,12 @@
     :initarg :owner
     :initform nil
     :documentation "Владелец вершины объект типа graph")
-;;;
-
 ;;;;   
-   (counter :accessor <node>-counter               :initform 0   :documentation "Количество, созданных вершин" :allocation :class))
+   (counter
+    :accessor <node>-counter
+    :initform 0
+    :documentation "Количество, созданных вершин"
+    :allocation :class))
   (:documentation "@b(Описание:) класс @b(<node>) представляет вершину графа."))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
