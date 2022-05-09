@@ -2,6 +2,12 @@
 
 (in-package #:mnas-graph)
 
+(defgeneric copy (obj)
+  (:documentation
+   "@b(Описание:) обобщенная функция @b(copy) возвращает копию объекта
+ граф @b(obj).
+"))
+
 (defgeneric clear (graph)
   (:documentation
    "@b(Описание:) обобщенная функция @b(clear) возвращает граф @b(graph),
@@ -31,12 +37,16 @@
   "))
 
 (defgeneric to-string (obj)
-  (:documentation "Выполняет перобразование объекта в строку"))
+  (:documentation
+   "@b(Описание:) обобщенная функция @b(to-string) 
+Выполняет перобразование объекта в строку"))
 
-(defgeneric insert-to    (obj container)
-  (:documentation "Добавляет obj в container"))
+(defgeneric insert-to (obj container)
+  (:documentation
+   "@b(Описание:) обобщенная_функция @b(insert-to) возвращает объект
+@b(obj), добавляемый в @b(container)."))
 
-(defgeneric remove-from  (obj container)
+(defgeneric remove-from (obj container)
   (:documentation
    "@b(Описание:) обобщенная функция @b(remove-from) возвращает объект
  @b(obj), удаляемый из контейнера @b(container)."))

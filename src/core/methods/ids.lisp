@@ -24,3 +24,22 @@
     (if sort
         (sort ids predicate)
         ids)))
+
+(defmethod ids ((graph <graph>) &key (sort t) (predicate #'string<))
+  "@b(Описание:) метод @b(ids) возвращает список в формате согласованном
+с фунцией make-graph.
+"
+  (let ((edges (sort 
+                (mapcar #'to-list (mnas-hash-table:keys (edges graph)))
+                predicate
+                :key #'(lambda (el) (format nil "~S->~S" (first el) (second el )))))
+        (nodes (ids (nodes graph) :sort sort :predicate predicate)))
+    (list edges
+          :nodes
+          (set-difference nodes (apply #'append edges) :test #'equal))))
+
+(export 'to-list)
+(defmethod to-list ((edge <edge>))
+  (list (name (tail edge)) (name (head edge))))
+
+

@@ -234,8 +234,6 @@
                         g))
                       rez)))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (def-test test-connected-nodes ()
   (with-fixture fix-graph-g ()
     (loop :for (node rez) :in
@@ -309,6 +307,53 @@
                              (mnas-graph:connected-nodes
                               (mnas-graph:find-node "a" g) g
                               :direction :both :depth depth))
+                rez)))))
+
+(def-test test-remove-from ()
+  (with-fixture fix-graph-g ()
+    (loop :for (node rez) :in
+          #+nil
+           (loop :for node :in
+                           (mnas-graph:ids
+                            (mnas-graph:nodes *g*))
+                 :collect (list node
+                                (let ((n-*g* (mnas-graph:copy *g*))) 
+                                  (mnas-graph:remove-from
+                                   (mnas-graph:find-node node n-*g*)
+                                   n-*g*)
+                                  (mnas-graph:ids n-*g*))))
+          '(("a"
+             ((("b" "f") ("c" "d") ("c" "e") ("c" "g") ("e" "f") ("e" "g") ("h" "j"))
+              :NODES ("k")))
+            ("b"
+             ((("a" "c") ("c" "d") ("c" "e") ("c" "g") ("e" "f") ("e" "g") ("h" "j"))
+              :NODES ("k")))
+            ("c" ((("b" "f") ("e" "f") ("e" "g") ("h" "j")) :NODES ("k" "d" "a")))
+            ("d"
+             ((("a" "c") ("b" "f") ("c" "e") ("c" "g") ("e" "f") ("e" "g") ("h" "j"))
+              :NODES ("k")))
+            ("e" ((("a" "c") ("b" "f") ("c" "d") ("c" "g") ("h" "j")) :NODES ("k")))
+            ("f"
+             ((("a" "c") ("c" "d") ("c" "e") ("c" "g") ("e" "g") ("h" "j")) :NODES
+              ("k" "b")))
+            ("g"
+             ((("a" "c") ("b" "f") ("c" "d") ("c" "e") ("e" "f") ("h" "j")) :NODES ("k")))
+            ("h"
+             ((("a" "c") ("b" "f") ("c" "d") ("c" "e") ("c" "g") ("e" "f") ("e" "g"))
+              :NODES ("k" "j")))
+            ("j"
+             ((("a" "c") ("b" "f") ("c" "d") ("c" "e") ("c" "g") ("e" "f") ("e" "g"))
+              :NODES ("k" "h")))
+            ("k"
+             ((("a" "c") ("b" "f") ("c" "d") ("c" "e") ("c" "g") ("e" "f") ("e" "g")
+               ("h" "j"))
+              :NODES NIL)))
+          :do (is-true
+               (equal
+                (let ((n-g (mnas-graph:copy g)))
+                  (mnas-graph:remove-from 
+                   (mnas-graph:find-node node n-g) n-g)
+                  (mnas-graph:ids n-g))
                 rez)))))
 
 ;;(mnas-graph/view:view-graph *g* :graphviz-prg :filter-neato)

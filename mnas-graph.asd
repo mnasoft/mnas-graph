@@ -70,20 +70,21 @@
                    (:file "edge-names")
                    (:file "node-names")
 
-                  (:file "inlet-nodes")
-                  (:file "outlet-nodes")
-                  (:file "isolated-nodes")
+                   (:file "inlet-nodes")
+                   (:file "outlet-nodes")
+                   (:file "isolated-nodes")
                    
-                  (:file "find-forward-nodes")
-                  (:file "find-backward-nodes")
-                  (:file "find-both-nodes")
+                   (:file "find-forward-nodes")
+                   (:file "find-backward-nodes")
+                   (:file "find-both-nodes")
                    
-                  (:file "isolated-p")
-                  (:file "inlet-p")
-                  (:file "outlet-p")
+                   (:file "isolated-p")
+                   (:file "inlet-p")
+                   (:file "outlet-p")
                    
-                  (:file "connected-nodes")
-                  ))))))
+                   (:file "connected-nodes")
+                   (:file "copy")
+                   ))))))
 
 (defsystem "mnas-graph/view"
   :description "Describe mnas-graph here"

@@ -219,6 +219,9 @@
            edge-names
            node-names
            )
+  (:export copy
+           to-list
+           )
   (:documentation
    " Пакет @b(mnas-graph) определяет базовые функции для создания
  структуры данных типа
