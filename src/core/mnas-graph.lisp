@@ -174,8 +174,7 @@
            owner          ;; Возможно подлежит удалению
            <node>-counter ;; Возможно подлежит удалению
            )
-  (:export tail
-           head)
+  (:export tail head weight)
   (:export nodes
            edges)
   ;; <node>

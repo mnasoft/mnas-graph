@@ -14,7 +14,13 @@
     :initarg :head
     :initform nil
     :documentation
-    "Конечная  вершина ребра"))
+    "Конечная  вершина ребра")
+   (weight
+    :accessor weight
+    :initarg :weight
+    :initform 1
+    :documentation
+    "Определяет вес (длину) ребра."))
   (:documentation "@b(Описание:) класс @b(<edge>) представляет ребро графа.
                                                                                 "))
 

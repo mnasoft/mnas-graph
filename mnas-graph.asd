@@ -6,10 +6,11 @@
  data structure and displaying it via graphviz."
   :author "Nick Matvyeyev <mnasoft@gmail.com>"
   :license "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 or later"  
-  :version "0.0.8"
+  :version "0.0.9"
   :serial nil
   :in-order-to ((test-op (test-op "mnas-graph/tests")))
   :depends-on ("mnas-graph/core"
+               "mnas-graph/alg"
                "mnas-graph/view"
                "mnas-graph/demos"
                "mnas-hash-table"))
@@ -86,6 +87,18 @@
                    (:file "copy")
                    ))))))
 
+(defsystem "mnas-graph/alg"
+  :description "Describe mnas-graph here"
+  :author "Nick Matvyeyev <mnasoft@gmail.com>"
+  :license "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 or later"  
+  :serial nil
+  :in-order-to ((test-op (test-op "mnas-graph/tests")))
+  :depends-on ("mnas-graph/core" "mnas-hash-table" "mnas-string")
+  :components ((:module "src/alg"
+		:serial nil
+                :components
+                ((:file "alg")))))
+                               )
 (defsystem "mnas-graph/view"
   :description "Describe mnas-graph here"
   :author "Nick Matvyeyev <mnasoft@gmail.com>"
