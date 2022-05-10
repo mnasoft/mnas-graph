@@ -10,6 +10,7 @@
   :serial nil
   :in-order-to ((test-op (test-op "mnas-graph/tests")))
   :depends-on ("mnas-graph/core"
+               ;;#+nil
                "mnas-graph/alg"
                "mnas-graph/view"
                "mnas-graph/demos"
@@ -98,7 +99,7 @@
 		:serial nil
                 :components
                 ((:file "alg")))))
-                               )
+
 (defsystem "mnas-graph/view"
   :description "Describe mnas-graph here"
   :author "Nick Matvyeyev <mnasoft@gmail.com>"
