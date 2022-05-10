@@ -5,77 +5,25 @@
   (:export path
            )
   (:documentation
-   " Пакет @b(mnas-graph) определяет базовые функции для создания
- структуры данных типа
- @link[uri=\"https://en.wikipedia.org/wiki/Graph_(discrete_mathematics)\"](Graph)
- и ее отображения через @link[uri=\"https://graphviz.org/\"](graphviz).
-
- Пакет определяет следующие основные классы: 
-@begin(list)
-@item(@ref[id=class-node](<node>) - вершина графа;)
-@item(@ref[id=class-edge](<edge>) - ребро графа;)
-@item(@ref[id=class-graph](<graph>) - граф.)  
-@end(list)
-
- @b(Пример использования:)
-@begin[lang=lisp](code)
-  (let*
-      ((g  (make-instance 'mnas-graph:<graph>))
-       (v1 (make-instance 'mnas-graph:<node> :owner g :name \"v1\"))
-       (v2 (make-instance 'mnas-graph:<node> :owner g :name \"v2\"))
-       (v3 (make-instance 'mnas-graph:<node> :owner g :name \"v3\"))
-       (r1 (make-instance 'mnas-graph:<edge> :tail v1 :head v2))
-       (r2 (make-instance 'mnas-graph:<edge> :tail v2 :head v3))
-       (r3 (make-instance 'mnas-graph:<edge> :tail v3 :head v1)))
-    (mnas-graph:insert-to v1 g)
-    (mnas-graph:insert-to v2 g)
-    (mnas-graph:insert-to v3 g)
-    (mnas-graph:insert-to r1 g)
-    (mnas-graph:insert-to r2 g)
-    (mnas-graph:insert-to r3 g)
-    (mnas-graph/view:view-graph g))
-@end(code)"))
+   "Пакет @b(mnas-graph/alg) реализует некоторые алгоритмы на графах.
+"))
 
 (in-package :mnas-graph/alg)
 
 (defgeneric path (beg-node end-node graph)
   (:documentation
-   "@b(Описание:) обобщенная функция @b(path)."
+   "@b(Описание:) обобщенная функция @b(path) возвращает список вершин,
+  представляющий кратчайший путь из вершины @b(beg-node) до вершины @b(end-node)
+  графа @b(graph)."
    ))
 
-(defmethod path ((beg-node <node>) (end-node <node>) (graph <graph>))
-  (let ((ht-nodes (nodes graph))
-        (nodes (mnas-hash-table:keys (nodes graph)))
-        (l-nodes (list beg-node))
-        (ht-n-seens (make-hash-table))
-        (before 0)
-        (past   1))
-    (block init
-      #+nil "
- 1. Инициализировать значения для каждой из вершин графа списком
- (вес предыдущая-вершина), где вес - nil; предыдущая-вершина - nil."
-      (mapcar
-       #'(lambda (node)
-           (setf (gethash node ht-nodes) '(nil nil)))
-       nodes)
-    (setf (gethash beg-node ht-nodes)   '(0 nil)))
-    (setf (gethash beg-node ht-n-seens) nil)
-    (block for-nodes
-      #+nil "
- 2. Найти исходящие ребра."
-      (apply #'append
-             (mapcar
-              #'(lambda (node)
-                  (mnas-hash-table:keys (outlet-edges node graph)))
-              l-nodes)))
-    ))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun init (beg-node graph)
- "@b(Описание:) функция @b(init) инициализирует значения для каждой из
-  вершин графа списком (вес предыдущая-вершина), где вес - nil;
-  предыдущая-вершина - nil.  Начальная вершина beg-node
-  инициализируется списком (вес предыдущая-вершина), где вес - 0;
-  предыдущая-вершина - nil.
+  "@b(Описание:) функция @b(init) инициализирует значения для каждой из
+  вершин графа списком (w n), где w=nil - сумма весов предыдущих
+  вершин; n=nil -предыдущая вершина). Для начальной вершины
+  @(beg-node) w=0; n=nil.
  "
   (let ((ht-nodes (nodes graph))
         (nodes (mnas-hash-table:keys (nodes graph))))
@@ -83,7 +31,7 @@
      #'(lambda (node)
          (setf (gethash node ht-nodes) '(nil nil)))
      nodes)
-    (setf (gethash beg-node ht-nodes)   '(0 nil))))
+    (setf (gethash beg-node ht-nodes)  '(0 nil))))
 
 (defun view (graph)
   (list
@@ -101,16 +49,14 @@
           l-nodes)))
 
 (defun for-edges (edges graph)
-    "@b(Описание:) функция @b(for-edges) возвращает список вершин,
+  "@b(Описание:) функция @b(for-edges) возвращает список вершин,
  расположенных в головах ребер @b(edges). В качестве побочного эффекта
- модифицирует значения хеш-таблицы вершин так, что значение
- представляет список, первый элемент которого является числом,
- представляющим минимальный путь до
-
-3. Для каждого исходящего ребра для головной вершины определить сумму
-сумму значения хвостовой вершины и вес ребра; если веc nil записать
-для головной вершины зачение в список (вес предыдущая-вершина).  если
-вес - число, меньшее записанного nil.
+ модифицирует значения хеш-таблицы вершин так, что для значение для
+ определенной вершины является списком двух элементов. Первый элемент
+ этого списка является числом, представляющим минимальную длину пути,
+ найденную к этой вершине от начальной вершины. Второй элемент
+ является предыдущей вершиной, для которой найден путь с минимальной
+ длиной.
 "
   (mapcar
    #'(lambda (edge)
@@ -137,17 +83,43 @@
          head))
    edges))
 
+(defun back (end-node graph)
+  (do* ((n (second (gethash end-node (nodes graph)))
+           (second (gethash n (nodes graph))))
+        (rez (list end-node)))
+       ((null n) rez)
+    (push n rez)))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defmethod path ((beg-node <node>) (end-node <node>) (graph <graph>))
+  (let (;;(ht-nodes (nodes graph))
+        ;;(nodes (mnas-hash-table:keys (nodes graph)))
+        ;;(l-nodes (list beg-node))
+        (ht-e (make-hash-table)) ;; хеш-таблица, встреченнх ребер
+        (c-e -1) ;; количество встреченных ребер для предыдущей итерации
+        )
+    (init beg-node graph)
+    #+nil (break ":0001")
+    (do* ((n-s (list beg-node) (for-edges e-s graph))
+          (e-s (for-nodes n-s graph) (for-nodes n-s graph)))
+         ((= c-e (hash-table-count ht-e)) (view graph))
+      (setf c-e (hash-table-count ht-e))
+      (map nil
+           #'(lambda (edge)
+               (setf (gethash edge ht-e) nil))
+           e-s)
+      #+nil(break ":0002")
+      )
+    (back end-node graph))) 
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defparameter *g* (copy mnas-graph/tests::*g*))
 
-(init (find-node "c" *g*) *g*)
-
-(defparameter *n* (list (find-node "c" *g*)))
-
-(defparameter *e* (for-nodes *n* *g*))
-
-(defparameter *n* (for-edges *e* *g*))
-
 (view *g*)
+
+(path (find-node "a" *g*) (find-node "f" *g*)  *g*)
+
+
+
 
