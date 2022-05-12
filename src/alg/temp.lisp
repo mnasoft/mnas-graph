@@ -17,16 +17,16 @@
   (case direction
     (:forward
      (progn
-       (loop :for node :being :the :hash-keys :in ht-nodes :do
+       (loop :for node :being :the :hash-keys :in (first ht-nodes) :do
          (loop :for edge :being :the :hash-keys :in (outlet-edges node graph) :do
            (setf (gethash edge ht-ed) nil))))
-     ht-ed)
+     (list ht-ed))
     (:backward
      (progn
-       (loop :for node :being :the :hash-keys :in ht-nodes :do
+       (loop :for node :being :the :hash-keys :in (first ht-nodes) :do
          (loop :for edge :being :the :hash-keys :in (inlet-edges node graph) :do
            (setf (gethash edge ht-ed) nil)))
-       ht-ed))
+       (list ht-ed)))
     (:both
      (progn
        (loop :for node :being :the :hash-keys :in ht-nodes :do
@@ -54,32 +54,36 @@
                 beg)))) 
       end)))
 
-
-
-(defun for-edges (ht-edges graph &key direction
-                  &aux (ht-nd (make-hash-table)))
-  (format t "for-edges ~{~A~^; ~}~%" (mnas-hash-table:keys ht-edges))
+(defun for-edges (lst-ht-edges graph &key direction)
+  (format t "for-edges ~{~A~^; ~}~%"
+          (apply #'append (mapcar #'mnas-hash-table:keys lst-ht-edges)))
   (case direction
     (:forward
      (progn
-       (loop :for edge :being :the :hash-keys :in ht-edges :do
-         (setf (gethash (for-edge edge #'tail #'head graph) ht-nd) nil))
-       ht-nd))
+       (loop :for ht-edges :in lst-ht-edges
+             :collect
+             (let ((ht-nd (make-hash-table)))
+               (loop :for edge :being :the :hash-keys :in ht-edges :do
+                 (setf (gethash (for-edge edge #'tail #'head graph) ht-nd) nil))
+               ht-nd))))
     (:backward
      (progn
-       (loop :for edge :being :the :hash-keys :in ht-edges :do
-         (setf (gethash (for-edge edge #'head #'tail graph) ht-nd) nil))
-       ht-nd))
+       (loop :for ht-edges :in lst-ht-edges
+             :collect
+             (let ((ht-nd (make-hash-table)))
+               (loop :for edge :being :the :hash-keys :in ht-edges :do
+                 (setf (gethash (for-edge edge #'head #'tail graph) ht-nd) nil)))
+              ht-nd)))
     #+nil
     (:both
      (progn
-       (loop :for edge :being :the :hash-keys :in ht-edges :do
+       (loop :for edge :being :the :hash-keys :in lst-ht-edges :do
          (setf (gethash (for-edge edge #'tail #'head graph) ht-nd) nil)
          (setf (gethash (for-edge edge #'head #'tail graph) ht-nd) nil))
        ht-nd))
     (:both
      (progn
-       (loop :for edge :being :the :hash-keys :in ht-edges :do
+       (loop :for edge :being :the :hash-keys :in lst-ht-edges :do
          (setf (gethash (for-edge edge #'tail #'head graph) ht-nd) nil)
          (setf (gethash (for-edge edge #'head #'tail graph) ht-nd) nil))
        ht-nd))))
@@ -98,21 +102,17 @@
            (for-nodes
             (let ((n-ht (make-hash-table)))
               (setf (gethash beg-node n-ht) nil)
-              n-ht)
-             graph :direction direction)
+              (list n-ht))
+            graph :direction direction)
            (for-nodes
             (for-edges e-s graph :direction direction)
             graph :direction direction)))
          ((= c-e (hash-table-count ht-e)) graph)
       (setf c-e (hash-table-count ht-e)) ;; предыдущее количество обработанных ребер
-      (loop :for edge :being :the :hash-keys :in e-s :do
-        (setf (gethash edge ht-e) nil)))
+      (loop :for i :in e-s :do
+        (loop :for edge :being :the :hash-keys :in i :do
+          (setf (gethash edge ht-e) nil))))
     graph))
-
-(map nil ;; добавление обработанных ребер в хеш-таблицу
-     #'(lambda (edge)
-         (setf (gethash edge ht-e) nil))
-     e-s)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
