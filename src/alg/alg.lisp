@@ -34,101 +34,166 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod init-distance-graph ((beg-node <node>) (graph <graph>)
-                                &key (direction :both)  #+nil(direction :forward) #+nil(direction :backward))
-  (let ((func-for-edges (case direction
-                          (:forward  #'outlet-edges)
-                          (:backward #'inlet-edges)
-                          (:both     #'both-edges)))
-        (func-beg (case direction
-                    (:forward  #'tail)
-                    (:backward #'head)
-                    (:both #'tail)))
-        (func-end (case direction
-                    (:forward  #'head)
-                    (:backward #'tail)
-                    (:both #'head))))
-    (labels
-        ((
-          init ()
-          "@b(Описание:) функция @b(init) инициализирует значения для каждой из
-  вершин графа списком (w n), где w=nil - сумма весов предыдущих
-  вершин; n=nil - предыдущая вершина). Для начальной вершины
-  @(beg-node) w=0; n=nil."
-          (let ((ht-nodes (nodes graph))
-                (nodes (mnas-hash-table:keys (nodes graph))))
-            (mapcar
-             #'(lambda (node)
-                 (setf (gethash node ht-nodes) '(nil nil)))
-             nodes)
-            (setf (gethash beg-node ht-nodes)  '(0 nil))))
-         (
-          for-nodes (l-nodes)
-           "@b(Описание:) функция @b(for-nodes) для списка @b(l-nodes) вершин
-           графа @b(graph) возвращает список:
+                                &key (direction :both) #+nil(direction
+                                :forward) #+nil(direction :backward))
+  "@b(Локльные функции:)
+@begin(enum)
+@item(
+ @b(Описание:) локальная функция @b(init) инициализирует значения для
+ каждой из вершин графа списком (WEIGHT NODE), где:
+@begin(list)
+ @item(WEIGHT - сумма весов предыдущих вершин;)
+ @item(NODE - предыдущая вершина.)
+@end(list)
 
- - исходящих ребер если func-for-edges = outlet-edges;
- - входящих ребер если func-for-edges  = inlet-edges;
- - исходящих и входящих ребер если func-for-edges  = both-edges;
- ."
-          (apply #'append
-                 (mapcar
-                  #'(lambda (node)
-                      (mnas-hash-table:keys
-                       (funcall func-for-edges node graph)))
-                  (remove-duplicates l-nodes))))
-         (
-          for-edge (edge beg-func end-func) 
-          (let ((end (funcall end-func edge)) 
-                (beg (funcall beg-func edge))) 
-            (let ((lst-end (gethash end (nodes graph)))
-                  (lst-beg (gethash beg (nodes graph))))
-              (cond
-                ((null (first lst-end))
-                 (setf (gethash end (nodes graph))
-                       (list
-                        (+ (weight edge) (first lst-beg))
-                        beg))) 
-                ((and (numberp (first lst-end)) 
-                      (< (+ (weight edge) (first lst-beg))
-                         (first lst-end))) 
-                 (setf (gethash end (nodes graph))
-                       (list
-                        (+ (weight edge) (first lst-beg)) 
-                        beg)))) 
-              end)))
-         (for-edges (edges)
-           (format t "for-edges ~{~A~^; ~}~%" edges)
-           "@b(Описание:) функция @b(for-edges) возвращает список вершин,
- расположенных в:
- - головах ребер @b(edges), если
- - хвостах ребер @b(edges), если
- - головах и хвостах ребер @b(edges).
+ Значения (WEIGHT NODE) первоначально устанавливаются:
+@begin(list)
+ @item(для начальной вершины @(beg-node) WEIGHT=0; NODE=nil;)
+ @item(для остальных вершин WEIGHT=nil; NODE=nil.)
+@end(list))
+
+@item(
+ @b(Описание:) локальная функция @b(for-edge) выполняет модификацию
+ данных значений вершины графа @b(graph), связанной с ребром @b(edge)
+ функцией @b(end-func). Данные вершин модфицируются так, что
+
+@begin(list)
+ @item(WEIGHT - становится равным текущей минимальной длине пути от
+       начальной вершины;)
+ @item(NODE - предыдущая вершина, для которой найден текущей
+       кратчайший путь;)
+@end(list)
+
+ @b(Переменые:)
+@begin(list)
+ @item(edge - ребро графа;)
+ @item(beg-func - функция, задающая начальную вершину ребра, для
+       которой определен текущий кратчайший путь;)
+ @item(end-func - функция, задающая конечную вершину ребра, для
+       которой определяется текущий кратчайший путь.)
+@end(list)
+)
+
+@item(
+@b(Описание:) функция @b(for-nodes) для хеш-таблицы @b(ht-nodes)
+ вершин графа @b(graph) возвращает список, состоящий из двух
+ хеш-таблиц, содержащих:
+@begin(list)
+ @item(первая - исхоящие ребра;)
+ @item(вторая - входящие ребра.)
+@end(list)
+)
+
+@item(
+ @b(Описание:) функция @b(for-edges) возвращает хеш-таблицу вершин,
+ расположенных далее по направлению поиска:
+@begin(list)
+ @item(головах ребер @b(edges), если )
+ @item(хвостах ребер @b(edges), если )
+ @item(головах и хвостах ребер @b(edges) )
+@end(list)
+ 
+ @b(Переменые:)
+@begin(list)
+ @item(lst-ht-edges - список, состоящий из двух хеш-таблиц, которые
+       содержат ребра. В первой хеш-таблице содержатся исходящие
+       ребра. Во второй хеш-таблице содержатся входящие ребра.)
+
+@end(list)
 
  В качестве побочного эффекта модифицирует значения хеш-таблицы вершин
  графа @b(graph) так, что для значение для определенной вершины
  является списком двух элементов. Первый элемент этого списка является
  числом, представляющим минимальную длину пути, найденную к этой
  вершине от начальной вершины. Второй элемент является предыдущей
- вершиной, для которой найден путь с минимальной длиной."
-           (mapcar
-            #'(lambda (edge)
-                (for-edge edge func-beg func-end))
-            (remove-duplicates edges))))
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-      (when (not (nth-value 1 (gethash beg-node (nodes graph))))
-        (error "The node=~S is not into ~%graph=~S " beg-node graph))
-      (let ((ht-e (make-hash-table))  ; хеш-таблица, встреченных ребер
-            (c-e -1) ; количество встреченных ребер для предыдущей итерации
-            )
-        (init)
-        (do* ((e-s (for-nodes (list beg-node)) (for-nodes (for-edges e-s))))
-             ((= c-e (hash-table-count ht-e)) (view graph))
-          (setf c-e (hash-table-count ht-e)) ;; предыдущее количество обработанных ребер
-          (map nil ;; добавление обработанных ребер в хеш-таблицу
-               #'(lambda (edge)
-                   (setf (gethash edge ht-e) nil))
-               e-s))
-        graph))))
+ вершиной, для которой найден путь с минимальной длиной.
+
+)
+@end(enum)
+"
+  (labels
+      ((init ()
+         (let ((ht-nodes (nodes graph)))
+           (loop :for node :being :the :hash-keys :in ht-nodes :do
+             (setf (gethash node ht-nodes)    '(nil nil)))
+           (setf (gethash beg-node ht-nodes)  '(0 nil))))
+       (for-edge (edge beg-func end-func) 
+         (let ((end (funcall end-func edge)) 
+               (beg (funcall beg-func edge))) 
+           (let ((lst-end (gethash end (nodes graph)))
+                 (lst-beg (gethash beg (nodes graph))))
+             (cond
+               ((null (first lst-end))
+                (setf (gethash end (nodes graph))
+                      (list (+ (weight edge) (first lst-beg)) beg))) 
+               ((and (numberp (first lst-end)) 
+                     (< (+ (weight edge) (first lst-beg))
+                        (first lst-end))) 
+                (setf (gethash end (nodes graph))
+                      (list (+ (weight edge) (first lst-beg)) beg)))) 
+             end)))
+       (for-nodes (ht-nodes) 
+         (case direction
+           (:forward
+            (let ((ht-ed (make-hash-table)))
+              (loop :for node :being :the :hash-keys :in ht-nodes :do
+                (loop :for edge :being :the :hash-keys :in (outlet-edges node graph) :do
+                  (setf (gethash edge ht-ed) nil)))
+              (list ht-ed (make-hash-table))))
+           (:backward
+            (let ((ht-ed (make-hash-table)))
+              (loop :for node :being :the :hash-keys :in ht-nodes :do
+                (loop :for edge :being :the :hash-keys :in (inlet-edges node graph) :do
+                  (setf (gethash edge ht-ed) nil)))
+              (list (make-hash-table) ht-ed)))
+           (:both
+            (loop :for f :in (list #'outlet-edges #'inlet-edges)
+                  :collect
+                  (let ((ht-ed (make-hash-table)))
+                    (loop :for node :being :the :hash-keys :in ht-nodes :do
+                      (loop :for edge :being :the :hash-keys :in (funcall f node graph) :do
+                        (setf (gethash edge ht-ed) nil)))
+                    ht-ed)))))
+       (for-edges (lst-ht-edges) 
+         #+nil(format t "for-edges ~{~A~^; ~}~%"
+                      (apply #'append (mapcar #'mnas-hash-table:keys lst-ht-edges)))
+         (case direction
+           (:forward
+            (let ((ht-nd (make-hash-table)))
+              (loop :for edge :being :the :hash-keys :in (first lst-ht-edges) :do
+                (setf (gethash (for-edge edge #'tail #'head) ht-nd) nil))
+              ht-nd))
+           (:backward
+            (let ((ht-nd (make-hash-table)))
+              (loop :for edge :being :the :hash-keys :in (second lst-ht-edges) :do
+                (setf (gethash (for-edge edge #'head #'tail) ht-nd) nil))
+              ht-nd))
+           (:both
+            (let ((ht-nd (make-hash-table)))
+              (loop :for edge :being :the :hash-keys :in (first lst-ht-edges) :do
+                (setf (gethash (for-edge edge #'tail #'head) ht-nd) nil))
+              (loop :for edge :being :the :hash-keys :in (first lst-ht-edges) :do
+                (setf (gethash (for-edge edge #'head #'tail) ht-nd) nil))
+              ht-nd))))
+       )
+    (when (not (nth-value 1 (gethash beg-node (nodes graph))))
+      (error "The node=~S is not into ~%graph=~S " beg-node graph))
+    (let ((ht-e (make-hash-table))    ; хеш-таблица, встреченных ребер
+          (c-e -1) ; количество встреченных ребер для предыдущей итерации
+          )
+      (init) 
+      (do* ((e-s
+             (for-nodes
+              (let ((n-ht (make-hash-table)))
+                (setf (gethash beg-node n-ht) nil)
+                n-ht))
+             (for-nodes (for-edges e-s))))
+           ((= c-e (hash-table-count ht-e)) graph)
+        (setf c-e (hash-table-count ht-e)) ;; предыдущее количество обработанных ребер
+        (loop :for i :in e-s :do
+          (loop :for edge :being :the :hash-keys :in i :do
+            (setf (gethash edge ht-e) nil))))
+      graph)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
