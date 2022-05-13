@@ -36,11 +36,15 @@
 (defmethod init-distance-graph ((beg-node <node>) (graph <graph>)
                                 &key (direction :both) #+nil(direction
                                 :forward) #+nil(direction :backward))
-  "@b(Локльные функции:)
+  "@b(Описание:) метод @b(init-distance-graph) применим только для ребер
+ с одинаковыми положительными весами.
+
+ @b(Локльные функции:)
 @begin(enum)
-@item(
- @b(Описание:) локальная функция @b(init) инициализирует значения для
- каждой из вершин графа списком (WEIGHT NODE), где:
+
+ @item( @b(Описание:) локальная функция @b(init) инициализирует
+значения для каждой из вершин графа списком (WEIGHT NODE), где:
+
 @begin(list)
  @item(WEIGHT - сумма весов предыдущих вершин;)
  @item(NODE - предыдущая вершина.)
@@ -228,6 +232,8 @@
 (progn
   (defparameter *g* (copy mnas-graph/tests::*g*))
   (defparameter *g* (make-graph '(("a" "b") ("a" "b") ("b" "c")("b" "d") ("d" "a") ("c" "a"))))
+
+
   (view *g*)
   (path (find-node "a" *g*) (find-node "d" *g*) *g* :direction :forward)
   
@@ -238,5 +244,43 @@
   (path (find-node "g" *g*) (find-node "a" *g*) *g* :direction :both)
 
   (init-distance-graph (find-node "a" *g*) *g*)
-  (mnas-graph/view:view-graph *g*)
-  (view *g*))
+  (mnas-graph/view:view-graph *g* :graphviz-prg :filter-sfdp ) ;; 
+  (view *g*)
+
+  (defparameter *g* (make-graph '(("1" "2"  7)
+                                  ("1" "3"  9)
+                                  ("1" "6" 14)
+                                  ("2" "3" 10)
+                                  ("2" "4" 15)
+                                  ("3" "4" 11)
+                                  ("3" "6"  2)
+                                  ("4" "5"  6)
+                                  ("5" "6"  9))))
+  
+  (path (find-node "1" *g*) (find-node "2" *g*) *g* :direction :both)  ; => ("1" [ ] "2" [ ]), 7
+  (path (find-node "1" *g*) (find-node "3" *g*) *g* :direction :both) ; => ("1" [ ] "3" [ ]), 9
+  (path (find-node "1" *g*) (find-node "4" *g*) *g* :direction :both) ; => ("1" [ ] "3" [ ] "4" [ ]), 20
+  (path (find-node "1" *g*) (find-node "5" *g*) *g* :direction :both) ; => ("1" [ ] "3" [ ] "6" [ ] "5" [ ]), 20
+  (path (find-node "1" *g*) (find-node "6" *g*) *g* :direction :both) ; => ("1" [ ] "3" [ ] "6" [ ]), 11
+
+  (defparameter *g* (make-graph '(("1" "2"  7)
+                                  ("1" "3"  9)
+                                  ("1" "6" 14)
+                                  ("2" "3" 10)
+                                  ("2" "4" 15)
+                                  ("3" "4" 11)
+                                  ("3" "6"  2)
+                                  ("4" "5"  6)
+                                  ("5" "6"  9))))
+  
+    (defparameter *g* (make-graph '(("a" "b"  1)
+                                    ("b" "c"  1)
+                                    ("c" "d" 1)
+                                    ("d" "e" 1)
+                                    ("a" "e" 10)
+                                    ("e" "g" 1)
+                                    ("g" "h" 1))))
+    (path (find-node "a" *g*) (find-node "h" *g*) *g* :direction :both)
+  )
+
+

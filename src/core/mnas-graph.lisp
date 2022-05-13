@@ -278,13 +278,24 @@
 @end(code)
 "
   (let ((graph (make-instance '<graph>))
-	(vs (remove-duplicates (append (apply #'append edges) nodes) :test #'equal)))
+	(vs (remove-duplicates
+             (apply #'append
+                    (apply #'append 
+                           (mapcar
+                            #'(lambda (ed)
+                                (list (first ed)
+                                      (second ed)))
+                            edges))
+                    nodes)
+             :test #'equal)))
     (mapc #'(lambda (v) (insert-to (make-instance '<node> :name v) graph)) vs)
     (mapc #'(lambda (el)
 	      (insert-to
 	       (make-instance '<edge>
-			      :tail (find-node (first el) graph )
-			      :head (find-node (second el) graph ))
+			      :tail (find-node  (first  el) graph )
+			      :head (find-node  (second el) graph )
+                              :weight (if (null (third  el)) 1 (third el))
+                              :label  (if (null (third  el)) "" (third el)))
 	       graph))
 	  edges)
     graph))
