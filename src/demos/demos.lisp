@@ -148,4 +148,4 @@
     (mnas-graph/view:view-graph g :graphviz-prg graphviz-prg)))
 
 
-(demo-6)
+;; (demo-6)
