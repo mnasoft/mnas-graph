@@ -286,7 +286,7 @@
                                 (list (first ed)
                                       (second ed)))
                             edges))
-                    nodes)
+                    (list nodes))
              :test #'equal)))
     (mapc #'(lambda (v) (insert-to (make-instance '<node> :name v) graph)) vs)
     (mapc #'(lambda (el)

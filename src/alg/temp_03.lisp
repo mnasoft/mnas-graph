@@ -15,7 +15,9 @@
      nodes)
     (setf (gethash beg-node ht-nodes)  '(0 nil))))
 
-(defun select-nearest (graph))
+(defun select-nearest (graph)
+  (nodes graph)
+  )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -30,6 +32,17 @@
   
   (mnas-graph/view:view-graph *g*)
   (view *g*)
+
+  (defparameter *g* (make-graph '(("a" "b"  1)
+                                  ("b" "c"  1)
+                                  ("c" "d" 1)
+                                  ("d" "e" 1)
+                                  ("a" "e" 10)
+                                  ("e" "g" 1)
+                                  ("g" "h" 1))))
+  
+  (path (find-node "a" *g*) (find-node "h" *g*) *g* :direction :both)
+  )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
