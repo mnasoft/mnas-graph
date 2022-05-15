@@ -2,7 +2,7 @@
 
 (in-package #:mnas-graph)
 
-(defmethod connected-nodes ((n <node>) (graph <graph>)
+(defmethod connected-nodes ((node <node>) (graph <graph>)
                             &key
                               (direction :both) ;; :forward :backward :both
                               (depth `,(1- (expt 2 62))) ;; глубина поиска не более
@@ -17,7 +17,7 @@
     (connected-nodes (mnas-graph:find-node \"c\" graph) graph))
 @end(code)
 "  
-  (setf (gethash n ht) n)
+  (setf (gethash node ht) node)
   (do ((count-before -1) (count-after  0))
       ((or (= count-before count-after)
            (< (decf depth) 0))

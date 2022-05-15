@@ -29,9 +29,7 @@
     (mnas-graph:find-forward-nodes
      (mnas-graph:find-node \"c\" graph) graph))
 @end(code)"
-  (maphash
-   #'(lambda (key val)
-       val
-       (setf (gethash (head key) ht) (head key)))
-   (outlet-edges node graph))
+  (when (into-container-p node graph)
+    (loop :for edge :being :the :hash-keys :in (ht-outlet-edges node) :do
+      (setf (gethash (head edge) ht) nil)))
   ht)

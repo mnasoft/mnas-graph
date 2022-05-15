@@ -12,15 +12,8 @@
                 :nodes '(\"k\"))))
     (mnas-graph:outlet-edges (mnas-graph:find-node \"c\" graph) graph))
 @end(code)
-"  
-  (let ((rez-tbl (mnas-hash-table:hash-table-copy (edges graph))))
-    (maphash
-     #'(lambda (key val)
-	 val
-	 (if (not(eq (tail key) node))
-	     (remhash  key rez-tbl)))
-     (edges graph))
-    rez-tbl))
+"
+  (ht-outlet-edges node))
 
 (defmethod outlet-edges ((node string) (graph <graph>))
 "

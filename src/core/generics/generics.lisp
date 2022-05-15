@@ -162,3 +162,8 @@
   (:documentation
    "@b(Описание:) обобщенная функция @b(edge-names) возвращает список
    имен ребер графа @b(graph)."))
+
+(defgeneric into-container-p (obj container)
+    (:documentation
+     "@b(Описание:) обобщенная функция @b(into-container-p) t если
+  объект (obj) находится в контейнере @b(container)."))

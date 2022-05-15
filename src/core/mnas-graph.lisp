@@ -221,6 +221,7 @@
   (:export copy
            to-list
            )
+  (:export into-container-p)
   (:documentation
    " Пакет @b(mnas-graph) определяет базовые функции для создания
  структуры данных типа

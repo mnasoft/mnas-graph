@@ -6,7 +6,7 @@
  data structure and displaying it via graphviz."
   :author "Nick Matvyeyev <mnasoft@gmail.com>"
   :license "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 or later"  
-  :version "0.0.9"
+  :version "0.1.0"
   :serial nil
   :in-order-to ((test-op (test-op "mnas-graph/tests")))
   :depends-on ("mnas-graph/core"
@@ -51,7 +51,8 @@
                                "classes")
                   :serial t
                   :components
-                  ((:file "clear")
+                  ((:file "into-container-p")
+                   (:file "clear")
                    (:file "count-edges")
                    (:file "count-nodes")
                    (:file "find-edge")

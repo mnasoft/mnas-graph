@@ -2,8 +2,8 @@
 
 (in-package #:mnas-graph)
 
-(defmethod both-edges ((node <node>) (graph <graph>))
-"
+(defmethod both-edges ((node <node>) (graph <graph>) &aux (ht (make-hash-table)))
+  "
  @b(Пример использования:)
 @begin[lang=lisp](code)
   (let ((graph (mnas-graph:make-graph
@@ -12,16 +12,13 @@
                 :nodes '(\"k\"))))
     (both-edges (mnas-graph:find-node \"c\" graph) graph))
 @end(code)
-"  
-  (let ((rez-tbl (mnas-hash-table:hash-table-copy (edges graph))))
-    (maphash
-     #'(lambda (key val)
-	 val
-	 (if (and (not (eq (tail key) node))
-                  (not (eq (head key) node)))
-	     (remhash  key rez-tbl)))
-     (edges graph))
-    rez-tbl))
+"
+  (when (into-container-p node graph)
+    (loop :for edge :being :the :hash-keys :in (ht-outlet-edges node) :do
+      (setf (gethash edge ht)  nil))
+    (loop :for edge :being :the :hash-keys :in (ht-inlet-edges  node) :do
+      (setf (gethash edge ht)  nil)))
+  ht)
 
 (defmethod both-edges ((node string) (graph <graph>))
 "

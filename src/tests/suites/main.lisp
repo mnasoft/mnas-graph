@@ -22,6 +22,38 @@
             '("k"))))
     (&body)))
 
+(def-test test-into-container-p-nodes ()
+  (with-fixture fix-graph-g ()
+    (loop :for (node rez) :in
+          #+nil (loop :for node :in (mnas-graph:ids
+                                     (mnas-graph:nodes *g*))
+                      :collect (list node (mnas-graph:into-container-p
+                                           (mnas-graph:find-node node *g*)
+                                           *g*)))
+          '(("a" T) ("b" T) ("c" T) ("d" T) ("e" T) ("f" T) ("g" T) ("h" T) ("j" T)
+            ("k" T))
+          :do (is-true
+               (equal (mnas-graph:into-container-p
+                       (mnas-graph:find-node node g)
+                       g)
+                      rez)))))
+
+(def-test test-into-container-p-edges ()
+  (with-fixture fix-graph-g ()
+    (loop :for (edge rez) :in
+          #+nil (loop :for edge :in (mnas-graph:ids
+                                     (mnas-graph:edges *g*))
+                      :collect (list edge (mnas-graph:into-container-p
+                                           (mnas-graph:find-edge edge *g*)
+                                           *g*)))
+          '(("a->c" T) ("b->f" T) ("c->d" T) ("c->e" T)
+            ("c->g" T) ("e->f" T) ("e->g" T) ("h->j" T))
+          :do (is-true
+               (equal (mnas-graph:into-container-p
+                       (mnas-graph:find-edge edge g)
+                       g)
+                      rez)))))
+
 (def-test test-nodes ()
   (with-fixture fix-graph-g ()
     (is-true
@@ -309,6 +341,8 @@
                               :direction :both :depth depth))
                 rez)))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (def-test test-remove-from ()
   (with-fixture fix-graph-g ()
     (loop :for (node rez) :in
@@ -328,22 +362,22 @@
             ("b"
              ((("a" "c") ("c" "d") ("c" "e") ("c" "g") ("e" "f") ("e" "g") ("h" "j"))
               :NODES ("k")))
-            ("c" ((("b" "f") ("e" "f") ("e" "g") ("h" "j")) :NODES ("k" "d" "a")))
+            ("c" ((("b" "f") ("e" "f") ("e" "g") ("h" "j")) :NODES ("a" "d" "k")))
             ("d"
              ((("a" "c") ("b" "f") ("c" "e") ("c" "g") ("e" "f") ("e" "g") ("h" "j"))
               :NODES ("k")))
             ("e" ((("a" "c") ("b" "f") ("c" "d") ("c" "g") ("h" "j")) :NODES ("k")))
             ("f"
              ((("a" "c") ("c" "d") ("c" "e") ("c" "g") ("e" "g") ("h" "j")) :NODES
-              ("k" "b")))
+              ("b" "k")))
             ("g"
              ((("a" "c") ("b" "f") ("c" "d") ("c" "e") ("e" "f") ("h" "j")) :NODES ("k")))
             ("h"
              ((("a" "c") ("b" "f") ("c" "d") ("c" "e") ("c" "g") ("e" "f") ("e" "g"))
-              :NODES ("k" "j")))
+              :NODES ("j" "k")))
             ("j"
              ((("a" "c") ("b" "f") ("c" "d") ("c" "e") ("c" "g") ("e" "f") ("e" "g"))
-              :NODES ("k" "h")))
+              :NODES ("h" "k")))
             ("k"
              ((("a" "c") ("b" "f") ("c" "d") ("c" "e") ("c" "g") ("e" "f") ("e" "g")
                ("h" "j"))
@@ -379,4 +413,10 @@
 (mnas-graph:node-names *g*)
 
 (mnas-graph/view:view-graph *g*)
-)
+ )
+
+(mnas-hash-table:to-list
+ (mnas-graph:inlet-edges (mnas-graph:find-node "b" *g*) *g*))
+
+(mnas-hash-table:to-list
+ (mnas-graph:outlet-edges (mnas-graph:find-node "k" *g*) *g*))

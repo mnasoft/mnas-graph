@@ -15,15 +15,13 @@
      (mnas-graph:ids (mnas-graph:edges graph))))
 @end(code)
 "  
-  (let ((ids nil))
-    (maphash
-     #'(lambda (key val)
-         (declare (ignore key))
-         (push (name val) ids))
-     ht)
-    (if sort
-        (sort ids predicate)
-        ids)))
+  (let ((ids
+          (loop :for key :being :the :hash-keys :in ht :collect (name key))))
+    (if sort (sort ids predicate) ids)))
+
+(export 'to-list)
+(defmethod to-list ((edge <edge>))
+  (list (name (tail edge)) (name (head edge))))
 
 (defmethod ids ((graph <graph>) &key (sort t) (predicate #'string<))
   "@b(Описание:) метод @b(ids) возвращает список в формате согласованном
@@ -36,10 +34,12 @@
         (nodes (ids (nodes graph) :sort sort :predicate predicate)))
     (list edges
           :nodes
-          (set-difference nodes (apply #'append edges) :test #'equal))))
+          (sort 
+           (set-difference nodes (apply #'append edges) :test #'equal)
+           #'string<))))
 
-(export 'to-list)
-(defmethod to-list ((edge <edge>))
-  (list (name (tail edge)) (name (head edge))))
+
+
+
 
 

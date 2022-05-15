@@ -3,7 +3,7 @@
 (in-package #:mnas-graph)
 
 (defmethod remove-from ((node <node>) (graph <graph> ))
-"
+  "
  @b(Пример использования:)
 @begin[lang=lisp](code)
   (let ((graph (mnas-graph:make-graph
@@ -12,21 +12,17 @@
                 :nodes '(\"k\"))))
     (remove-from (mnas-graph:find-node \"c\" graph) graph))
 @end(code)
-"  
-  (let* ((rh (edges graph))
-	 (rl (mnas-hash-table:hash-table-copy rh)))
-    (maphash #'(lambda(key val)
-		 val
-		 (if (or
-		      (eq (tail key) node)
-		      (eq (head key)   node))
-		     (remhash key rh)))
-	     rl)
-    (if (remhash node (nodes graph))
-	node)))
-
-(defmethod remove-from ((edge <edge>) (graph <graph> ) )
 "
+  (when (into-container-p node graph)
+    (loop :for edge :being :the :hash-keys :in (outlet-edges node graph) :do
+      (remove-from edge graph))
+    (loop :for edge :being :the :hash-keys :in (inlet-edges  node graph) :do
+      (remove-from edge graph))
+    (remhash node (nodes graph)))
+  node)
+
+(defmethod remove-from ((edge <edge>) (graph <graph>))
+  "
  @b(Пример использования:)
 @begin[lang=lisp](code)
   (let ((graph (mnas-graph:make-graph
@@ -35,9 +31,12 @@
                 :nodes '(\"k\"))))
     (remove-from (mnas-graph:find-edge \"c->d\" graph) graph))
 @end(code)
-"  
-  (if (remhash edge (edges graph))
-      edge))
+"
+  (when (into-container-p edge graph)
+    (remhash (tail edge) (ht-outlet-edges (tail edge)))
+    (remhash (head edge) (ht-inlet-edges  (head edge)))
+    (remhash edge (edges graph))
+    edge))
 
 (defmethod remove-from ((name string) (graph <graph>)
                         &aux

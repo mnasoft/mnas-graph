@@ -31,9 +31,7 @@
      (mnas-graph:find-node \"c\" graph) graph))
 @end(code)
 "
-  (maphash
-   #'(lambda (key val)
-       val
-       (setf (gethash (tail key) ht) (tail key)))
-   (inlet-edges node graph))
+  (when (into-container-p node graph)
+    (loop :for edge :being :the :hash-keys :in (ht-inlet-edges node) :do
+      (setf (gethash (tail edge) ht) nil)))
   ht)

@@ -13,6 +13,14 @@
     :initarg :owner
     :initform nil
     :documentation "Владелец вершины объект типа graph")
+   (ht-inlet-edges
+    :accessor ht-inlet-edges
+    :initform (make-hash-table)
+    :documentation "Хеш-таблица входящих ребер.")
+   (ht-outlet-edges
+    :accessor ht-outlet-edges
+    :initform (make-hash-table)
+    :documentation "Хеш-таблица исходящих ребер.")
 ;;;;   
    (counter
     :accessor <node>-counter
