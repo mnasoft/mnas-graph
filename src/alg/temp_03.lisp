@@ -5,44 +5,44 @@
 ;;;; Алгоритм Дейкстры
 ;;;; Инициализировать сеть нод
 
-(defun init (beg-node graph)
-  (loop :for node :being :the :hash-keys :in (nodes graph) :do
-    (if (eq node beg-node)
-        (setf (gethash node (nodes graph)) 0)
-        (setf (gethash node (nodes graph)) 65536))))
-
-(defparameter *ht-finished-nodes* (make-hash-table)) 
-
-(defun select-nearest-node (graph)
-  (let ((lst-node
-          (loop :for node :being :the :hash-keys :in (nodes graph)
-                :unless (nth-value 1 (gethash node *ht-finished-nodes*))
-                  :collect (list node (gethash node (nodes graph))))))
-    (first
-     (first
-      (sort lst-node #'< :key #'(lambda (el) (second el)))))))
-
-(defun for-node (c-node graph)
-  (loop :for edge :being :the :hash-keys :in (outlet-edges c-node graph) :do
-    (setf (gethash (head edge) (nodes graph))
-          (min (+ (gethash (tail edge) (nodes graph))
-                  (weight edge))
-               (gethash (head edge) (nodes graph)))))
-  (setf (gethash c-node *ht-finished-nodes*)
-        (gethash c-node (nodes graph))))
-
 (defun deijkstra (beg-node end-node graph)
-  (let (
-        #+nil (ht-finished-nodes (make-hash-table)))
-    (init beg-node graph)
-    (for-node (select-nearest-node graph) graph)
-    (view graph)))
+  (let ((ht-finished-nodes (make-hash-table)))
+    (labels
+        ((init (beg-node graph)
+           (let ((max-length
+                   (1+ (loop :for edge :being :the :hash-keys :in (edges graph)
+                             :summing (weight edge)))))
+             (loop :for node :being :the :hash-keys :in (nodes graph) :do
+               (if (eq node beg-node)
+                   (setf (gethash node (nodes graph)) 0)
+                   (setf (gethash node (nodes graph)) max-length)))))
+         (select-nearest-node (graph)
+           (let ((lst-node
+                   (loop :for node :being :the :hash-keys :in (nodes graph)
+                         :unless (nth-value 1 (gethash node ht-finished-nodes))
+                           :collect (list node (gethash node (nodes graph))))))
+             (first
+              (first
+               (sort lst-node #'< :key #'(lambda (el) (second el)))))))
+         (for-node (c-node graph)
+           (loop :for edge :being :the :hash-keys :in (outlet-edges c-node graph) :do
+             (setf (gethash (head edge) (nodes graph))
+                   (min (+ (gethash (tail edge) (nodes graph))
+                           (weight edge))
+                        (gethash (head edge) (nodes graph)))))
+           (setf (gethash c-node ht-finished-nodes)
+                 (gethash c-node (nodes graph)))))
+      (init beg-node graph)
+      (do ((c-node (select-nearest-node graph) (select-nearest-node graph)))
+          ((eq c-node end-node) (view graph))
+        (for-node c-node graph)))))
 
 (deijkstra (find-node "a" *g*) (find-node "h" *g*) *g*)
 
 (init (find-node "a" *g*) *g*)
 
-(for-node (select-nearest-node *g*) graph)
+(for-node (select-nearest-node *g*) *g*)
+(view *g*)
 
 (view *g*)
 
