@@ -2,7 +2,7 @@
 
 (in-package #:mnas-graph)
 
-(defmethod find-node ((str string) (g <graph>))
+(defmethod find-node ((name string) (graph <graph>))
   "
  @b(Пример использования:)
 @begin[lang=lisp](code)
@@ -13,10 +13,4 @@
     (mnas-graph:find-node \"c\" graph))
 @end(code)
 "
-  (let ((v-rez nil))
-    (maphash #'(lambda (key val)
-		 val
-	         (if (string= (to-string key) str)
-		     (setf v-rez key)))
-	     (nodes g))
-    v-rez))
+  (gethash name (ht-node-names graph)))

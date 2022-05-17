@@ -12,4 +12,6 @@
 "
   (clrhash (nodes graph))
   (clrhash (edges graph))
+  (clrhash (ht-node-names graph))
+  (clrhash (ht-edge-names graph))
   graph)

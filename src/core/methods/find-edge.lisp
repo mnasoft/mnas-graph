@@ -2,7 +2,7 @@
 
 (in-package #:mnas-graph)
 
-(defmethod find-edge ((str string) (g <graph>))
+(defmethod find-edge ((name string) (graph <graph>))
   "
  @b(Пример использования:)
 @begin[lang=lisp](code)
@@ -13,10 +13,4 @@
     (mnas-graph:find-edge \"a->c\" graph))
 @end(code)
 "
-  (let ((e-rez nil))
-    (maphash #'(lambda (key val)
-		 val
-	         (if (string= (to-string key) str)
-		     (setf e-rez key)))
-	     (edges g))
-    e-rez))
+  (gethash name (ht-edge-names graph)))

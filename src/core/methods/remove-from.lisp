@@ -18,7 +18,8 @@
       (remove-from edge graph))
     (loop :for edge :being :the :hash-keys :in (inlet-edges  node graph) :do
       (remove-from edge graph))
-    (remhash node (nodes graph)))
+    (remhash node (nodes graph))
+    (remhash (name node) (ht-node-names graph)))
   node)
 
 (defmethod remove-from ((edge <edge>) (graph <graph>))
@@ -36,6 +37,7 @@
     (remhash (tail edge) (ht-outlet-edges (tail edge)))
     (remhash (head edge) (ht-inlet-edges  (head edge)))
     (remhash edge (edges graph))
+    (remhash (name edge) (ht-edge-names graph))
     edge))
 
 (defmethod remove-from ((name string) (graph <graph>)
@@ -56,4 +58,4 @@
 "  
   (cond
     (node (remove-from node graph))
-    (edge (remove-from node graph))))
+    (edge (remove-from edge graph))))

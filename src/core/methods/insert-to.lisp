@@ -2,8 +2,8 @@
 
 (in-package #:mnas-graph)
 
-(defmethod insert-to ((n <node>) (graph <graph>))
-"
+(defmethod insert-to ((node <node>) (graph <graph>))
+  "
   @b(Пример использования:)
 @begin[lang=lisp](code)
   (let ((graph (mnas-graph:make-graph
@@ -12,9 +12,10 @@
                 :nodes '(\"k\"))))
     (insert-to (make-instance 'mnas-graph:<node> :name \"l\") graph))
 "
-  (setf (gethash n (nodes graph)) n
-	(owner n) graph)
-  n)
+  (setf (gethash node (nodes graph)) node)
+  (setf (owner node) graph)
+  (setf (gethash (name node) (ht-node-names graph)) node)
+  node)
 
 (defmethod insert-to ((edge <edge>) (graph <graph>))
 "
@@ -30,16 +31,18 @@
                     :head (mnas-graph:find-node \"g\" graph))
      graph))
 "
-  (setf (gethash edge (edges graph)) nil) ;; e -> nil
+  (setf (gethash edge (edges graph)) nil) 
   
   (setf (owner (tail edge)) graph)
   (setf (owner (head edge)) graph)
   
-  (setf (gethash (tail edge) (nodes graph)) nil)  ;; (tail e) -> nil
-  (setf (gethash (head edge) (nodes graph)) nil)  ;; (head e) -> nil
+  (setf (gethash (tail edge) (nodes graph)) nil)
+  (setf (gethash (head edge) (nodes graph)) nil)
 
   (setf (gethash edge (ht-outlet-edges (tail edge))) nil)
   (setf (gethash edge (ht-inlet-edges  (head edge))) nil)
+
+  (setf (gethash (name edge) (ht-edge-names graph)) edge)
   
   edge)
 

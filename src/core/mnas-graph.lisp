@@ -291,13 +291,17 @@
              :test #'equal)))
     (mapc #'(lambda (v) (insert-to (make-instance '<node> :name v) graph)) vs)
     (mapc #'(lambda (el)
-	      (insert-to
-	       (make-instance '<edge>
-			      :tail (find-node  (first  el) graph )
-			      :head (find-node  (second el) graph )
-                              :weight (if (null (third  el)) 1 (third el))
-                              :label  (if (null (third  el)) "" (third el)))
-	       graph))
+              (let ((n-tail (find-node  (first   el) graph))
+                    (n-head (find-node  (second  el) graph))
+                    (weight (if (null (third  el)) 1 (third el)))
+                    (label  (if (null (third  el)) "" (third el))))
+	        (insert-to
+	         (make-instance '<edge>
+			        :tail   n-tail
+			        :head   n-head
+                                :weight weight
+                                :label  label)
+	         graph)))
 	  edges)
     graph))
 

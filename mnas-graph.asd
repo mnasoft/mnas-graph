@@ -90,7 +90,8 @@
                    ))))))
 
 (defsystem "mnas-graph/alg"
-  :description "Describe mnas-graph here"
+  :description "@b(Описание:) система @b(mnas-graph/alg)
+                содержит методы реализующие некоторые алгоритмы на графах."
   :author "Nick Matvyeyev <mnasoft@gmail.com>"
   :license "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 or later"  
   :serial nil
@@ -100,6 +101,19 @@
 		:serial nil
                 :components
                 ((:file "alg")))))
+
+(defsystem "mnas-graph/sample"
+  :description "@b(Описание:) система @b(mnas-graph/sample)
+                содержит методы генерирующие некоторые графы характерной формы."
+  :author "Nick Matvyeyev <mnasoft@gmail.com>"
+  :license "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 or later"  
+  :serial nil
+  :in-order-to ((test-op (test-op "mnas-graph/tests")))
+  :depends-on ("mnas-graph/core" "mnas-hash-table" "mnas-string")
+  :components ((:module "src/sample"
+		:serial nil
+                :components
+                ((:file "sample")))))
 
 (defsystem "mnas-graph/view"
   :description "Describe mnas-graph here"

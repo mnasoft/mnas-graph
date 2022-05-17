@@ -4,11 +4,20 @@
   ((nodes
     :accessor nodes   :initform (make-hash-table)
     :documentation
-    "Хешированная таблица вершин графа")
+    "Хешированная таблица вершин графа. Ключ - вершина; значение nil.")
+   (ht-node-names
+    :accessor ht-node-names :initform (make-hash-table :test #'equal)
+    :documentation
+    "Хешированная таблица имен вершин графа.")
    (edges
     :accessor edges   :initform (make-hash-table)
     :documentation
-    "Хешированная таблица ребер графа")
+    "Хешированная таблица ребер графа. Ключ - ребро; значение - ребро.")
+   (ht-edge-names
+    :accessor ht-edge-names :initform (make-hash-table :test #'equal)
+    :documentation
+    "Хешированная таблица имен ребер графа. Ключ - строка; значение -
+     ребро.")
 ;;;;   
    (rankdir
     :accessor rankdir :initform "TB"
@@ -17,6 +26,7 @@
   (:documentation "@b(Описание:) класс @b(<graph>) представляет граф.
 
                                                                                 "))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod print-object        ((x <graph>) s))
