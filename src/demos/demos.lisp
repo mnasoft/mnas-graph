@@ -6,7 +6,8 @@
            demo-2
            demo-3
            demo-4
-           demo-5))
+           demo-5
+           demo-6))
 
 (in-package #:mnas-graph/demos)
 
@@ -91,23 +92,25 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun demo-5 ()
-  (mnas-graph/view:view-graph (make-random-graph :node-max-number   10 :edges-number   6) :graphviz-prg :filter-neato)
-  (mnas-graph/view:view-graph (make-random-graph :node-max-number   16 :edges-number  10) :graphviz-prg :filter-neato)
-  (mnas-graph/view:view-graph (make-random-graph :node-max-number   25 :edges-number  16) :graphviz-prg :filter-neato)
-  (mnas-graph/view:view-graph (make-random-graph :node-max-number   40 :edges-number  25) :graphviz-prg :filter-neato)
-  (mnas-graph/view:view-graph (make-random-graph :node-max-number   63 :edges-number  40) :graphviz-prg :filter-neato)
-  (mnas-graph/view:view-graph (make-random-graph :node-max-number  100 :edges-number  63) :graphviz-prg :filter-neato)
-  (mnas-graph/view:view-graph (make-random-graph :node-max-number  160 :edges-number 100) :graphviz-prg :filter-neato)
-  (mnas-graph/view:view-graph (make-random-graph :node-max-number  250 :edges-number 160) :graphviz-prg :filter-neato)
-  (mnas-graph/view:view-graph (make-random-graph :node-max-number  400 :edges-number 250) :graphviz-prg :filter-neato)
-  (mnas-graph/view:view-graph (make-random-graph :node-max-number  630 :edges-number 400) :graphviz-prg :filter-neato)
-  (mnas-graph/view:view-graph (make-random-graph :node-max-number 1000 :edges-number 630) :graphviz-prg :filter-neato))
+  (mnas-graph/view:view-graph (mnas-graph:make-random-graph :node-max-number   10 :edges-number   6) :graphviz-prg :filter-neato)
+  (mnas-graph/view:view-graph (mnas-graph:make-random-graph :node-max-number   16 :edges-number  10) :graphviz-prg :filter-neato)
+  (mnas-graph/view:view-graph (mnas-graph:make-random-graph :node-max-number   25 :edges-number  16) :graphviz-prg :filter-neato)
+  (mnas-graph/view:view-graph (mnas-graph:make-random-graph :node-max-number   40 :edges-number  25) :graphviz-prg :filter-neato)
+  (mnas-graph/view:view-graph (mnas-graph:make-random-graph :node-max-number   63 :edges-number  40) :graphviz-prg :filter-neato)
+  (mnas-graph/view:view-graph (mnas-graph:make-random-graph :node-max-number  100 :edges-number  63) :graphviz-prg :filter-neato)
+  (mnas-graph/view:view-graph (mnas-graph:make-random-graph :node-max-number  160 :edges-number 100) :graphviz-prg :filter-neato)
+  (mnas-graph/view:view-graph (mnas-graph:make-random-graph :node-max-number  250 :edges-number 160) :graphviz-prg :filter-neato)
+  (mnas-graph/view:view-graph (mnas-graph:make-random-graph :node-max-number  400 :edges-number 250) :graphviz-prg :filter-neato)
+  (mnas-graph/view:view-graph (mnas-graph:make-random-graph :node-max-number  630 :edges-number 400) :graphviz-prg :filter-neato)
+  (mnas-graph/view:view-graph (mnas-graph:make-random-graph :node-max-number 1000 :edges-number 630) :graphviz-prg :filter-neato))
 
 (format t "Примеры иcпользования:
+(ql:quickload :mnas-graph/demos)
 (mnas-graph/demos:demo-1)
 (mnas-graph/demos:demo-2)
 (mnas-graph/demos:demo-3)
 (mnas-graph/demos:demo-4)
+(mnas-graph/demos:demo-5)
 (mnas-graph/demos:demo-5)
 ")
 
