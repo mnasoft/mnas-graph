@@ -46,7 +46,7 @@
   (mnas-package:make-mainfest-lisp
    '(:mnas-graph :mnas-graph/docs)
    "Mnas-Graph"
-   '("Nick Matvyeyev")
+   '("Mykola Matvyeyev")
    (mnas-package:find-sources "mnas-graph")
    :output-format of)
   (codex:document :mnas-graph)
@@ -71,7 +71,7 @@
   (mnas-package:make-mainfest-lisp
    '(:mnas-graph :mnas-graph/docs)
    "Mnas-Graph"
-   '("Nick Matvyeyev")
+   '("Mykola Matvyeyev")
    (mnas-package:find-sources "mnas-graph")
    :output-format of)
   (codex:document :mnas-graph)

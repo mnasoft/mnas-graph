@@ -4,7 +4,7 @@
   :description
   " System mnas-graph defines basic functions for creating a graph
  data structure and displaying it via graphviz."
-  :author "Nick Matvyeyev <mnasoft@gmail.com>"
+  :author "Mykola Matvyeyev <mnasoft@gmail.com>"
   :license "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 or later"  
   :version "0.1.0"
   :serial nil
@@ -18,7 +18,7 @@
 
 (defsystem "mnas-graph/core"
   :description "Describe mnas-graph here"
-  :author "Nick Matvyeyev <mnasoft@gmail.com>"
+  :author "Mykola Matvyeyev <mnasoft@gmail.com>"
   :license "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 or later"  
   :serial nil
   :in-order-to ((test-op (test-op "mnas-graph/tests")))
@@ -92,7 +92,7 @@
 (defsystem "mnas-graph/alg"
   :description "@b(Описание:) система @b(mnas-graph/alg)
                 содержит методы реализующие некоторые алгоритмы на графах."
-  :author "Nick Matvyeyev <mnasoft@gmail.com>"
+  :author "Mykola Matvyeyev <mnasoft@gmail.com>"
   :license "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 or later"  
   :serial nil
   :in-order-to ((test-op (test-op "mnas-graph/tests")))
@@ -105,7 +105,7 @@
 (defsystem "mnas-graph/sample"
   :description "@b(Описание:) система @b(mnas-graph/sample)
                 содержит методы генерирующие некоторые графы характерной формы."
-  :author "Nick Matvyeyev <mnasoft@gmail.com>"
+  :author "Mykola Matvyeyev <mnasoft@gmail.com>"
   :license "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 or later"  
   :serial nil
   :in-order-to ((test-op (test-op "mnas-graph/tests")))
@@ -117,7 +117,7 @@
 
 (defsystem "mnas-graph/view"
   :description "Describe mnas-graph here"
-  :author "Nick Matvyeyev <mnasoft@gmail.com>"
+  :author "Mykola Matvyeyev <mnasoft@gmail.com>"
   :license "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 or later"
   :depends-on ("mnas-graph/core" "mnas-graph/printer-viewer" "mnas-graph/filter")
   :serial nil
@@ -128,7 +128,7 @@
 
 (defsystem "mnas-graph/printer-viewer"
   :description "Describe mnas-graph here"
-  :author "Nick Matvyeyev <mnasoft@gmail.com>"
+  :author "Mykola Matvyeyev <mnasoft@gmail.com>"
   :license "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 or later"  
   :serial nil
   :in-order-to ((test-op (test-op "mnas-graph/tests")))
@@ -139,7 +139,7 @@
 
 (defsystem "mnas-graph/filter"
   :description "Describe mnas-graph here"
-  :author "Nick Matvyeyev <mnasoft@gmail.com>"
+  :author "Mykola Matvyeyev <mnasoft@gmail.com>"
   :license "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 or later"  
   :serial nil
   :in-order-to ((test-op (test-op "mnas-graph/tests")))
@@ -150,7 +150,7 @@
 
 (defsystem "mnas-graph/demos"
   :description "Тестирование систем, входящих  в проект mnas-graph"
-  :author "Nick Matvyeyev <mnasoft@gmail.com>"
+  :author "Mykola Matvyeyev <mnasoft@gmail.com>"
   :license "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 or later"  
   :depends-on ("mnas-graph/core" "mnas-graph/view")
   :components ((:module "src/demos"
@@ -159,7 +159,7 @@
 
 (defsystem "mnas-graph/tests"
   :description "Тестирование систем, входящих  в проект mnas-graph"
-  :author "Nick Matvyeyev <mnasoft@gmail.com>"
+  :author "Mykola Matvyeyev <mnasoft@gmail.com>"
   :license "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 or later"  
   :depends-on ("mnas-graph" "fiveam")
   :perform (test-op (o s)
@@ -179,7 +179,7 @@
 
 (defsystem "mnas-graph/docs"
   :description "Зависимости для сборки документации"
-  :author "Nick Matvyeyev <mnasoft@gmail.com>"
+  :author "Mykola Matvyeyev <mnasoft@gmail.com>"
   :license "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 or later"
   :depends-on ("mnas-graph" "codex" "mnas-package")
   :components ((:module "src/docs"
