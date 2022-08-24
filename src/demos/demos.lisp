@@ -13,52 +13,52 @@
 
 (defun demo-1 () 
   (mnas-graph/view:view-graph
-   (make-graph
+   (mnas-graph:make-graph
     '(("a" "b") ("a" "c") ("a" "d") ("b" "c") ("c" "d")))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun demo-2 () 
   (mnas-graph/view:view-graph
-   (make-graph
+   (mnas-graph:make-graph
     '(("a" "b") ("b" "c") ("c" "a"))) :graphviz-prg :filter-circo)
   (mnas-graph/view:view-graph
-   (make-graph
+   (mnas-graph:make-graph
     '(("a" "b") ("b" "c") ("c" "d") ("d" "a"))) :graphviz-prg :filter-circo)
   (mnas-graph/view:view-graph
-   (make-graph
+   (mnas-graph:make-graph
     '(("a" "b") ("b" "c") ("c" "d") ("d" "e") ("e" "a"))) :graphviz-prg :filter-circo)
   (mnas-graph/view:view-graph
-   (make-graph
+   (mnas-graph:make-graph
     '(("a" "b") ("b" "c") ("c" "d") ("d" "e") ("e" "f") ("f" "a"))) :graphviz-prg :filter-circo)
   (mnas-graph/view:view-graph
-   (make-graph
+   (mnas-graph:make-graph
     '(("a" "b") ("b" "c") ("c" "d") ("d" "e") ("e" "f") ("f" "g") ("g" "a"))) :graphviz-prg :filter-circo)
   (mnas-graph/view:view-graph
-   (make-graph
+   (mnas-graph:make-graph
     '(("a" "b") ("b" "c") ("c" "d") ("d" "e") ("e" "f") ("f" "g") ("g" "h") ("h" "a"))) :graphviz-prg :filter-circo))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun demo-3 () 
   (mnas-graph/view:view-graph
-   (make-graph
+   (mnas-graph:make-graph
     '(("a" "b") ("b" "c") ("c" "a")
       ("d" "a") ("b" "d") ("c" "d") )) :graphviz-prg :filter-fdp)
   (mnas-graph/view:view-graph
-   (make-graph
+   (mnas-graph:make-graph
     '(("a" "b") ("b" "c") ("c" "d") ("d" "a")
       ("a" "A") ("b" "B") ("c" "C") ("d" "D")
       ("A" "B") ("B" "C") ("C" "D") ("D" "A")
       )) :graphviz-prg :filter-neato)
   (mnas-graph/view:view-graph
-   (make-graph
+   (mnas-graph:make-graph
     '(("a" "b") ("b" "c") ("c" "d") ("d" "a")
       ("p" "a") ("p" "b") ("p" "c") ("p" "d")
       ("a" "r") ("b" "r") ("c" "r") ("d" "r")
       )) :graphviz-prg :filter-fdp)
   (mnas-graph/view:view-graph
-   (make-graph
+   (mnas-graph:make-graph
     '(("a" "b") ("b" "c") ("c" "d") ("d" "e") ("e" "a")
       ("a" "a1") ("b" "b1") ("c" "c1") ("d" "d1") ("e" "e1")
 
@@ -71,7 +71,7 @@
 
 (defun demo-4 () 
   (mnas-graph/view:view-graph
-   (make-graph
+   (mnas-graph:make-graph
     '((#1="Ванцовский" #2="Коротич")
       (#2#             #4="Головерда")
       (#1#             #3="Петельчиц")
@@ -103,16 +103,6 @@
   (mnas-graph/view:view-graph (mnas-graph:make-random-graph :node-max-number  400 :edges-number 250) :graphviz-prg :filter-neato)
   (mnas-graph/view:view-graph (mnas-graph:make-random-graph :node-max-number  630 :edges-number 400) :graphviz-prg :filter-neato)
   (mnas-graph/view:view-graph (mnas-graph:make-random-graph :node-max-number 1000 :edges-number 630) :graphviz-prg :filter-neato))
-
-(format t "Примеры иcпользования:
-(ql:quickload :mnas-graph/demos)
-(mnas-graph/demos:demo-1)
-(mnas-graph/demos:demo-2)
-(mnas-graph/demos:demo-3)
-(mnas-graph/demos:demo-4)
-(mnas-graph/demos:demo-5)
-(mnas-graph/demos:demo-5)
-")
 
 (defun fill-nodes (g &key
                        (outlet-color   "red")
@@ -150,5 +140,12 @@
                   :izolated-color izolated-color)
     (mnas-graph/view:view-graph g :graphviz-prg graphviz-prg)))
 
-
-;; (demo-6)
+(format t "~%Примеры иcпользования:
+(ql:quickload :mnas-graph/demos)
+(mnas-graph/demos:demo-1)
+(mnas-graph/demos:demo-2)
+(mnas-graph/demos:demo-3)
+(mnas-graph/demos:demo-4)
+(mnas-graph/demos:demo-5)
+(mnas-graph/demos:demo-6)
+")
