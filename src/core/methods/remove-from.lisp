@@ -34,8 +34,8 @@
 @end(code)
 "
   (when (into-container-p edge graph)
-    (remhash (tail edge) (ht-outlet-edges (tail edge)))
-    (remhash (head edge) (ht-inlet-edges  (head edge)))
+    (remhash edge (ht-outlet-edges (tail edge)))
+    (remhash edge (ht-inlet-edges  (head edge)))
     (remhash edge (edges graph))
     (remhash (name edge) (ht-edge-names graph))
     edge))
