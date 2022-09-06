@@ -87,6 +87,8 @@
                    
                    (:file "connected-nodes")
                    (:file "copy")
+
+                   (:file "empty")
                    ))))))
 
 (defsystem "mnas-graph/alg"

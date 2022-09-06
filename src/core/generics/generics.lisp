@@ -165,5 +165,20 @@
 
 (defgeneric into-container-p (obj container)
     (:documentation
-     "@b(Описание:) обобщенная функция @b(into-container-p) t если
-  объект (obj) находится в контейнере @b(container)."))
+     "@b(Описание:) обобщенная функция @b(into-container-p) возвращает
+  t если объект (obj) находится в контейнере @b(container)."))
+
+(defgeneric empty (container)
+  (:documentation
+   "@b(Описание:) обобщенная функция @b(empty) возвращает t если
+  объект @b(container) не содержит объектов."))
+
+(defgeneric hierarchy-node-names (graph)
+  (:documentation
+   "@b(Описание:) обобщенная функция @b(hierarchy-nodes) возвращает
+ список имен вершин в иерархическом порядке:
+
+@begin(list)
+ @item(изолированные вершины;)
+ @item(вершины источники.)
+@end(list)"))
