@@ -23,7 +23,7 @@
 "
    ))
 
-(in-package  #:mnas-graph/view)
+(in-package :mnas-graph/view)
 
 (defparameter *graph-count* -1
   " @b(Описание:) глобальная переменная @b(*graph-count*) используется

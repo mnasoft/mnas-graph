@@ -10,7 +10,7 @@
            *filter-twopi*
            *filter-patchwork*))
 
-(in-package  #:mnas-graph/filter)
+(in-package :mnas-graph/filter)
 
 (defun make-filter-prg-path (program)
   (cond
