@@ -1,6 +1,6 @@
 ;;;; .src/core/mnas-graph.lisp
 
-(defpackage #:mnas-graph
+(defpackage :mnas-graph
   (:use #:cl)
   (:export attr-area        <area>
            attr-arrowhead   <arrowhead>
@@ -260,7 +260,7 @@
 ;;;; (declaim (optimize (space 0) (compilation-speed 0)  (speed 0) (safety 3) (debug 3)))
 ;;;; (setf sb-impl::*default-external-format* :utf8)
 
-(in-package #:mnas-graph)
+(in-package :mnas-graph)
 
 (defparameter *graphviz.org* "https://graphviz.org/docs/")
 

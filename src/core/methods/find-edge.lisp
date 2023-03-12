@@ -1,6 +1,6 @@
 ;;;; ./src/core/methods/find-edge.lisp]]
 
-(in-package #:mnas-graph)
+(in-package :mnas-graph)
 
 (defmethod find-edge ((name string) (graph <graph>))
   "

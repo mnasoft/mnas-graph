@@ -1,6 +1,6 @@
 ;;;; ./src/core/methods/both-edges.lisp
 
-(in-package #:mnas-graph)
+(in-package :mnas-graph)
 
 (defmethod both-edges ((node <node>) (graph <graph>) &aux (ht (make-hash-table)))
   "

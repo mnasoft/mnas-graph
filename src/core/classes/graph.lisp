@@ -1,4 +1,4 @@
-(in-package #:mnas-graph)
+(in-package :mnas-graph)
 
 (defclass <graph> ()
   ((nodes

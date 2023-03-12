@@ -1,6 +1,6 @@
 ;;;; ./src/core/methods/outlet-p.lisp
 
-(in-package #:mnas-graph)
+(in-package :mnas-graph)
 
 (defmethod outlet-p ((node <node>) (graph <graph>))
   "

@@ -1,6 +1,6 @@
 ;;;; ./src/core/methods/inlet-p.lisp
 
-(in-package #:mnas-graph)
+(in-package :mnas-graph)
 
 (defmethod inlet-p ((node <node>) (graph <graph>))
   "

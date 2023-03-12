@@ -1,6 +1,6 @@
 ;;; ./src/sample/sample.lisp
 
-(defpackage #:mnas-graph/sample
+(defpackage :mnas-graph/sample
   (:use #:cl #:mnas-graph)
   (:export path
            )

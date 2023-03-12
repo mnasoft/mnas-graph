@@ -1,6 +1,6 @@
 ;;;; ./src/filter/filter.lisp
 
-(defpackage #:mnas-graph/filter
+(defpackage :mnas-graph/filter
   (:use #:cl)
   (:export *filter-dot*
            *filter-neato*

@@ -1,6 +1,6 @@
 ;;;; ./src/core/methods/find-both-nodes.lisp
 
-(in-package #:mnas-graph)
+(in-package :mnas-graph)
 
 (defmethod find-both-nodes  ((node <node>) (graph <graph>) &aux (ht (make-hash-table)))
   "

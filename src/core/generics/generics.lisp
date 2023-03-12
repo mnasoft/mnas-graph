@@ -1,6 +1,6 @@
 ;;;; ./src/core/generics/generics.lisp
 
-(in-package #:mnas-graph)
+(in-package :mnas-graph)
 
 (defgeneric copy (obj)
   (:documentation

@@ -1,6 +1,6 @@
 ;;;; ./src/core/methods/find-backward-nodes.lisp
 
-(in-package #:mnas-graph)
+(in-package :mnas-graph)
 
 (defmethod find-backward-nodes (node (graph <graph>))
   (make-hash-table))

@@ -1,6 +1,6 @@
 ;;;; ./src/core/methods/connected-nodes.lisp
 
-(in-package #:mnas-graph)
+(in-package :mnas-graph)
 
 (defmethod connected-nodes ((node <node>) (graph <graph>)
                             &key

@@ -1,6 +1,6 @@
 ;;;; ./src/core/methods/empty.lisp
 
-(in-package #:mnas-graph)
+(in-package :mnas-graph)
 
 (defmethod empty ((graph <graph>))
     "

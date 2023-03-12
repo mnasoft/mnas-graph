@@ -1,6 +1,6 @@
 ;;;; ./src/core/methods/to-string.lisp
 
-(in-package #:mnas-graph)
+(in-package :mnas-graph)
 
 (defmethod to-string (val)
   "@b(Описание:) to-string !!!!!!

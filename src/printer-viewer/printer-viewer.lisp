@@ -1,12 +1,12 @@
 ;;;; ./src/printer-viewer/printer-viewer.lisp
 
-(defpackage #:mnas-graph/printer-viewer
+(defpackage :mnas-graph/printer-viewer
   (:use #:cl) ;;;; #:mnas-graph
   (:export <printer-viewer>
            <pdf-printer-viewer>
            <svg-printer-viewer>))
 
-(in-package #:mnas-graph/printer-viewer)
+(in-package :mnas-graph/printer-viewer)
 
 (defclass <printer-viewer> ()
   ((graphviz-prg :accessor printer-viewer-graphviz-prg :initarg :graphviz-prg :initform :filter-dot

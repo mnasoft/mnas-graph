@@ -1,6 +1,6 @@
 ;;;; ./src/core/methods/inlet-edges.lisp
 
-(in-package #:mnas-graph)
+(in-package :mnas-graph)
 
 (defmethod inlet-edges ((node <node>) (graph <graph>))
 "

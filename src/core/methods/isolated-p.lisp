@@ -1,6 +1,6 @@
 ;;;; ./src/core/methods/isolated-p.lisp
 
-(in-package #:mnas-graph)
+(in-package :mnas-graph)
 
 (defmethod isolated-p ((node <node>) (graph <graph>))
     "

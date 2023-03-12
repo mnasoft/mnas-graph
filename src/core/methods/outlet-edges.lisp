@@ -1,6 +1,6 @@
 ;;;; ./src/core/methods/outlet-edges.lisp
 
-(in-package #:mnas-graph)
+(in-package :mnas-graph)
 
 (defmethod outlet-edges ((node <node>) (graph <graph>))
 "

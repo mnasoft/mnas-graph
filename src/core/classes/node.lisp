@@ -1,6 +1,6 @@
 ;;;; ./src/core/classes/node.lisp
 
-(in-package #:mnas-graph)
+(in-package :mnas-graph)
 
 (defclass <node> (<node-attributes>)
   ((name

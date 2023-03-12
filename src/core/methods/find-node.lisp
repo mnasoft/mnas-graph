@@ -1,6 +1,6 @@
 ;;;; ./src/core/methods/find-node.lisp
 
-(in-package #:mnas-graph)
+(in-package :mnas-graph)
 
 (defmethod find-node ((name string) (graph <graph>))
   "

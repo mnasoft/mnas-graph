@@ -1,6 +1,6 @@
 ;;; ./src/alg/alg.lisp
 
-(defpackage #:mnas-graph/alg
+(defpackage :mnas-graph/alg
   (:use #:cl #:mnas-graph)
   (:export path
            )

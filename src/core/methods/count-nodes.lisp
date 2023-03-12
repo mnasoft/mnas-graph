@@ -1,6 +1,6 @@
 ;;;; ./src/core/methods/count-nodes.lisp
 
-(in-package #:mnas-graph)
+(in-package :mnas-graph)
 
 (defmethod count-nodes ((graph <graph>))
   " @b(Описание:) метод @b(count-nodes) возвращает количество вершин

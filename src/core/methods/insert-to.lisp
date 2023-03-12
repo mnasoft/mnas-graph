@@ -1,6 +1,6 @@
 ;;;; ./src/core/methods/insert-to.lisp
 
-(in-package #:mnas-graph)
+(in-package :mnas-graph)
 
 (defmethod insert-to ((node <node>) (graph <graph>))
   "

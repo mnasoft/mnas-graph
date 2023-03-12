@@ -1,6 +1,6 @@
 ;;;; ./src/core/classes/edge.lisp
 
-(in-package #:mnas-graph)
+(in-package :mnas-graph)
 
 (defclass <edge> (<edge-attributes>)
   ((tail

@@ -1,6 +1,6 @@
 ;;;; ./src/core/methods/count-edges.lisp
 
-(in-package #:mnas-graph)
+(in-package :mnas-graph)
 
 (defmethod count-edges ((graph <graph>))
   "@b(Пример использования:)

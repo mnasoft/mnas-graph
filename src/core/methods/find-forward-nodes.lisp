@@ -1,6 +1,6 @@
 ;;;; ./src/core/methods/find-forward-nodes.lisp
 
-(in-package #:mnas-graph)
+(in-package :mnas-graph)
 
 (defmethod find-forward-nodes (node (graph <graph>))
   (make-hash-table))

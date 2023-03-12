@@ -1,6 +1,6 @@
 ;;;; ./src/core/methods/clear.lisp
 
-(in-package #:mnas-graph)
+(in-package :mnas-graph)
 
 (defmethod clear ((graph <graph>))
   "

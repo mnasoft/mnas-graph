@@ -1,6 +1,6 @@
 ;;;; ./src/core/methods/copy.lisp
 
-(in-package #:mnas-graph)
+(in-package :mnas-graph)
 
 #+nil
 (defmethod copy ((node <node>))

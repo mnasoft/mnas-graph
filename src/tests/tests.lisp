@@ -1,6 +1,6 @@
 ;;;; tests/package.lisp
 
-(defpackage #:mnas-graph/tests
+(defpackage :mnas-graph/tests
   (:use #:cl #:fiveam)
   (:export #:run-tests))
 

@@ -1,6 +1,6 @@
 ;;;; ./src/core/methods/inlet-nodes.lisp
 
-(in-package #:mnas-graph)
+(in-package :mnas-graph)
 
 (defmethod inlet-nodes ((graph <graph>) &aux (ht (make-hash-table)))
   "

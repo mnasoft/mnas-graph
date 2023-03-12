@@ -1,6 +1,6 @@
 ;;;; ./src/demos/demos.lisp
 
-(defpackage #:mnas-graph/demos
+(defpackage :mnas-graph/demos
   (:use #:cl)
   (:export demo-1
            demo-2
@@ -9,7 +9,7 @@
            demo-5
            demo-6))
 
-(in-package #:mnas-graph/demos)
+(in-package :mnas-graph/demos)
 
 (defun demo-1 () 
   (mnas-graph/view:view-graph

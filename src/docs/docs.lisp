@@ -1,5 +1,5 @@
 
-(defpackage #:mnas-graph/docs
+(defpackage :mnas-graph/docs
   (:use #:cl ) 
   (:nicknames "MGRAPH/DOCS")
   (:export make-all)

@@ -1,6 +1,6 @@
 ;;;; ./src/core/methods/remove-from.lisp
 
-(in-package #:mnas-graph)
+(in-package :mnas-graph)
 
 (defmethod remove-from ((node <node>) (graph <graph> ))
   "

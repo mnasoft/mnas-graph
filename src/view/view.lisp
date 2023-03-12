@@ -1,6 +1,6 @@
 ;;;; ./src/view/view.lisp
 
-(defpackage #:mnas-graph/view
+(defpackage :mnas-graph/view
   (:use #:cl)
   (:export view-graph
            view-graph-new

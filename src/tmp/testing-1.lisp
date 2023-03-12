@@ -1,6 +1,6 @@
 ;;;; testing.lisp
 
-(in-package #:mnas-graph)
+(in-package :mnas-graph)
 
 (view-graph 
  (make-graph

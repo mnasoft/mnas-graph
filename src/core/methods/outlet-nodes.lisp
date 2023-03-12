@@ -1,6 +1,6 @@
 ;;;; ./src/core/methods/outlet-nodes.lisp
 
-(in-package #:mnas-graph)
+(in-package :mnas-graph)
 
 (defmethod outlet-nodes ((graph <graph>) &aux (ht (make-hash-table)))
     "

@@ -1,6 +1,6 @@
 ;;;;./src/core/classes/attributes.lisp
 
-(in-package #:mnas-graph)
+(in-package :mnas-graph)
 
 (defparameter *attributes*
   '(("area" "NC" "double")

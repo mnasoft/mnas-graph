@@ -1,6 +1,6 @@
 ;;;; ./src/core/methods/ids.lisp
 
-(in-package #:mnas-graph)
+(in-package :mnas-graph)
 
 (defmethod ids ((ht hash-table) &key (sort t) (predicate #'string<))
 "
